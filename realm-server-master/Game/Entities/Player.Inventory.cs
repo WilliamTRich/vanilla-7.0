@@ -114,7 +114,8 @@ namespace RotMG.Game.Entities
                 return;
             }
 
-            var item = Inventory[slot];
+            int item = Inventory[slot];
+            int data = ItemDatas[slot];
             if (item == -1)
             {
 #if DEBUG
@@ -124,10 +125,13 @@ namespace RotMG.Game.Entities
             }
 
             Inventory[slot] = -1;
+            ItemDatas[slot] = -1;
+
             UpdateInventorySlot(slot);
 
             var container = new Container(Container.PurpleBag, AccountId, 120000);
             container.Inventory[0] = item;
+            container.ItemDatas[0] = data;
             container.UpdateInventorySlot(0);
 
             RecalculateEquipBonuses();
@@ -230,8 +234,10 @@ namespace RotMG.Game.Entities
             }
 
             //Invalid slot types
-            var item1 = con1.Inventory[slot1.SlotId];
-            var item2 = con2.Inventory[slot2.SlotId];
+            int item1 = con1.Inventory[slot1.SlotId];
+            int data1 = con1.ItemDatas[slot1.SlotId];
+            int item2 = con2.Inventory[slot2.SlotId];
+            int data2 = con2.ItemDatas[slot2.SlotId];
             var d = Desc as PlayerDesc;
             ItemDesc d1;
             ItemDesc d2;
@@ -291,7 +297,9 @@ namespace RotMG.Game.Entities
                 Database.RemoveGift(Client.Account, item1);
 
             con1.Inventory[slot1.SlotId] = item2;
+            con1.ItemDatas[slot1.SlotId] = data2;
             con2.Inventory[slot2.SlotId] = item1;
+            con2.ItemDatas[slot2.SlotId] = data1;
             con1.UpdateInventorySlot(slot1.SlotId);
             con2.UpdateInventorySlot(slot2.SlotId);
             RecalculateEquipBonuses();
