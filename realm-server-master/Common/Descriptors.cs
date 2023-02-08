@@ -196,6 +196,7 @@ namespace RotMG.Common
         public readonly ushort Type;
 
         public readonly string DisplayId;
+        public readonly string Group;
 
         public readonly bool Static;
         public readonly string Class;
@@ -239,6 +240,7 @@ namespace RotMG.Common
             Type = type;
 
             DisplayId = e.ParseString("DisplayId", Id);
+            Group = e.ParseString("Group");
 
             Static = e.ParseBool("Static");
             Class = e.ParseString("Class");

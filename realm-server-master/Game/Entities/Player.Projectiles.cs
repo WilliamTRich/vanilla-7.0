@@ -46,11 +46,11 @@ namespace RotMG.Game.Entities
     public partial class Player
     {
         private const int TimeUntilAckTimeout = 2000;
-        private const int TickProjectilesDelay = 2000;
+        private const int TickProjectilesDelay = 100;
         private const float RateOfFireThreshold = 1.1f;
-        private const float EnemyHitRangeAllowance = 1.7f;
         private const float EnemyHitTrackPrecision = 8;
         private const int EnemyHitHistoryBacktrack = 2;
+        public const float EnemyHitRangeAllowance = 1.7f;
 
         public Queue<List<Projectile>> AwaitingProjectiles;
         public Dictionary<int, ProjectileAck> AckedProjectiles;
@@ -70,7 +70,7 @@ namespace RotMG.Game.Entities
 
             foreach (var aoe in AwaitingAoes)
             {
-                if (Manager.TotalTime - aoe.Time > TimeUntilAckTimeout)
+                if (Manager.TotalTime - aoe.Time > TimeUntilAckTimeout + MaxLatencyMS)
                 {
 #if DEBUG
                     Program.Print(PrintType.Error, "Aoe ack timed out");
@@ -84,7 +84,7 @@ namespace RotMG.Game.Entities
             {
                 foreach (var ap in apList)
                 {
-                    if (Manager.TotalTime - ap.Time > TimeUntilAckTimeout)
+                    if (Manager.TotalTime - ap.Time > TimeUntilAckTimeout + MaxLatencyMS)
                     {
 #if DEBUG
                         Program.Print(PrintType.Error, "Proj ack timed out");

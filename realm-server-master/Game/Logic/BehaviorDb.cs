@@ -40,8 +40,8 @@ namespace RotMG.Game.Logic
             foreach (var s1 in States.Values)
                 foreach (var t in s1.Transitions)
                     foreach (var s2 in States.Values)
-                        if (s2.StringId == t.StringTargetState)
-                            t.TargetState = s2.Id;
+                        if (t.StringTargetStates.Contains(s2.StringId))
+                            t.TargetStates.Add(s2.Id);
 
             foreach (var s1 in States.Values)
                 foreach (var s2 in s1.States.Values)

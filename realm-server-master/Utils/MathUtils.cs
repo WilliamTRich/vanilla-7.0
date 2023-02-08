@@ -40,6 +40,11 @@ namespace RotMG.Utils
             return _rnd.Next(length);
         }
 
+        public static int Next(int min, int max)
+        {
+            return _rnd.Next(min, max);
+        }
+
         public static int NextInt(int min = 0, int max = 1)
         {
             return (int)NextFloat(min, max);
@@ -72,6 +77,10 @@ namespace RotMG.Utils
             return _rnd.NextDouble() < chance;
         }
 
+        public static int GetRandomFromLength(int length)
+        {
+            return _rnd.Next(length);
+        }
         public static Vector2 Position(float x, float y)
         {
             return new Vector2(NextFloat(-x, x), NextFloat(-y, y));
@@ -99,7 +108,7 @@ namespace RotMG.Utils
         public static float Distance(this Vector2 from, Vector2 to)
         {
             float v1 = from.X - to.X, v2 = from.Y - to.Y;
-            return (float)Math.Sqrt(v1 * v1 + v2 * v2);
+            return MathF.Sqrt(v1 * v1 + v2 * v2);
         }
 
         public static float DistanceSquared(this Vector2 from, Vector2 to)
@@ -115,7 +124,17 @@ namespace RotMG.Utils
                 throw new Exception("Undefined entity");
 #endif
             float v1 = from.X - to.Position.X, v2 = from.Y - to.Position.Y;
-            return (float)Math.Sqrt(v1 * v1 + v2 * v2);
+            return MathF.Sqrt(v1 * v1 + v2 * v2);
+        }
+
+        public static float Distance(this IntPoint from, Entity to)
+        {
+#if DEBUG
+            if (to == null)
+                throw new Exception("Undefined entity");
+#endif
+            float v1 = from.X - to.Position.X, v2 = from.Y - to.Position.Y;
+            return MathF.Sqrt(v1 * v1 + v2 * v2);
         }
 
         public static float DistanceSquared(this Vector2 from, Entity to)
@@ -131,6 +150,13 @@ namespace RotMG.Utils
         public static float Lerp(float value1, float value2, float amount)
         {
             return value1 + (value2 - value1) * amount;
+        }
+
+        public static int NextCooldown(this int cooldown, int variance)
+        {
+            if (variance == 0)
+                return cooldown;
+            return cooldown + NextIntSnap(-variance, variance, Settings.MillisecondsPerTick);
         }
     }
 }

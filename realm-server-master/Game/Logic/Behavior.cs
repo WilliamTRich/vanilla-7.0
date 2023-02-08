@@ -1,4 +1,6 @@
-﻿namespace RotMG.Game.Logic
+﻿using RotMG.Common;
+
+namespace RotMG.Game.Logic
 {
     public abstract class Behavior : IBehavior
     {
@@ -14,5 +16,17 @@
         public virtual bool Tick(Entity host) => true;
         public virtual void Exit(Entity host) { }
         public virtual void Death(Entity host) { }
+
+        public static ushort GetObjectType(string id)
+        {
+            if (!Resources.Id2Object.TryGetValue(id, out var desc))
+            {
+#if DEBUG
+                Program.Print(PrintType.Warn, $"Object type '{id}' not found. Using Pirate.");
+#endif
+                desc = Resources.Id2Object["Pirate"];
+            }
+            return desc.Type;
+        }
     }
 }

@@ -1,6 +1,6 @@
 namespace RotMG.Game.Logic.Loots
 {
-    public class Threshold : MobDrop
+    public class Threshold : MobDrop, IBehavior
     {
         public Threshold(float threshold, params MobDrop[] children)
         {

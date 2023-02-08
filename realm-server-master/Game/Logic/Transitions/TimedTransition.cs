@@ -6,14 +6,13 @@ namespace RotMG.Game.Logic.Transitions
     {
         public readonly int Time;
 
-        public TimedTransition(string targetState, int time = 1000) : base(targetState)
+        public TimedTransition(int time = 1000, params string[] targetStates) : base(targetStates)
         {
             Time = time;
         }
-
         public override void Enter(Entity host)
         {
-            host.StateCooldown.Add(Id, Time);
+            host.StateCooldown[Id] = Time;
         }
 
         public override bool Tick(Entity host)
@@ -26,7 +25,7 @@ namespace RotMG.Game.Logic.Transitions
             }
             return false;
         }
-
+        
         public override void Exit(Entity host)
         { 
             host.StateCooldown.Remove(Id);

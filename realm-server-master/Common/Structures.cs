@@ -178,7 +178,10 @@ namespace RotMG.Common
             wtr.Write(X);
             wtr.Write(Y);
         }
-
+        public float Dot(Vector2 other)
+        {
+            return X * other.X + Y * other.Y;
+        }
         public override int GetHashCode()
         {
             unchecked // Overflow is fine, just wrap

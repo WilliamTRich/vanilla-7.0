@@ -186,6 +186,25 @@ namespace RotMG.Networking
             }
         }
 
+        //outbound
+        public static byte[] Text(string name, int objectId, int numStars, int bubbleTime, string recipient, string text, uint chatColor = 0, uint textColor = 0, int accoundId = -1)
+        {
+            using (var wtr = new PacketWriter(new MemoryStream()))
+            {
+                wtr.Write((byte)PacketId.Text);
+                wtr.Write(name);
+                wtr.Write(objectId);
+                wtr.Write(numStars);
+                wtr.Write((byte)bubbleTime);
+                wtr.Write(recipient);
+                wtr.Write(text);
+                wtr.Write(chatColor);
+                wtr.Write(textColor);
+                wtr.Write(accoundId);
+                return (wtr.BaseStream as MemoryStream).ToArray();
+            }
+        }
+
         private static void ChangeTrade(Client client, PacketReader rdr)
         {
             var offer = new bool[rdr.ReadByte()];

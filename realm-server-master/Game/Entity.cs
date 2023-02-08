@@ -165,6 +165,12 @@ namespace RotMG.Game
         public Dictionary<StatType, object> SVs;
         public Dictionary<StatType, object> NewSVs;
 
+        private int _altTextureIndex;
+        public int AltTextureIndex
+        {
+            get => _altTextureIndex;
+            set => TrySetSV(StatType.AltTexture, _altTextureIndex = value);
+        }
         public Entity(ushort type, int? lifetime = null)
         {
 #if DEBUG
@@ -544,7 +550,52 @@ namespace RotMG.Game
                     b.Enter(this);
             }
         }
+        public void OrderState(int newState)
+        {
+            var i = 0;
+            for (var k = 0; k < CurrentStates.Count; k++)
+            {
+                //If order to a different substate
+                if (CurrentStates[k].Id == newState)
+                {
+                    i = k;
+                    break;
+                }
+            }
 
+            //Exit old behaviors/transitions
+            for (var k = i; k < CurrentStates.Count; k++)
+            {
+                foreach (var behavior in CurrentStates[k].Behaviors) behavior.Exit(this);
+                foreach (var transition in CurrentStates[k].Transitions) transition.Exit(this);
+            }
+
+            //Clear old substates
+            while (CurrentStates.Count > i)
+                CurrentStates.RemoveAt(i);
+
+            //Get new substates
+            var subIndex = i - 1;
+            var states = i == 0 ? Behavior.States : CurrentStates[i - 1].States;
+            while (states != null)
+            {
+                subIndex++;
+                if (states.Count > 0)
+                {
+                    if (subIndex == i) CurrentStates.Add(states[newState]);
+                    else CurrentStates.Add(states.Values.First());
+                    states = CurrentStates.Last().States;
+                }
+                else states = null;
+            }
+
+            //Enter new behaviors/transitions
+            for (var k = i; k < CurrentStates.Count; k++)
+            {
+                foreach (var behavior in CurrentStates[k].Behaviors) behavior.Enter(this);
+                foreach (var transition in CurrentStates[k].Transitions) transition.Enter(this);
+            }
+        }
         public void TickStates()
         {
             if (Behavior != null)
@@ -574,7 +625,7 @@ namespace RotMG.Game
                     {
                         if (transition.Tick(this))
                         {
-                            targetState = transition.TargetState;
+                            targetState = transition.GetTargetState();
                             break;
                         }
                     }

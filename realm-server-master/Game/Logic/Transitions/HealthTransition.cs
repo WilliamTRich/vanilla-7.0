@@ -4,17 +4,15 @@
     {
         public float Threshold;
 
-        public HealthTransition(float threshold, string targetState) : base(targetState)
+        public HealthTransition(float threshold, params string[] targetStates) : base(targetStates)
         {
             Threshold = threshold;
         }
 
         public override bool Tick(Entity host)
         {
-            var hpp = host.GetHealthPercentage();
-            if (hpp <= Threshold)
-                return true;
-            return false;
+            var hp = host.GetHealthPercentage();
+            return hp <= Threshold;
         }
     }
 }

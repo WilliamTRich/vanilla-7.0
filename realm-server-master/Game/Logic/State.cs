@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RotMG.Game.Logic
 {
@@ -37,13 +38,12 @@ namespace RotMG.Game.Logic
                 }
             }
         }
-
         public void FindStateTransitions()
         {
             foreach (var transition in Transitions)
                 foreach (var state in Parent.States.Values)
-                    if (state.StringId == transition.StringTargetState)
-                        transition.TargetState = state.Id;
+                    if (transition.StringTargetStates.Contains(state.StringId))
+                        transition.TargetStates.Add(state.Id);
 
             foreach (var state in States.Values)
                 state.FindStateTransitions();
