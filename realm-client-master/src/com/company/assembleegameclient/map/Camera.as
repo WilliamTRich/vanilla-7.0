@@ -60,13 +60,22 @@ package com.company.assembleegameclient.map
          this.f_.y = 0;
          this.f_.z = -1;
       }
-      
+
       public function configureCamera(object:GameObject, isHallucinating:Boolean) : void
       {
-         var screenRect:Rectangle = Boolean(Parameters.data_.centerOnPlayer)?CENTER_SCREEN_RECT:OFFSET_SCREEN_RECT;
+         var screenRect:Rectangle = correctCameraView();
          var cameraAngle:Number = Parameters.data_.cameraAngle;
          this.configure(object.x_,object.y_,12,cameraAngle,screenRect,false);
          this.isHallucinating_ = isHallucinating;
+      }
+
+      private function correctCameraView() : Rectangle
+      {
+         var width:int = WebMain.StageWidth - 200 * (WebMain.StageWidth / 800);
+         var height:int = WebMain.StageHeight;
+         var y:int = Boolean(Parameters.data_.centerOnPlayer)?height*(CENTER_SCREEN_RECT.y/600):height*(OFFSET_SCREEN_RECT.y/600);
+         var x:int = width / 2;
+         return new Rectangle(-x, y, width, height);
       }
       
       public function startJitter() : void

@@ -288,7 +288,7 @@ package kabam.rotmg.stage3D
          this.context3D.GetContext3D().clear(0,0,0,1);
          this.context3D.GetContext3D().drawTriangles(this.postFilterIndexBuffer_);
       }
-      
+
       private function renderScene(graphicsDatas:Vector.<IGraphicsData>, grahpicsData3d:Vector.<Object3DStage3D>, mapWidth:Number, mapHeight:Number, camera:Camera) : void
       {
          var test:int = 0;
@@ -317,6 +317,7 @@ package kabam.rotmg.stage3D
                finalTransform.identity();
                finalTransform.append(this.graphic3D_.getMatrix3D());
                finalTransform.appendScale(1 / Stage3DConfig.HALF_WIDTH,1 / Stage3DConfig.HALF_HEIGHT,1);
+               finalTransform.appendScale(800 / WebMain.StageWidth, 600 / WebMain.StageHeight, 1);
                finalTransform.appendTranslation(this.tX / Stage3DConfig.WIDTH,this.tY / Stage3DConfig.HEIGHT,0);
                this.context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX,0,finalTransform,true);
                this.graphic3D_.render(this.context3D);
@@ -327,6 +328,7 @@ package kabam.rotmg.stage3D
                this.graphic3D_.setGradientFill(GraphicsGradientFill(graphicsData),this.context3D,Stage3DConfig.HALF_WIDTH,Stage3DConfig.HALF_HEIGHT);
                finalTransform.identity();
                finalTransform.append(this.graphic3D_.getMatrix3D());
+               finalTransform.appendScale(800 / WebMain.StageWidth, 600 / WebMain.StageHeight, 1);
                finalTransform.appendTranslation(this.tX / Stage3DConfig.WIDTH,this.tY / Stage3DConfig.HEIGHT,0);
                this.context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX,0,finalTransform,true);
                this.context3D.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT,4,Vector.<Number>([0.5,0.25,0,0]));
@@ -343,6 +345,7 @@ package kabam.rotmg.stage3D
                   finalTransform.append(grahpicsData3d[index3d].GetModelMatrix());
                   finalTransform.append(this.cameraMatrix_);
                   finalTransform.append(this._projection);
+                  finalTransform.appendScale(800 / WebMain.StageWidth, 600 / WebMain.StageHeight, 1);
                   finalTransform.appendTranslation(this.tX / Stage3DConfig.WIDTH,this.tY / Stage3DConfig.HEIGHT * 11.5,0);
                   this.context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX,0,finalTransform,true);
                   this.context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX,8,grahpicsData3d[index3d].GetModelMatrix(),true);

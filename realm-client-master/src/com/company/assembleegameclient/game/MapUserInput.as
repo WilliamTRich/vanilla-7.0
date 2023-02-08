@@ -257,6 +257,18 @@ public class MapUserInput
 
    private function onMouseWheel(event:MouseEvent) : void
    {
+      if (event.ctrlKey)
+      {
+         if(event.delta > 0)
+         {
+            Parameters.data_.mScale = Math.min(Parameters.data_.mScale + 0.05, 2);
+         }
+         else
+         {
+            Parameters.data_.mScale = Math.max(Parameters.data_.mScale - 0.05, 0.5);
+         }
+         return;
+      }
       if(event.delta > 0)
       {
          this.miniMapZoom.dispatch(MiniMapZoomSignal.IN);
@@ -289,7 +301,8 @@ public class MapUserInput
       var stage:Stage = this.gs_.stage;
       switch(event.keyCode)
       {
-         case KeyCodes.F1:
+         case KeyCodes.F1: //Reset mscale
+              Parameters.data_.mScale = 1;
          case KeyCodes.F2:
          case KeyCodes.F3:
          case KeyCodes.F4:

@@ -180,9 +180,11 @@ import flash.net.SharedObject;
          setDefault("showGuildInvitePopup",true);
          setDefault("GPURender", false);
          setDefault("particles", true);
-         setDefault("hpBars", true)
+         setDefault("hpBars", true);
          setDefault("quality", true);
          setDefault("cursor", "4");
+         setDefault("mScale", 1);
+
       }
    }
 }

@@ -16,6 +16,7 @@ import flash.display.GraphicsBitmapFill;
 import flash.display.GraphicsSolidFill;
 import flash.display.IGraphicsData;
 import flash.display.Sprite;
+import flash.display.StageScaleMode;
 import flash.display3D.Context3D;
 import flash.filters.BlurFilter;
 import flash.filters.ColorMatrixFilter;
@@ -368,7 +369,7 @@ public class Map extends Sprite
          }
          return this.squares_[x + y * this.width_];
       }
-      
+
       public function draw(camera:Camera, time:int) : void
       {
          var isGpuRender:Boolean = Parameters.isGpuRender(); // cache result for faster access
@@ -401,8 +402,11 @@ public class Map extends Sprite
          var t:Number = NaN;
          var d:Number = NaN;
          var screenRect:Rectangle = camera.clipRect_;
-         x = -screenRect.x;
-         y = -screenRect.y;
+         x = 300;
+         y = Boolean(Parameters.data_.centerOnPlayer)?-Camera.CENTER_SCREEN_RECT.y:-Camera.OFFSET_SCREEN_RECT.y;
+         stage.scaleMode = StageScaleMode.NO_SCALE;
+         scaleX = 800 / WebMain.StageWidth;
+         scaleY = 600 / WebMain.StageHeight;
          var distW:Number = (-screenRect.y - screenRect.height / 2) / 50;
          var screenCenterW:Point = new Point(camera.x_ + distW * Math.cos(camera.angleRad_ - Math.PI / 2),camera.y_ + distW * Math.sin(camera.angleRad_ - Math.PI / 2));
          if(this.background_ != null)
@@ -553,6 +557,7 @@ public class Map extends Sprite
             this.gradientOverlay_.visible = true;
             this.gradientOverlay_.x = screenRect.right - 10;
             this.gradientOverlay_.y = screenRect.top;
+            this.gradientOverlay_.height = 600 * (600 / scaleY);
          }
          else
          {
@@ -628,7 +633,10 @@ public class Map extends Sprite
 
          this.mapOverlay_.draw(camera,time);
          this.partyOverlay_.draw(camera,time);
+
+         stage.scaleMode = StageScaleMode.EXACT_FIT;
       }
+
       private function getFilterIndex() : uint
       {
          var filterIndex:uint = 0;

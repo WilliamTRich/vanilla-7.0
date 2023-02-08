@@ -578,6 +578,9 @@ namespace RotMG.Common
             var classStats = acc.Stats.GetClassStats(character.ClassType);
             var fameStats = CalculateStats(acc, character, killer);
             totalFame = fameStats.TotalFame;
+
+            acc.Stats.Credits += fameStats.TotalFame;  // - Make coins obtainable without paying (gain coins after dying, equal to amount of fame?)
+
             foreach (var bonus in fameStats.Bonuses)
                 fame.Add(new XElement("Bonus", new XAttribute("id", bonus.Name), bonus.Fame));
 

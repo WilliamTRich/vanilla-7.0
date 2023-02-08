@@ -47,6 +47,9 @@ import robotlegs.bender.bundles.mvcs.MVCSBundle;
       public static var STAGE:Stage;
 
       protected var context:IContext;
+      public static var StageWidth:int;
+      public static var StageHeight:int;
+      private var resized_:Boolean;
       
       public function WebMain()
       {
@@ -77,9 +80,32 @@ import robotlegs.bender.bundles.mvcs.MVCSBundle;
          var startup:StartupSignal = this.context.injector.getInstance(StartupSignal);
          startup.dispatch();
          STAGE = stage;
-         STAGE.addEventListener(MouseEvent.RIGHT_CLICK, onRightClick)
+         STAGE.addEventListener(MouseEvent.RIGHT_CLICK, onRightClick);
+         STAGE.addEventListener(Event.RESIZE, updateStageSize);
+         setStageSize();
          STAGE.addEventListener(Event.ENTER_FRAME, onEnterFrame);
          UIUtils.toggleQuality(Parameters.data_.quality);
+      }
+
+      private function onEnterFrame(event:Event) : void
+      {
+         SoundEffectLibrary.clear();
+         if (!resized_){
+            setStageSize();
+         }
+         resized_ = false;
+      }
+
+      private function updateStageSize(event:Event) : void
+      {
+         setStageSize();
+         resized_ = true;
+      }
+
+      private function setStageSize() : void
+      {
+         StageWidth = stage.stageWidth / Parameters.data_.mScale;
+         StageHeight = stage.stageHeight / Parameters.data_.mScale;
       }
 
       private static function onRightClick(event:MouseEvent) : void

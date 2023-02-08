@@ -520,9 +520,6 @@ namespace RotMG.Game
             Behavior = Manager.Behaviors.Resolve(Type);
             if (Behavior != null)
             {
-#if DEBUG
-                Program.Print(PrintType.Debug, $"Behavior resolved for <{Type}> <{Desc.DisplayId}>");
-#endif
                 StateCooldown = new Dictionary<int, int>();
                 StateObject = new Dictionary<int, object>();
                 CurrentStates = new List<State>();
