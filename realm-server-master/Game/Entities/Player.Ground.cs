@@ -10,7 +10,7 @@ namespace RotMG.Game.Entities
     {
         private const float MoveSpeedThreshold = 1.1f;
         private const int TeleportCooldown = 10000;
-        private const int SpeedHistoryCount = 3; //in world ticks (10 = 1 sec history), the lower the count, the stricter the detection
+        private const int SpeedHistoryCount = 8; //in world ticks (10 = 1 sec history), the lower the count, the stricter the detection
 
         public float MoveMultiplier = 1f;
         public int MoveTime;

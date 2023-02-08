@@ -158,6 +158,8 @@ namespace RotMG.Common
 
     public struct Vector2
     {
+        public static Vector2 Zero => new Vector2(0, 0);
+
         public float X;
         public float Y;
 

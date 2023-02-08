@@ -18,7 +18,22 @@ namespace RotMG.Game.Logic
 
         public LootDef(string item, float chance = 1, float threshold = 0, int min = 0)
         {
-            Item = Resources.IdLower2Item[item.ToLower()].Type;
+            if(item == null)
+            {
+                Item = 0;
+                Threshold = threshold;
+                Chance = chance;
+                Min = min;
+                return;
+            }
+
+            if(!Resources.IdLower2Item.TryGetValue(item.ToLower(), out var desc))
+            {
+                Program.Print(PrintType.Warn, $"Item not found {item}");
+                return;
+            }
+            Item = desc.Type;
+            //Item = Resources.IdLower2Item[item.ToLower()].Type;
             Threshold = threshold;
             Chance = chance;
             Min = min;

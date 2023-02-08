@@ -78,15 +78,16 @@ namespace RotMG.Networking
 
         public static void Read(Client client, int id, byte[] data)
         {
+            //To much spam imo
 #if DEBUG
             if (id != (int)PacketId.Move)
-                Program.Print(PrintType.Debug, $"Packet received <{(PacketId)id}> <{string.Join(" ,",data.Select(k => k.ToString()).ToArray())}>");
+                //Program.Print(PrintType.Debug, $"Packet received <{(PacketId)id}> <{string.Join(" ,",data.Select(k => k.ToString()).ToArray())}>");
 #endif
 
             if (!client.Active)
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Didn't process packet, client not active");
+                //Program.Print(PrintType.Error, "Didn't process packet, client not active");
 #endif
                 return;
             }

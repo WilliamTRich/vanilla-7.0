@@ -116,6 +116,7 @@ namespace RotMG.Game
         public Chunk CurrentChunk;
         public World Parent;
 
+        public Vector2 SpawnPoint;
         public BehaviorModel Behavior;
         public List<State> CurrentStates;
         public Dictionary<int, int> StateCooldown; //Used for cooldowns (could be merged with DynamicObjects but it's faster this way)
@@ -186,7 +187,6 @@ namespace RotMG.Game
 
             Hp = Desc.MaxHp;
             MaxHp = Desc.MaxHp;
-
             if (Desc.MinSize != 100 || Desc.MaxSize != 100)
                 Size = MathUtils.NextInt(Desc.MinSize, Desc.MaxSize);
 
@@ -209,7 +209,7 @@ namespace RotMG.Game
         {
             InitStates();
 
-            if (this is Player || Behavior != null || Desc.Enemy)
+            if (this is Player || this is Decoy || Behavior != null || Desc.Enemy)
                 History = new List<Vector2>(Settings.TicksPerSecond * 10);
         }
 

@@ -405,6 +405,7 @@ namespace RotMG.Game
             en.Id = ++NextObjectId;
             en.Parent = this;
             en.Position = at;
+            en.SpawnPoint = at;
             MoveEntity(en, en.Position);
 
             if (en is StaticObject)

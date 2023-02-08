@@ -21,7 +21,7 @@ namespace RotMG.Game.Entities
         {
             "commands", "g", "guild", "tell", "allyshots", "allydamage", "effects", "sounds", "vault", "realm",
             "notifications", "online", "who", "server", "pos", "loc", "where", "find", "fame", "famestats", "stats",
-            "trade", "currentsong", "song"
+            "trade", "currentsong", "song", "glands"
         };
 
         private readonly string[] _rankedCommands =
@@ -261,6 +261,11 @@ namespace RotMG.Game.Entities
                         var tell = GameServer.Text(Name, Id, NumStars, 5, recipient.Name, message);
                         recipient.Client.Send(tell);
                         Client.Send(tell);
+                        break;
+                    case "/glands":
+                        Teleport(Manager.TotalTime, new Vector2(1000, 1000), false);
+                        ApplyConditionEffect(ConditionEffectIndex.Invulnerable, 3000);
+                        ApplyConditionEffect(ConditionEffectIndex.Stunned, 1500);
                         break;
                     case "/legendary":
                         if (Client.Account.Ranked)

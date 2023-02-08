@@ -11,6 +11,7 @@ namespace RotMG.Game.Entities
     public class Enemy : Entity
     {
         public Dictionary<Player, int> DamageStorage;
+        public Player LastHitter;
         public Terrain Terrain;
 
         public Enemy(ushort type) : base(type)
@@ -131,6 +132,8 @@ namespace RotMG.Game.Entities
 
             if (showToHitter)
                 hitter.Client.Send(packet);
+
+            LastHitter = hitter;
 
             if (Hp <= 0)
             {

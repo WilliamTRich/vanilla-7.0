@@ -36,7 +36,7 @@ namespace RotMG.Game.Logic.Behaviors
             float predictive = 0,
             int cooldownOffset = 0,
             int cooldownVariance = 0,
-            int cooldown = 0)
+            int cooldown = 1000)
         {
             Range = range;
             Count = count;

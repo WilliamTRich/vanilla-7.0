@@ -256,6 +256,8 @@ namespace RotMG.Game.Entities
             ApplyConditionEffect(ConditionEffectIndex.Invulnerable, 3000);
             ApplyConditionEffect(ConditionEffectIndex.Invisible, 3000);
             GetNextQuest(true);
+
+            base.Init();
         }
 
         public void Heal(int amount, bool magic)
