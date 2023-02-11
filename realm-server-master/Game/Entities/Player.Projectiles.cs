@@ -337,9 +337,6 @@ namespace RotMG.Game.Entities
                 var elapsed = time - p.Value.Time;
                 if (elapsed > p.Value.Desc.LifetimeMS)
                 {
-#if DEBUG
-                    Program.Print(PrintType.Error, "Shot projectile removed");
-#endif
                     ShotProjectiles.Remove(p.Key);
                     continue;
                 }
@@ -349,9 +346,6 @@ namespace RotMG.Game.Entities
                 var elapsed = time - p.Value.Time;
                 if (elapsed > p.Value.Projectile.Desc.LifetimeMS)
                 {
-#if DEBUG
-                    Program.Print(PrintType.Error, "Proj lifetime expired");
-#endif
                     AckedProjectiles.Remove(p.Key);
                     continue;
                 }
@@ -366,19 +360,19 @@ namespace RotMG.Game.Entities
                         if (HitByProjectile(p.Value.Projectile))
                         {
 #if DEBUG
-                            Program.Print(PrintType.Error, "Died cause of server collision");
+                            //Program.Print(PrintType.Error, "Died cause of server collision");
 #endif
                             return true;
                         }
                         AckedProjectiles.Remove(p.Key);
 #if DEBUG
-                        Program.Print(PrintType.Error, "Collided on server");
+                        //Program.Print(PrintType.Error, "Collided on server");
 #endif
                     }
 #if DEBUG
                     else
                     {
-                        Program.Print(PrintType.Error, "In range but can't hit...?");
+                        //Program.Print(PrintType.Error, "In range but can't hit...?");
                     }
 #endif
                 }

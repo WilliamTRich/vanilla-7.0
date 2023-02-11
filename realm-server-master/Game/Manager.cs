@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using RotMG.Game.Worlds;
+using RotMG.Game.Logic.Commands;
 
 namespace RotMG.Game
 {
@@ -38,7 +39,7 @@ namespace RotMG.Game
         {
             Player.InitSightCircle();
             Player.InitSightRays();
-
+            CommandManager.Init();
             TickWatch = Stopwatch.StartNew();
             AccountIdToClientId = new Dictionary<int, int>();
             Clients = new Dictionary<int, Client>();

@@ -1007,21 +1007,6 @@ namespace RotMG.Networking
             }
         }
 
-        public static byte[] Text(string name, int objectId, int numStars, int bubbleTime, string recipient, string text)
-        {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.Text);
-                wtr.Write(name);
-                wtr.Write(objectId);
-                wtr.Write(numStars);
-                wtr.Write((byte)bubbleTime);
-                wtr.Write(recipient);
-                wtr.Write(text);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
-        }
-
         public static byte[] AccountList(int accountListId, List<int> accountIds)
         {
             using (var wtr = new PacketWriter(new MemoryStream()))

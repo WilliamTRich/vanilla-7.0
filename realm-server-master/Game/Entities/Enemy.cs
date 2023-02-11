@@ -47,11 +47,13 @@ namespace RotMG.Game.Entities
         {
 #if DEBUG
             if (killer == null)
-                throw new Exception("Undefined killer");
-#endif
+            {
+                HandleDeath(null);
+                return;
+            }
 
-            if (Parent is Realm realm)
-                realm.EnemyKilled(this, killer);
+            //throw new Exception("Undefined killer");
+#endif
 
             var baseExp = (int)Math.Ceiling(MaxHp / 10f);
             if (baseExp != 0)
@@ -78,6 +80,14 @@ namespace RotMG.Game.Entities
             if (Desc.Cube) killer.FameStats.CubeKills++;
             if (Desc.Oryx) killer.FameStats.OryxKills++;
             if (Desc.God) killer.FameStats.GodKills++;
+
+            HandleDeath(killer);
+        }
+
+        private void HandleDeath(Player killer)
+        {
+            if (Parent is Realm realm)
+                realm.EnemyKilled(this, killer);
 
             if (Behavior != null)
             {

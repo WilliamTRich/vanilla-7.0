@@ -22,8 +22,6 @@ public class Text extends IncomingMessage
 
    public var chatColor_:uint;
 
-   public var accountId_:int;
-
    public var senderId_:int;
 
    public function Text(id:uint, callback:Function)
@@ -43,7 +41,7 @@ public class Text extends IncomingMessage
       this.text_ = data.readUTF();
       this.nameColor_ = data.readUnsignedInt();
       this.chatColor_ = data.readUnsignedInt();
-      this.senderId_ = data.readUnsignedInt();
+      this.senderId_ = data.readInt();
    }
 
    override public function toString() : String

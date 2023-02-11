@@ -416,6 +416,14 @@
         <ShadowSize>0</ShadowSize>
     </Object>
 
+	<Object type="0x051a" id="Wine Cellar Portal">
+		<Class>Portal</Class>
+		<Texture>
+			<File>lofiObj2</File>
+			<Index>0xbc</Index>
+		</Texture>
+	</Object>
+
     <Object type="0x0721" id="Locked Wine Cellar Portal">
         <Class>Portal</Class>
         <LockedPortal/>

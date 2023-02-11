@@ -23,7 +23,6 @@ namespace RotMG.Game.Entities
 
         public Client Client;
         public string GuildInvite;
-
         private int _accountId;
         public int AccountId
         {
@@ -417,23 +416,23 @@ namespace RotMG.Game.Entities
         private int _serverStartTime = -1;
         private int _serverTime = -1;
         private int _clientStartTime = -1;
-        private int _clientTime = -1;
+        public int ClientTime = -1;
         public bool ValidTime(int clientTime)
         {
             var serverTime = Manager.TotalTimeUnsynced;
             if (_serverTime == -1)
             {
-                _clientTime = clientTime;
+                ClientTime = clientTime;
                 _clientStartTime = clientTime;
                 _serverTime = serverTime;
                 _serverStartTime = serverTime;
                 return true;
             }
 
-            if (clientTime < _clientTime)
+            if (clientTime < ClientTime)
                 return false;
 
-            var clientDiff = clientTime - _clientTime;
+            var clientDiff = clientTime - ClientTime;
             var serverDiff = serverTime - _serverTime;
             var startDiff = Math.Abs((serverTime - _serverStartTime) - (clientTime - _clientStartTime));
 
@@ -443,7 +442,7 @@ namespace RotMG.Game.Entities
             if (startDiff > MaxLatencyMS)
                 return false;
 
-            _clientTime = clientTime;
+            ClientTime = clientTime;
             _serverTime = serverTime;
             return true;
         }

@@ -23,7 +23,7 @@
 	</World>
 	<World name="Realm">
 		<Maps>Realm/0.wmap</Maps>
-		<Portals>0x0712</Portals>
+		<Portals>0x0712;0x070e</Portals>
 		<Background>0</Background>
 		<AllowTeleport>true</AllowTeleport>
 		<Persist>true</Persist>
@@ -41,6 +41,34 @@
 	</World>
 	<World name="OryxCastle" display="Oryx's Castle">
 		<Maps>OryxCastle/0.jm</Maps>
+		<Background>0</Background>
+		<BlockSight>1</BlockSight>
+	</World>
+	<World name="WineCellar" display="Wine Cellar">
+		<Maps>WineCellar/0.jm</Maps>
+		<Portals>0x051a</Portals>
+		<Background>0</Background>
+		<BlockSight>1</BlockSight>
+	</World>
+
+
+	<World name="Abyss" display="Abyss of Demons">
+		<Maps>Abyss/0.jm</Maps>
+		<Portals>0x071b</Portals>
+		<Background>0</Background>
+		<BlockSight>1</BlockSight>
+	</World>
+
+	<World name="Snake" display="Snake Pit">
+		<Maps>SnakePit/0.wmap</Maps>
+		<Portals>0x0718</Portals>
+		<Background>0</Background>
+		<BlockSight>1</BlockSight>
+	</World>
+
+	<World name="Sprite" display="Sprite World">
+		<Maps>SpriteWorld/0.wmap</Maps>
+		<Portals>0x070c</Portals>
 		<Background>0</Background>
 		<BlockSight>1</BlockSight>
 	</World>
