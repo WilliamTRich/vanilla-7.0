@@ -310,5 +310,35 @@ namespace RotMG.Game.Logic.Commands
                 }
             });
         }
+
+        [Command("Killall", true)]
+        public static void KillAll(Player player, string name = "")
+        {
+            var count = 0;
+            foreach (var entity in player.Parent.Entities.Values.ToArray())
+            {
+                if (entity is Enemy enemy && (string.IsNullOrWhiteSpace(name) ||
+                                              entity.Desc.Id.Contains(name,
+                                                  StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    enemy.Death(player);
+                    count++;
+                }
+            }
+
+            player.SendInfo($"Killed {count} entities");
+        }
+
+        [Command("CloseRealm", true)]
+        public static void CloseRealm(Player player)
+        {
+            if (!(player.Parent is Realm realm))
+            {
+                player.SendError("Must be in a realm to close it");
+                return;
+            }
+
+            realm.Close();
+        }
     }
 }

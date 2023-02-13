@@ -12,6 +12,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Remove="Resources\Worlds\Abyss\0.jm" />
+    <None Remove="Resources\Worlds\OryxChamber\0.jm" />
     <None Remove="Resources\Worlds\SnakePit\0.wmap" />
     <None Remove="Resources\Worlds\SpriteWorld\0.wmap" />
     <None Remove="Resources\Worlds\SpriteWorld\1.wmap" />

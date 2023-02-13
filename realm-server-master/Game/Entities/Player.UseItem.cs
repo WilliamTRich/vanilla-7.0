@@ -174,6 +174,22 @@ namespace RotMG.Game.Entities
                         if (!HasConditionEffect(ConditionEffectIndex.Quiet))
                             Heal(eff.Amount, true);
                         break;
+                    case ActivateEffectIndex.UnlockPortal:
+                        foreach(var ent in Parent.EntityChunks.HitTest(Position, 10f))
+                        {
+                            if(!(ent is Portal portal))
+                            {
+                                continue;
+                            }
+
+                            if(portal.Desc.Id == "Locked Wine Cellar Portal")
+                            {
+                                Parent.AddEntity(new Portal(0x051a, 90000), portal.Position);
+                                Parent.RemoveEntity(portal);
+                                break;
+                            }
+                        }
+                        break;
                     case ActivateEffectIndex.IncrementStat:
                         if (eff.Stat == -1)
                         {

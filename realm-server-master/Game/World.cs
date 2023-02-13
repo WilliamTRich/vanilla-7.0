@@ -332,8 +332,13 @@ namespace RotMG.Game
 
         public Tile GetTile(int x, int y)
         {
+            if (Tiles == null) return null;
+
             if (x < 0 || y < 0 || x >= Width || y >= Height)
                 return null;
+
+            if (Tiles[x, y] == null) return null;
+
             return Tiles[x, y];
         }
 

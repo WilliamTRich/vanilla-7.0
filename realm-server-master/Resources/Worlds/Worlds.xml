@@ -44,6 +44,14 @@
 		<Background>0</Background>
 		<BlockSight>1</BlockSight>
 	</World>
+	
+	<World name="OryxChamber" display="Oryx's Chamber">
+		<Maps>OryxChamber/0.jm</Maps>
+		<Portals>0x0d7b</Portals>
+		<Background>0</Background>
+		<BlockSight>1</BlockSight>
+	</World>
+	
 	<World name="WineCellar" display="Wine Cellar">
 		<Maps>WineCellar/0.jm</Maps>
 		<Portals>0x051a</Portals>

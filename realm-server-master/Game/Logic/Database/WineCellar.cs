@@ -34,8 +34,8 @@ namespace RotMG.Game.Logic.Database
                     new Follow(.1f, 15, 3),
                     new Taunt("Can't... keep... henchmen... alive... anymore! ARGHHH!!!"),
                     new ConditionalEffect(ConditionEffectIndex.Invulnerable),
-                    new Shoot(25, 30, fixedAngle: 0, index: 7, cooldown: 4000, cooldownOffset: 4000),
-                    new Shoot(25, 30, fixedAngle: 30, index: 8, cooldown: 4000, cooldownOffset: 4000),
+                    new Shoot(25, 30, fixedAngle: 0, index: 13, cooldown: 4000, cooldownOffset: 4000),
+                    new Shoot(25, 30, fixedAngle: 30, index: 14, cooldown: 4000, cooldownOffset: 4000),
                     new TimedTransition(10000, "rage")
                 ),
                 new State("rage",
@@ -197,7 +197,7 @@ namespace RotMG.Game.Logic.Database
             );
             db.Init("Aberrant Blaster",
                 new State("Wait",
-                    new PlayerWithinTransition(3, false, "Boom")
+                    new PlayerWithinTransition(5, false, "Boom")
                 ),
                 new State("Boom",
                     new Shoot(10, 5, 7),
@@ -213,11 +213,11 @@ namespace RotMG.Game.Logic.Database
             );
             db.Init("Abomination of Oryx",
                 new State("Shoot",
-                    new Shoot(1, 3, 5),
-                    new Shoot(1, 5, 5, 1),
-                    new Shoot(1, 7, 5, 2),
-                    new Shoot(1, 5, 5, 3),
-                    new Shoot(1, 3, 5, 4),
+                    new Shoot(3, 3, 5),
+                    new Shoot(3, 5, 5, 1),
+                    new Shoot(3, 7, 5, 2),
+                    new Shoot(3, 5, 5, 3),
+                    new Shoot(3, 3, 5, 4),
                     new TimedTransition(1000, "Wait")
                 ),
                 new State("Wait",
