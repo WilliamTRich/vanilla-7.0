@@ -87,6 +87,8 @@ namespace RotMG.Game.Entities
                 return;
             }
 
+            Parent.ChatReceived(this, validText); //Player Text Chat Transitions for things like Thessal
+
             var name = Client.Account.Ranked ? "@" + Name : Name;
             var packet = GameServer.Text(name, Id, NumStars, 5, "", validText);
 

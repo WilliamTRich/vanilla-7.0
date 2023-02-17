@@ -1,6 +1,7 @@
 ﻿using RotMG.Common;
 using RotMG.Game.Entities;
 using RotMG.Game.Logic;
+using RotMG.Game.Logic.Transitions;
 using RotMG.Utils;
 using System;
 using System.Collections.Generic;
@@ -212,7 +213,22 @@ namespace RotMG.Game
             if (this is Player || this is Decoy || Behavior != null || Desc.Enemy)
                 History = new List<Vector2>(Settings.TicksPerSecond * 10);
         }
+        public void OnChatTextReceived(Player plr, string txt)
+        {
+            if (CurrentStates == null)
+                return;
 
+            for (var i = 0; i < CurrentStates.Count; i++)
+            {
+                var state = CurrentStates[i];
+                foreach (var transition in state.Transitions.OfType<PlayerTextTransition>())
+                {
+                    if (!transition._transition)
+                        transition.OnChatReceived(plr, txt); //This might work
+
+                }
+            }
+        }
         public virtual void Tick()
         {
             TickEffects();

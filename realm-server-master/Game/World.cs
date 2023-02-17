@@ -352,7 +352,13 @@ namespace RotMG.Game
                 return st;
             return null;
         }
-        
+        public void ChatReceived(Player plr, string txt)
+        {
+            foreach (Entity en in this.EntityChunks.HitTest(plr.Position, Player.SightRadius))
+            {
+                en.OnChatTextReceived(plr, txt);
+            }
+        }
         public bool IsUnblocked(Vector2 pos, bool spawning = false)
         {
             var tile = GetTile((int)pos.X, (int)pos.Y);
