@@ -11,6 +11,7 @@
     <Content Include="Resources\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Remove="Resources\GameData\EmbeddedData_EpicForestMazeCXML.xml" />
     <None Remove="Resources\Worlds\Abyss\0.jm" />
     <None Remove="Resources\Worlds\OryxChamber\0.jm" />
     <None Remove="Resources\Worlds\SnakePit\0.wmap" />
@@ -20,6 +21,7 @@
     <None Remove="Resources\Worlds\SpriteWorld\3.wmap" />
     <None Remove="Resources\Worlds\SpriteWorld\4.wmap" />
     <None Remove="Resources\Worlds\WineCellar\0.jm" />
+    <None Remove="Resources\Worlds\WoodlandLabyrinth\0.jm" />
     <Content Include="Settings.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -232,7 +232,7 @@ namespace RotMG.Common
         public readonly SpawnData SpawnData;
         public readonly int PerRealmMax;
 
-        public readonly Dictionary<int, ProjectileDesc> Projectiles;
+        public readonly ProjectileDesc[] Projectiles;
 
         public ObjectDesc(XElement e, string id, ushort type)
         {
@@ -277,6 +277,8 @@ namespace RotMG.Common
                 SpawnData = new SpawnData(e.Element("Spawn"));
             PerRealmMax = e.ParseInt("PerRealmMax");
 
+            Projectiles = e.Elements("Projectile").Select(i => new ProjectileDesc(i, Type)).ToArray();
+            /*
             Projectiles = new Dictionary<int, ProjectileDesc>();
             foreach (var k in e.Elements("Projectile"))
             {
@@ -286,7 +288,7 @@ namespace RotMG.Common
                     throw new Exception("Duplicate bullet type");
 #endif
                 Projectiles[desc.BulletType] = desc;
-            }
+            }*/
         }
     }
     

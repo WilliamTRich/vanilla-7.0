@@ -1276,5 +1276,204 @@
 		</RandomTexture>
         <NoWalk/>
 	</Ground>
-    
+	<Ground type="0x20" id="Forrest Floor">
+		<Texture>
+			<File>lofiEnvironment2</File>
+			<Index>0x11e</Index>
+		</Texture>
+		<RandomOffset/>
+	</Ground>
+	<Ground type="0x27" id="Forrest Floor Edge Rt">
+		<Texture>
+			<File>lofiEnvironment2</File>
+			<Index>0x110</Index>
+		</Texture>
+		<Top>
+			<Texture>
+				<File>lofiEnvironment2</File>
+				<Index>0x104</Index>
+			</Texture>
+		</Top>
+	</Ground>
+	<Ground type="0x28" id="Forrest Floor Edge Lf">
+		<Texture>
+			<File>lofiEnvironment2</File>
+			<Index>0x111</Index>
+		</Texture>
+		<Top>
+			<Texture>
+				<File>lofiEnvironment2</File>
+				<Index>0x105</Index>
+			</Texture>
+		</Top>
+	</Ground>
+	<Ground type="0x29" id="Forrest Floor Edge Bot">
+		<Texture>
+			<File>lofiEnvironment2</File>
+			<Index>0x112</Index>
+		</Texture>
+		<Top>
+			<Texture>
+				<File>lofiEnvironment2</File>
+				<Index>0x106</Index>
+			</Texture>
+		</Top>
+	</Ground>
+	<Ground type="0x2a" id="Forrest Floor Edge Top">
+		<Texture>
+			<File>lofiEnvironment2</File>
+			<Index>0x113</Index>
+		</Texture>
+		<Top>
+			<Texture>
+				<File>lofiEnvironment2</File>
+				<Index>0x107</Index>
+			</Texture>
+		</Top>
+	</Ground>
+	<Ground type="0x37" id="Forrest Floor Corner TR">
+		<Texture>
+			<File>lofiEnvironment2</File>
+			<Index>0x117</Index>
+		</Texture>
+		<Top>
+			<Texture>
+				<File>lofiEnvironment2</File>
+				<Index>0x109</Index>
+			</Texture>
+		</Top>
+	</Ground>
+	<Ground type="0x2b" id="Forrest Floor Corner TL">
+		<Texture>
+			<File>lofiEnvironment2</File>
+			<Index>0x116</Index>
+		</Texture>
+		<Top>
+			<Texture>
+				<File>lofiEnvironment2</File>
+				<Index>0x108</Index>
+			</Texture>
+		</Top>
+	</Ground>
+	<Ground type="0x38" id="Forrest Floor Corner BR">
+		<Texture>
+			<File>lofiEnvironment2</File>
+			<Index>0x115</Index>
+		</Texture>
+		<Top>
+			<Texture>
+				<File>lofiEnvironment2</File>
+				<Index>0x10b</Index>
+			</Texture>
+		</Top>
+	</Ground>
+	<Ground type="0x39" id="Forrest Floor Corner BL">
+		<Texture>
+			<File>lofiEnvironment2</File>
+			<Index>0x114</Index>
+		</Texture>
+		<Top>
+			<Texture>
+				<File>lofiEnvironment2</File>
+				<Index>0x10a</Index>
+			</Texture>
+		</Top>
+	</Ground>
+	<Ground type="0x44" id="Forrest Floor Inner TR">
+		<Texture>
+			<File>lofiEnvironment2</File>
+			<Index>0x118</Index>
+		</Texture>
+		<Top>
+			<Texture>
+				<File>lofiEnvironment2</File>
+				<Index>0x10c</Index>
+			</Texture>
+		</Top>
+	</Ground>
+	<Ground type="0x45" id="Forrest Floor Inner TL">
+		<Texture>
+			<File>lofiEnvironment2</File>
+			<Index>0x119</Index>
+		</Texture>
+		<Top>
+			<Texture>
+				<File>lofiEnvironment2</File>
+				<Index>0x10d</Index>
+			</Texture>
+		</Top>
+	</Ground>
+	<Ground type="0x59" id="Forrest Floor Inner BR">
+		<Texture>
+			<File>lofiEnvironment2</File>
+			<Index>0x11a</Index>
+		</Texture>
+		<Top>
+			<Texture>
+				<File>lofiEnvironment2</File>
+				<Index>0x10e</Index>
+			</Texture>
+		</Top>
+	</Ground>
+	<Ground type="0x5a" id="Forrest Floor Inner BL">
+		<Texture>
+			<File>lofiEnvironment2</File>
+			<Index>0x11b</Index>
+		</Texture>
+		<Top>
+			<Texture>
+				<File>lofiEnvironment2</File>
+				<Index>0x10f</Index>
+			</Texture>
+		</Top>
+	</Ground>
+	<Ground type="0x5b" id="Forrest Floor BlackTop">
+		<Texture>
+			<File>lofiEnvironment3</File>
+			<Index>0xdc</Index>
+		</Texture>
+		<Top>
+			<Texture>
+				<File>lofiEnvironment2</File>
+				<Index>0x11c</Index>
+			</Texture>
+		</Top>
+	</Ground>
+	<Ground type="0x5e" id="Forrest Floor FullBlack">
+		<Texture>
+			<File>lofiEnvironment3</File>
+			<Index>0xdc</Index>
+		</Texture>
+		<Top>
+			<Texture>
+				<File>lofiEnvironment3</File>
+				<Index>0xdc</Index>
+			</Texture>
+		</Top>
+	</Ground>
+	<Ground type="0x5f" id="Forest Dirt">
+		<SameTypeEdgeMode/>
+		<Texture>
+			<File>lofiEnvironment2</File>
+			<Index>0x13c</Index>
+		</Texture>
+		<Edge>
+			<Texture>
+				<File>lofiEnvironment2</File>
+				<Index>0x13d</Index>
+			</Texture>
+		</Edge>
+		<InnerCorner>
+			<Texture>
+				<File>lofiEnvironment2</File>
+				<Index>0x13e</Index>
+			</Texture>
+		</InnerCorner>
+		<Corner>
+			<Texture>
+				<File>lofiEnvironment2</File>
+				<Index>0x13f</Index>
+			</Texture>
+		</Corner>
+	</Ground>
 </GroundTypes>

@@ -1,4 +1,5 @@
 ﻿using RotMG.Common;
+using RotMG.Game.Worlds;
 using RotMG.Networking;
 using RotMG.Utils;
 using System;
@@ -363,6 +364,8 @@ namespace RotMG.Game.Entities
             if (string.IsNullOrWhiteSpace(hitter))
                 throw new Exception("Undefined hitter");
 #endif
+            //Stops damage in nexus
+            if (Parent is Nexus) return false;
 
             //Projectiles never have null effects. But other sources of damage might.
             foreach (var eff in effects)

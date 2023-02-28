@@ -430,6 +430,46 @@
         <Texture><File>lofiObj2</File><Index>0xba</Index></Texture>
     </Object>
 
+	<Object type="0x075c" id="Woodland Labyrinth">
+		<Class>Portal</Class>
+		<IntergamePortal/>
+		<DisplayId>Woodland Labyrinth</DisplayId>
+		<DungeonName>Woodland Labyrinth</DungeonName>
+		<Texture>
+			<File>lofiObj3</File>
+			<Index>0x3e5</Index>
+		</Texture>
+	</Object>
+	<Object type="0x075d" id="Deadwater Docks">
+		<Class>Portal</Class>
+		<IntergamePortal/>
+		<DisplayId>Deadwater Docks</DisplayId>
+		<DungeonName>Deadwater Docks</DungeonName>
+		<Texture>
+			<File>lofiObj3</File>
+			<Index>0x3ea</Index>
+		</Texture>
+	</Object>
+	<Object type="0x708b" id="Bilgewater's Grotto Portal">
+		<Class>Portal</Class>
+		<IntergamePortal/>
+		<DisplayId>Bilgewater's Grotto</DisplayId>
+		<DungeonName>Bilgewater's Grotto</DungeonName>
+		<Texture>
+			<File>lofiObj3</File>
+			<Index>0x3ea</Index>
+		</Texture>
+	</Object>
+	<Object type="0x072e" id="The Crawling Depths">
+		<Class>Portal</Class>
+		<IntergamePortal/>
+		<DisplayId>The Crawling Depths</DisplayId>
+		<DungeonName>The Crawling Depths</DungeonName>
+		<Texture>
+			<File>lofiObj3</File>
+			<Index>0x3e8</Index>
+		</Texture>
+	</Object>
     <Object type="0x0723" id="Gravestone 1">
         <Class>GameObject</Class>
         <ShowName/>
@@ -708,17 +748,6 @@
         <ShadowSize>0</ShadowSize>
     </Object>
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     <Object type="0x074b" id="Haunted Cemetery Portal">
         <Class>Portal</Class>

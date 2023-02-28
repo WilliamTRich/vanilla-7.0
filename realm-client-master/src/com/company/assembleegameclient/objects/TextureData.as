@@ -79,6 +79,9 @@ package com.company.assembleegameclient.objects
       {
          var image:MaskedImage = null;
          var childXML:XML = null;
+
+         trace(xml.File);
+
          switch(xml.name().toString())
          {
             case "Texture":

@@ -58,10 +58,13 @@ package kabam.rotmg.assets
       public static var textile10x10Embed_:Class = EmbeddedAssets_textile10x10Embed_;
       public static var innerMaskEmbed_:Class = EmbeddedAssets_innerMaskEmbed_;
       public static var sidesMaskEmbed_:Class = EmbeddedAssets_sidesMaskEmbed_;
+      public static var d2LofiObjEmbed_:Class = EmbeddedAssets_d2LofiObjEmbed_;
       public static var outerMaskEmbed_:Class = EmbeddedAssets_outerMaskEmbed_;
       public static var innerP1MaskEmbed_:Class = EmbeddedAssets_innerP1MaskEmbed_;
       public static var innerP2MaskEmbed_:Class = EmbeddedAssets_innerP2MaskEmbed_;
       public static var cursorsEmbed_:Class = EmbeddedAssets_cursorsEmbed_;
+      public static var d3LofiObjEmbed_:Class = EmbeddedAssets_d3LofiObjEmbed_;
+      public static var stPatricksObjects8x8Embed_:Class = EmbeddedAssets_stPatricksObjects8x8Embed_;
       private static var monsterTank1Embed_:Class = EmbeddedAssets_monsterTank1Embed_;
       private static var monsterTank2Embed_:Class = EmbeddedAssets_monsterTank2Embed_;
       private static var monsterTank3Embed_:Class = EmbeddedAssets_monsterTank3Embed_;
