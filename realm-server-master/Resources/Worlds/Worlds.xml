@@ -80,7 +80,13 @@
 		<Background>0</Background>
 		<BlockSight>1</BlockSight>
 	</World>
-
+	
+	<World name="Treasure Cave" display="Treasure Cave">
+		<Maps>TCave/0.jm</Maps>
+		<Portals>0x5e2e</Portals>
+		<Background>0</Background>
+		<BlockSight>1</BlockSight>
+	</World>
 	<!--
 	<World name="WoodlandLabyrinth" display="Woodland Labyrinth">
 		<Maps>WoodlandLabyrinth/0.jm</Maps>

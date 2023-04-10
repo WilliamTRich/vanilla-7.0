@@ -1030,7 +1030,7 @@
 			<Damage>0</Damage>
 			<Size>170</Size>
 			<Speed>70</Speed>
-			<LifetimeMS>880</LifetimeMS>
+			<LifetimeMS>1450</LifetimeMS>
 			<ConditionEffect duration="3">Slowed</ConditionEffect>
 			
 		</Projectile>
@@ -1055,7 +1055,7 @@
 			<Damage>0</Damage>
 			<Size>170</Size>
 			<Speed>70</Speed>
-			<LifetimeMS>880</LifetimeMS>
+			<LifetimeMS>1450</LifetimeMS>
 			<ConditionEffect duration="3">Slowed</ConditionEffect>
 			
 		</Projectile>

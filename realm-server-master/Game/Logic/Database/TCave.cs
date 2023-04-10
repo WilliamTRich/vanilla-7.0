@@ -2,6 +2,7 @@ using RotMG.Common;
 using RotMG.Game.Logic.Behaviors;
 using RotMG.Game.Logic.Loots;
 using RotMG.Game.Logic.Transitions;
+using static RotMG.Game.Logic.Loots.TierLoot;
 
 namespace RotMG.Game.Logic.Database
 {
@@ -233,6 +234,170 @@ namespace RotMG.Game.Logic.Database
                 ),
                 new Shoot(0, 8, 45, defaultAngle: 0, cooldown: 3000)
             );
+
+
+            db.Init("Treasure Pot",
+                new Threshold(0.01f,
+                    new TierLoot(1, LootType.Ability, 0.12f),
+                    new TierLoot(2, LootType.Ability, 0.08f),
+                    new TierLoot(1, LootType.Ring, 0.1f),
+                    new TierLoot(6, LootType.Weapon, 0.12f),
+                    new ItemLoot("Magic Potion", 0.8f),
+                    new ItemLoot("Health Potion", 0.8f)
+                )
+            );
+            db.Init("Treasure Plunderer",
+                new State("base",
+                    new State("Player",
+                        new PlayerWithinTransition(15, true, "Start")
+                        ),
+                    new State("Start",
+                        new Shoot(7, 1, index: 0, cooldown: 1),
+                        new Grenade(3, 75, 7, cooldown: 1000),
+                        new Wander(0.4f)
+                        )
+                    ),
+                new ItemLoot("Magic Potion", 0.3f),
+                new ItemLoot("Health Potion", 0.3f),
+                new Threshold(0.01f,
+                    new ItemLoot("Potion of Defense", 0.03f)
+                    )
+                );
+            db.Init("Treasure Robber",
+                new State("base",
+                    new State("Player",
+                        new PlayerWithinTransition(10, true, "Start")
+                        ),
+                    new State("Start",
+                        new SetAltTexture(0, 0),
+                        new Shoot(15, 3, index: 0, shootAngle: 20, cooldown: 1000),
+                        new TimedTransition(2500, "Invisible"),
+                        new Wander(0.4f)
+                        ),
+                    new State("Invisible",
+                        new SetAltTexture(0, 7, 140),
+                        new Shoot(15, 3, index: 0, shootAngle: 20, cooldown: 1000),
+                        new Wander(0.4f),
+                        new TimedTransition(6000, "Start")
+                        )
+                    ),
+                new ItemLoot("Magic Potion", 0.3f),
+                new ItemLoot("Health Potion", 0.3f)
+                );
+            db.Init("Treasure Thief",
+                new State("base",
+                    new State("Player",
+                        new PlayerWithinTransition(10, true, "Start")
+                        ),
+                    new State("Start",
+                        new Wander(0.6f),
+                        new StayBack(0.6f, 6)
+                        )
+                    ),
+                new ItemLoot("Magic Potion", 0.3f),
+                new ItemLoot("Health Potion", 0.3f),
+                new Threshold(0.01f,
+                    new ItemLoot("Potion of Attack", 0.01f),
+                    new ItemLoot("Potion of Dexterity", 0.01f)
+                    )
+                );
+            db.Init("Treasure Enemy",
+                new State("base",
+                    new State("Player",
+                        new PlayerWithinTransition(4, true, "Start")
+                        ),
+                    new State("Start",
+                        new Shoot(20, 2, index: 0, shootAngle: 20, cooldown: 1000),
+                        new Shoot(20, 1, index: 1, cooldown: 1000),
+                        new NoPlayerWithinTransition(4, true, "Player"),
+                        new Follow(0.4f, 6, 1),
+                        new Wander(0.4f)
+                        )
+                    )
+                );
+            db.Init("Treasure Rat",
+                new State("base",
+                    new State("Player",
+                        new PlayerWithinTransition(7,true,  "Start")
+                        ),
+                    new State("Start",
+                        new SetAltTexture(0, 1, cooldown: 140),
+                        new ChangeSize(20, 200),
+                        new Shoot(10, 1, index: 0, cooldown: 1500),
+                        new Follow(0.3f, 10, 1),
+                        new Wander(0.3f)
+                        )
+                    ),
+                new ItemLoot("Health Potion", 0.3f),
+                new ItemLoot("Magic Potion", 0.3f)
+                );
+
+            db.Init("Treasure Flame Trap 1.2 Sec",
+                new ConditionalEffect(ConditionEffectIndex.Invulnerable, true),
+                new State("Wait",
+                    new SetAltTexture(0),
+                    new TimedTransition(1200, "Animation")
+                ),
+                new State("Animation", 
+                    new SetAltTexture(1),
+                    new Shoot(5, 1, 0, 0, cooldown: 50),
+                    new TimedTransition(50, "Animation-1")
+                ),
+                new State("Animation-1",
+                    new SetAltTexture(2),
+                    new Shoot(5, 1, 0, 0, cooldown: 50),
+                    new TimedTransition(50, "Animation-2")
+                ),
+                new State("Animation-2",
+                    new SetAltTexture(3),
+                    new Shoot(5, 1, 0, 0, cooldown: 50),
+                    new TimedTransition(50, "Animation-3")
+                ),
+                new State("Animation-3",
+                    new SetAltTexture(4),
+                    new Shoot(5, 1, 0, 0, cooldown: 50),
+                    new TimedTransition(50, "Animation-4")
+                ),
+                new State("Animation-4",
+                    new SetAltTexture(5),
+                    new Shoot(5, 1, 0, 0, cooldown: 50),
+                    new TimedTransition(50, "Wait")
+                )
+            );
+
+            db.Init("Treasure Flame Trap 1.7 Sec",
+                new ConditionalEffect(ConditionEffectIndex.Invulnerable, true),
+                new State("Wait",
+                    new SetAltTexture(0),
+                    new TimedTransition(1700, "Animation")
+                ),
+                new State("Animation",
+                    new SetAltTexture(1),
+                    new Shoot(5, 1, 0, 0, cooldown: 50),
+                    new TimedTransition(50, "Animation-1")
+                ),
+                new State("Animation-1",
+                    new SetAltTexture(2),
+                    new Shoot(5, 1, 0, 0, cooldown: 50),
+                    new TimedTransition(50, "Animation-2")
+                ),
+                new State("Animation-2",
+                    new SetAltTexture(3),
+                    new Shoot(5, 1, 0, 0, cooldown: 50),
+                    new TimedTransition(50, "Animation-3")
+                ),
+                new State("Animation-3",
+                    new SetAltTexture(4),
+                    new Shoot(5, 1, 0, 0, cooldown: 50),
+                    new TimedTransition(50, "Animation-4")
+                ),
+                new State("Animation-4",
+                    new SetAltTexture(5),
+                    new Shoot(5, 1, 0, 0, cooldown: 50),
+                    new TimedTransition(50, "Wait")
+                )
+            );
+
             db.Init("Gold Planet",
                 new ConditionalEffect(ConditionEffectIndex.Invincible),
                 new EntityNotWithinTransition("Golden Oryx Effigy", 999, "Die"),

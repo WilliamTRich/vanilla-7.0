@@ -105,7 +105,7 @@ namespace RotMG.Networking
 
         public static void Start()
         {
-            _listener.Listen((int)(Settings.MaxClients * 1.2f));
+            _listener.Listen((int)(Settings.MaxClients * 2f));
             Program.Print(PrintType.Info, $"Started GameServer listening at <{_listener.LocalEndPoint}>");
 
             while (!_terminating)

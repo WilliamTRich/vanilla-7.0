@@ -869,7 +869,7 @@
 		<Class>Character</Class>
 		<StasisImmune/>
 		<MaxHitPoints>100000</MaxHitPoints><Defense>1000</Defense>
-        <Texture><File>lofiObj2</File><Index>0x49</Index></Texture>
+		<Texture><File>lofiObj2</File><Index>0x49</Index></Texture>
 		<Size>250</Size>
 		<StasisImmune/>
 		<Enemy/>
@@ -894,7 +894,7 @@
 		<Class>Character</Class>
 		<StasisImmune/>
 		<MaxHitPoints>100000</MaxHitPoints><Defense>1000</Defense>
-        <Texture><File>lofiObj2</File><Index>0x49</Index></Texture>
+		<Texture><File>lofiObj2</File><Index>0x49</Index></Texture>
 		<Size>250</Size>
 		<StasisImmune/>
 		<Enemy/>
@@ -919,7 +919,7 @@
 		<Class>Character</Class>
 		<StasisImmune/>
 		<MaxHitPoints>100000</MaxHitPoints><Defense>1000</Defense>
-        <Texture><File>lofiObj2</File><Index>0x49</Index></Texture>
+		<Texture><File>lofiObj2</File><Index>0x49</Index></Texture>
 		<Size>250</Size>
 		<StasisImmune/>
 		<Enemy/>
@@ -944,7 +944,7 @@
 		<Class>Character</Class>
 		<StasisImmune/>
 		<MaxHitPoints>100000</MaxHitPoints><Defense>1000</Defense>
-        <Texture><File>lofiObj2</File><Index>0x49</Index></Texture>
+		<Texture><File>lofiObj2</File><Index>0x49</Index></Texture>
 		<Size>250</Size>
 		<StasisImmune/>
 		<Enemy/>
@@ -969,7 +969,7 @@
 		<Class>Character</Class>
 		<StasisImmune/>
 		<MaxHitPoints>100000</MaxHitPoints><Defense>1000</Defense>
-        <Texture><File>lofiObj2</File><Index>0x49</Index></Texture>
+		<Texture><File>lofiObj2</File><Index>0x49</Index></Texture>
 		<Size>250</Size>
 		<StasisImmune/>
 		<Enemy/>
@@ -994,7 +994,7 @@
 		<Class>Character</Class>
 		<StasisImmune/>
 		<MaxHitPoints>100000</MaxHitPoints><Defense>1000</Defense>
-        <Texture><File>lofiObj2</File><Index>0x49</Index></Texture>
+		<Texture><File>lofiObj2</File><Index>0x49</Index></Texture>
 		<Size>250</Size>
 		<StasisImmune/>
 		<Enemy/>
@@ -1019,7 +1019,7 @@
 		<Class>Character</Class>
 		<StasisImmune/>
 		<MaxHitPoints>100000</MaxHitPoints><Defense>1000</Defense>
-        <Texture><File>lofiObj2</File><Index>0x49</Index></Texture>
+		<Texture><File>lofiObj2</File><Index>0x49</Index></Texture>
 		<Size>250</Size>
 		<StasisImmune/>
 		<Enemy/>
@@ -1030,7 +1030,7 @@
 			<Damage>0</Damage>
 			<Size>170</Size>
 			<Speed>70</Speed>
-			<LifetimeMS>880</LifetimeMS>
+			<LifetimeMS>1450</LifetimeMS>
 			<ConditionEffect duration="3">Slowed</ConditionEffect>
 
 		</Projectile>
@@ -1044,7 +1044,7 @@
 		<Class>Character</Class>
 		<StasisImmune/>
 		<MaxHitPoints>100000</MaxHitPoints><Defense>1000</Defense>
-        <Texture><File>lofiObj2</File><Index>0x49</Index></Texture>
+		<Texture><File>lofiObj2</File><Index>0x49</Index></Texture>
 		<Size>250</Size>
 		<StasisImmune/>
 		<Enemy/>
@@ -1055,7 +1055,7 @@
 			<Damage>0</Damage>
 			<Size>170</Size>
 			<Speed>70</Speed>
-			<LifetimeMS>880</LifetimeMS>
+			<LifetimeMS>1450</LifetimeMS>
 			<ConditionEffect duration="3">Slowed</ConditionEffect>
 
 		</Projectile>
@@ -1069,7 +1069,7 @@
 		<Class>Character</Class>
 		<StasisImmune/>
 		<MaxHitPoints>100000</MaxHitPoints><Defense>1000</Defense>
-        <Texture><File>lofiObj2</File><Index>0x49</Index></Texture>
+		<Texture><File>lofiObj2</File><Index>0x49</Index></Texture>
 		<Size>250</Size>
 		<StasisImmune/>
 		<Enemy/>
