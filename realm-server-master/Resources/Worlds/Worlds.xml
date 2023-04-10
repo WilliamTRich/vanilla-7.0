@@ -95,6 +95,14 @@
 		<Background>0</Background>
 		<BlockSight>1</BlockSight>
 	</World>
+
+	<World name="Forbidden Jungle" display="Forbidden Jungle">
+		<Maps>FJungle/0.jm</Maps>
+		<Portals>0x0733</Portals>
+		<Background>0</Background>
+		<BlockSight>1</BlockSight>
+	</World>
+	
 	<!--
 	<World name="WoodlandLabyrinth" display="Woodland Labyrinth">
 		<Maps>WoodlandLabyrinth/0.jm</Maps>

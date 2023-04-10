@@ -13,6 +13,7 @@
     </Content>
     <None Remove="Resources\GameData\EmbeddedData_EpicForestMazeCXML.xml" />
     <None Remove="Resources\Worlds\Abyss\0.jm" />
+    <None Remove="Resources\Worlds\FJungle\0.jm" />
     <None Remove="Resources\Worlds\OryxChamber\0.jm" />
     <None Remove="Resources\Worlds\SnakePit\0.wmap" />
     <None Remove="Resources\Worlds\SpriteWorld\0.wmap" />
