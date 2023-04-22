@@ -1,7 +1,7 @@
 ﻿Server:
     - Dungeons implemented with functional enemies and loot
         - [Done] Realm including events
-        - [Needs Polish] Pirate Cove (Enemy Behaviors)
+        *- [Needs Polish] Pirate Cove (Enemy Behaviors)
         - [Needs Polish] Spider Den (Some enemies missing behaviors like baby blue spiders)
         - [Needs Polish] Forbidden Jungle  (Map could use a bit more work)
         - [Not created] Candyland Hunting Grounds 
@@ -9,12 +9,12 @@
         - [Done] Sprite World
         - [Needs Polish] Cave of a Thousand Treasures (Map could use a bit more work)
         - [Done] Undead Lair 
-        - [Not created] Manor of the Immortals 
+        *- [Needs Polish] Manor of the Immortals (Enemy Behaviors)
         - [Done] Mad Lab 
         - [Done] Abyss of Demons 
         - [Not created] Haunted Cemetery
         - [Not created] Beachzone
-        - [Needs Polish] Davy Jones' Locker (Enemy behaviors)
+        *- [Done] Davy Jones' Locker
         - [Not created] Ocean Trench
         - [Not created] Tutorial
         - [Done] Tomb
