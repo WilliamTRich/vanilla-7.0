@@ -15,6 +15,7 @@ namespace RotMG.Game.Logic.Database
         {
 
             db.Init("Dreadstump the Pirate King",
+                new DropPortalOnDeath("Glowing Realm Portal"),
                 new State("Idle",
                     new PlayerWithinTransition(15, true, "swiggity")
                 ),
