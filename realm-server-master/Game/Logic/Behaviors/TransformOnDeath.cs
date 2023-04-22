@@ -28,6 +28,15 @@ namespace RotMG.Game.Logic.Behaviors
             {
                 var entity = Entity.Resolve(Target);
                 host.Parent.AddEntity(entity, host.Position);
+
+                if (entity.Desc.DisplayId == "Ocean Vent")//add vent to list of vents
+                {
+#if DEBUG
+                    Program.Print(PrintType.Debug, "Trying to add vent");
+#endif
+                    ((OceanTrench)host.Parent).addVentToWorld(entity);
+                }
+
             }
         }
     }
