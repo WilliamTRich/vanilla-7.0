@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Text.RegularExpressions;
 using RotMG.Common;
 using RotMG.Networking;
@@ -24,6 +25,11 @@ namespace RotMG.Game.Entities
             if (WorldInstance != null)
                 return WorldInstance;
             
+            if(Type == 0x070e || Type == 0x071c || Type == 0x0704)
+            {
+                return Manager.Realms.Values.First();
+            }
+
             if (!Resources.PortalId2World.TryGetValue(Type, out var worldDesc))
             {
 #if DEBUG

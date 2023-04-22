@@ -122,6 +122,129 @@ namespace RotMG.Game.Logic.Database
                     new Decay(100)
                     )
                 );
+
+
+            db.Init("Lost Soul",
+                    new State("Default",
+                        new Prioritize(
+                            new Orbit(0.3f, 3, 20, "Ghost of Roger"),
+                            new Wander(0.1f)
+                            ),
+                        new PlayerWithinTransition(4, true, "Default1")
+                        ),
+                    new State("Default1",
+                       new Charge(0.5f, 8, cooldown: 2000),
+                       new TimedTransition(2200, "Blammo")
+                    ),
+                     new State("Blammo",
+                       new Shoot(10, count: 6, index: 0, cooldown: 2000),
+                       new Suicide()
+                    )
+                );
+            
+            db.Init("Ghost of Roger",
+                new State("spawn",
+                    new Spawn("Lost Soul", 3, 1, 5000),
+                    new TimedTransition(200, "Attack")
+                ),
+                new State("Attack",
+                    new Shoot(13, 1, 0, 0, cooldown: 400),
+                    new TimedTransition(200, "Attack2")
+                ),
+                new State("Attack2",
+                    new Shoot(13, 1, 0, 0, cooldown: 400),
+                    new TimedTransition(200, "Attack3")
+                ),
+                new State("Attack3",
+                    new Shoot(13, 1, 0, 0, cooldown: 400),
+                    new TimedTransition(200, "Wait")
+                ),
+                new State("Wait",
+                    new TimedTransition(1000, "Attack")
+                )
+            );
+
+            db.Init("Lil' Ghost Pirate",
+                    new State("Default",
+                        new Prioritize(
+                            new Follow(0.6f, 8, 1),
+                            new Wander(0.1f)
+                            ),
+                        new Shoot(10, count: 1, index: 0, cooldown: 2000),
+                        new ChangeSize(30, 120),
+                        new TimedTransition(2850, "Default1")
+                        ),
+                    new State("Default1",
+                       new StayBack(0.2f, 3),
+                       new TimedTransition(1850, "Default")
+                    )
+                );
+            
+                db.Init("Zombie Pirate Sr",
+                    new Shoot(10, count: 1, index: 0, cooldown: 2000),
+                    new State("Default",
+                        new Prioritize(
+                            new Follow(0.3f, 8, 1),
+                            new Wander(0.1f)
+                            ),
+                        new TimedTransition(2850, "Default1")
+                        ),
+                    new State("Default1",
+                       new ConditionalEffect(ConditionEffectIndex.Armored),
+                       new Prioritize(
+                            new Follow(0.3f, 8, 1),
+                            new Wander(0.1f)
+                            ),
+                        new TimedTransition(2850, "Default")
+                    )
+                );
+            
+           db.Init("Zombie Pirate Jr",
+                    new State("Default",
+                        new Prioritize(
+                            new Follow(0.4f, 8, 1),
+                            new Wander(0.1f)
+                            ),
+                        new Shoot(10, count: 1, index: 0, cooldown: 2500),
+                        new TimedTransition(2850, "Default1")
+                        ),
+                    new State("Default1",
+                       new Swirl(0.2f, 3),
+                       new TimedTransition(1850, "Default")
+                    )
+                );
+        db.Init("Captain Summoner",
+            new State("Default",
+                new ConditionalEffect(ConditionEffectIndex.Invincible)
+                )
+            );
+           db.Init("GhostShip Rat",
+                    new State("Default",
+                        new Shoot(10, count: 1, index: 0, cooldown: 1750),
+                        new Prioritize(
+                            new Follow(0.55f, 8, 1),
+                            new Wander(0.1f)
+                            )
+                        )
+                    );
+        db.Init("Violent Spirit",
+                new State("Default",
+                    new ChangeSize(35, 120),
+                    new Shoot(10, count: 3, index: 0, cooldown: 1750),
+                    new Prioritize(
+                        new Follow(0.25f, 8, 1),
+                        new Wander(0.1f)
+                        )
+                    )
+                );
+           db.Init("School of Ghostfish",
+                new State("Default",
+                    new Shoot(10, count: 3, shootAngle: 18, index: 0, cooldown: 4000),
+                    new Wander(0.35f)
+                    )
+            );
+
+
         }
     }
 }
