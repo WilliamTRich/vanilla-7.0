@@ -1,0 +1,32 @@
+﻿Server:
+    - Dungeons implemented with functional enemies and loot
+        - [Done] Realm including events
+        - [Needs Polish] Pirate Cove (Enemy Behaviors)
+        - [Needs Polish] Spider Den (Some enemies missing behaviors like baby blue spiders)
+        - [Needs Polish] Forbidden Jungle  (Map could use a bit more work)
+        - [Not created] Candyland Hunting Grounds 
+        - [Needs Polish] Snake Pit (Map could use a bit more work)
+        - [Done] Sprite World
+        - [Needs Polish] Cave of a Thousand Treasures (Map could use a bit more work)
+        - [Done] Undead Lair 
+        - [Not created] Manor of the Immortals 
+        - [Done] Mad Lab 
+        - [Done] Abyss of Demons 
+        - [Not created] Haunted Cemetery
+        - [Not created] Beachzone
+        - [Needs Polish] Davy Jones' Locker (Enemy behaviors)
+        - [Not created] Ocean Trench
+        - [Not created] Tutorial
+        - [Done] Tomb
+        - [Done] Oryx's Castle 
+        - [Done] Oryx's Chamber 
+        - [Done] Wine Cellar
+        (Not all of these are super important, e.g. Beachzone)
+    - [Done] Coins gained when dying
+    - [Not created] Cosmetic pets
+    - [Done] Server should support 10 players. (Not tested but my own server uses the same backend and it can support 100 concurrent players)
+    - [Done] Source running on NET Core (The base is made on NET Core)
+    - [Done] Easy account creation, no email
+Client:
+    - [Done?] Basic configuration options
+    - [Done] Fullscreen

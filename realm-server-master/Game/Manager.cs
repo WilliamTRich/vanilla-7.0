@@ -34,7 +34,7 @@ namespace RotMG.Game
         public static int TotalTimeUnsynced;
         public static int TickDelta;
         public static int LastTickTime;
-
+        public static Random DungeonRNG = new Random(635463);
         public static void Init()
         {
             Player.InitSightCircle();
@@ -81,7 +81,7 @@ namespace RotMG.Game
 
         public static void RemoveWorld(World world)
         {
-            if (!world.IsTemplate)
+            if (!world.IsTemplate && world.Portal != null && world.Portal.Parent != null)
                 world.Portal?.Parent.RemoveEntity(world.Portal);
             world.Dispose();
             Worlds.Remove(world.Id);

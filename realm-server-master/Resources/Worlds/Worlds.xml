@@ -101,14 +101,25 @@
 		<Portals>0x0733</Portals>
 		<Background>0</Background>
 		<BlockSight>1</BlockSight>
-	</World>
+	</World>	
 	
-	<!--
-	<World name="WoodlandLabyrinth" display="Woodland Labyrinth">
-		<Maps>WoodlandLabyrinth/0.jm</Maps>
-		<Portals>0x075c</Portals>
+	<World name="Manor of the Immortals" display="Manor of the Immortals">
+		<Maps>Manor/0.wmap</Maps>
+		<Portals>0x0739</Portals>
 		<Background>0</Background>
 		<BlockSight>1</BlockSight>
-	</World>-->
-
+	</World>	
+	
+	<World name="Pirate Cave" display="Pirate Cave">
+		<Maps>PirateCave/0.wmap</Maps>
+		<Portals>0x0717</Portals>
+		<Background>0</Background>
+		<BlockSight>1</BlockSight>
+	</World>
+	<World name="DavyJonesLocker" display="Davy Jones's Locker">
+		<Maps>DavyJonesLocker/DavyJonesLocker.jm</Maps>
+		<Portals>0x0741</Portals>
+		<Background>0</Background>
+		<BlockSight>1</BlockSight>
+	</World>
 </Worlds>
