@@ -4,12 +4,12 @@
         - [Done] Pirate Cove 
         - [Needs Polish] Spider Den (Some enemies missing behaviors like baby blue spiders)
         - [Needs Polish] Forbidden Jungle  (Map could use a bit more work)
-        - [Not created] Candyland Hunting Grounds 
+        - [Done] Candyland Hunting Grounds 
         - [Needs Polish] Snake Pit (Map could use a bit more work)
         - [Done] Sprite World
         - [Needs Polish] Cave of a Thousand Treasures (Map could use a bit more work)
         - [Done] Undead Lair 
-        - [Needs Polish] Manor of the Immortals (Enemy Behaviors)
+        - [Done] Manor of the Immortals
         - [Done] Mad Lab 
         - [Done] Abyss of Demons 
         - [Done] Haunted Cemetery
