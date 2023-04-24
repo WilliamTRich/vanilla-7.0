@@ -1,7 +1,7 @@
 ﻿Server:
     - Dungeons implemented with functional enemies and loot
         - [Done] Realm including events
-        *- [Done] Pirate Cove 
+        - [Done] Pirate Cove 
         - [Needs Polish] Spider Den (Some enemies missing behaviors like baby blue spiders)
         - [Needs Polish] Forbidden Jungle  (Map could use a bit more work)
         - [Not created] Candyland Hunting Grounds 
@@ -15,8 +15,8 @@
         - [Not created] Haunted Cemetery
         - [Not created] Beachzone
         - [Done] Davy Jones' Locker
-        *- [Done] Ocean Trench
-        - [Not created] Tutorial
+        - [Done] Ocean Trench
+        - [Done] Tutorial
         - [Done] Tomb
         - [Done] Oryx's Castle 
         - [Done] Oryx's Chamber 
