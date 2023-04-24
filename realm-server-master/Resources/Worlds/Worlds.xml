@@ -142,5 +142,34 @@
 		<BlockSight>1</BlockSight>
 		<Persist>true</Persist>
 	</World>
+
+	<World name="HauntedCemetery" display="Haunted Cemetery">
+		<Maps>HauntedCemetery/0.jm</Maps>
+		<Portals>0x074b</Portals>
+		<Background>0</Background>
+		<BlockSight>1</BlockSight>
+	</World>
 	
+	<World name="HauntedCemeteryGates" display="Cemetery Gates">
+		<Maps>HauntedCemetery/1.jm</Maps>
+		<Portals>0x5f25</Portals>
+		<Background>0</Background>
+		<BlockSight>1</BlockSight>
+	</World>
+	
+	<World name="HauntedCemeteryGraves" display="Cemetery Graves">
+		<Maps>HauntedCemetery/2.jm</Maps>
+		<Portals>0x5f26</Portals>
+		<Background>0</Background>
+		<BlockSight>1</BlockSight>
+	</World>
+	
+	<World name="HauntedCemeteryFinalBattle" display="Final Battle">
+		<Maps>HauntedCemetery/3.jm</Maps>
+		<Portals>0x5f29</Portals>
+		<Background>0</Background>
+		<BlockSight>1</BlockSight>
+	</World>
+
+
 </Worlds>

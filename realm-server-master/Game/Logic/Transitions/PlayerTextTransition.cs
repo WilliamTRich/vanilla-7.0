@@ -20,7 +20,14 @@ namespace RotMG.Game.Logic.Transitions
                 ? new Regex(regex, RegexOptions.IgnoreCase)
                 : new Regex(regex);
         }
+        public PlayerTextTransition(string regex, params string[] targetStates) : base(targetStates)
+        {
+            var dist = 10;
+            if (dist > 0)
+                _distSqr = dist * dist;
 
+            _rgx = new Regex(regex, RegexOptions.IgnoreCase);
+        }
         public override bool Tick(Entity host)
         {
             if (_transition == false ||
