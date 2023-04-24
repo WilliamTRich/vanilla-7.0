@@ -2,7 +2,7 @@
     - Dungeons implemented with functional enemies and loot
         - [Done] Realm including events
         - [Done] Pirate Cove 
-        - [Needs Polish] Spider Den (Some enemies missing behaviors like baby blue spiders)
+        - [Done] Spider Den
         - [Needs Polish] Forbidden Jungle  (Map could use a bit more work)
         - [Done] Candyland Hunting Grounds 
         - [Needs Polish] Snake Pit (Map could use a bit more work)

@@ -121,6 +121,13 @@
 		<Portals>0x0741</Portals>
 		<Background>0</Background>
 		<BlockSight>1</BlockSight>
+	</World>		
+	
+	<World name="SpiderDen" display="Spider Den">
+		<Maps>SpiderDen/spiderden.jm</Maps>
+		<Portals>0x0719</Portals>
+		<Background>0</Background>
+		<BlockSight>1</BlockSight>
 	</World>	
 	
 	<World name="OceanTrench" display="Ocean Trench">
