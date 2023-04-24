@@ -13,7 +13,7 @@
         - [Done] Mad Lab 
         - [Done] Abyss of Demons 
         - [Not created] Haunted Cemetery
-        - [Not created] Beachzone
+        - [Done] Beachzone
         - [Done] Davy Jones' Locker
         - [Done] Ocean Trench
         - [Done] Tutorial
