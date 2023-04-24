@@ -208,7 +208,7 @@ namespace RotMG.Game.Logic.Database
                     new Shoot(10, 3, 15, 0, predictive: 1,
                         cooldown: 1400),
                     new Grenade(radius: 5, damage: 100, range: 8, cooldown: 3000),
-                    new Shoot(10, 1, index: 1, predictive: 1, cooldown: 2000),
+                    new Shoot(10, 1, index: 0, predictive: 1, cooldown: 2000),
                     new State("Choose",
                         new TimedTransition(3800, "Run", "Attack")
                     ),
@@ -225,7 +225,7 @@ namespace RotMG.Game.Logic.Database
                 new State("NextAttack",
                     new Shoot(10, 5, 10, 1, predictive: 0.5f,
                         angleOffset: 0.4f, cooldown: 2000),
-                    new Shoot(10, 1, index: 1, predictive: 1, cooldown: 2000),
+                    new Shoot(10, 1, index: 0, predictive: 1, cooldown: 2000),
                     new Shoot(10, 3, 15, 0, predictive: 1,
                         angleOffset: 1, cooldown: 4000),
                     new Grenade(radius: 5, damage: 100, range: 8, cooldown: 3000),

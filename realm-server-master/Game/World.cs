@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using RotMG.Game.Logic;
 using RotMG.Game.Worlds;
 using RotMG.Networking;
+using System.Linq;
 
 namespace RotMG.Game
 {
@@ -593,9 +594,9 @@ namespace RotMG.Game
 
         public virtual void Dispose()
         {
-            foreach (var en in Entities.Values) RemoveEntity(en);
-            foreach (Entity en in Players.Values) RemoveEntity(en);
-            foreach (Entity en in Statics.Values) RemoveEntity(en);
+            foreach (var en in Entities.Values.ToArray()) RemoveEntity(en);
+            foreach (Entity en in Players.Values.ToArray()) RemoveEntity(en);
+            foreach (Entity en in Statics.Values.ToArray()) RemoveEntity(en);
 
             PlayerChunks.Dispose();
             EntityChunks.Dispose();

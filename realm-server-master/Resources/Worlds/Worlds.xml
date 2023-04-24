@@ -170,6 +170,12 @@
 		<Background>0</Background>
 		<BlockSight>1</BlockSight>
 	</World>
-
+	
+	<World name="CandyLand" display="Candy Land">
+		<Maps>CandyLand/0.jm</Maps>
+		<Portals>0x074a</Portals>
+		<Background>0</Background>
+		<BlockSight>1</BlockSight>
+	</World>
 
 </Worlds>
