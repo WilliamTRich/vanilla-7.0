@@ -644,8 +644,16 @@ namespace RotMG.Networking
                     client.Disconnect();
                     return;
                 }
+                var targetWorld = client.TargetWorldId;
+                //If this is their first character
+                if (client.Account.NextCharId == 1 && !client.Account.VisitedTutorial)
+                {
+                    targetWorld = Manager.TutorialId;
+                }
 
-                var world = Manager.GetWorld(client.TargetWorldId, client);
+                Program.Print(PrintType.Debug, $"Connecting player to {targetWorld} | {client.TargetWorldId} | {client.Account.NextCharId} {client.Account.VisitedTutorial}");
+
+                var world = Manager.GetWorld(targetWorld, client);
                 client.Character = character;
                 client.Player = new Player(client);
                 client.State = ProtocolState.Connected;

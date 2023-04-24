@@ -1057,10 +1057,11 @@ namespace RotMG.Common
                 if (skin.PlayerClassType != classType)
                     return null;
             }
-
             var newId = acc.NextCharId += 1;
             acc.AliveChars.Add(newId);
             acc.Save();
+
+           
 
             var character = new CharacterModel(acc.Id, newId)
             {

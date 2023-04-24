@@ -19,6 +19,7 @@ namespace RotMG.Game
         public const int GuildId = -3;
         public const int EditorId = -4;
         public const int VaultId = -5;
+        public const int TutorialId = -10;
 
         public static int NextWorldId;
         public static int NextClientId;
@@ -52,6 +53,7 @@ namespace RotMG.Game
             AddWorld(Resources.Worlds["Nexus"], NexusId);
             AddWorld(Resources.Worlds["Vault"], VaultId);
             AddWorld(Resources.Worlds["GuildHall"], GuildId);
+            AddWorld(Resources.Worlds["Tutorial"], TutorialId);
         }
 
         public static World AddWorld(WorldDesc desc, Client client = null)

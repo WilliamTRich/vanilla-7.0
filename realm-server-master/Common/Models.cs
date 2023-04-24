@@ -443,6 +443,7 @@ namespace RotMG.Common
         public bool Effects;
         public bool Sounds;
         public bool Notifications;
+        public bool VisitedTutorial;
         public List<int> Gifts;
 
         public AccountModel() : base(null) { }
@@ -488,7 +489,7 @@ namespace RotMG.Common
             Sounds = Data.ParseBool("Sounds", true);
             Notifications = Data.ParseBool("Notifications", true);
             Gifts = Data.ParseIntList("Gifts", ",", new List<int>());
-            
+            VisitedTutorial = Data.ParseBool("VisitedTutorial", false);
 
             Stats = new StatsInfo
             {
@@ -550,7 +551,7 @@ namespace RotMG.Common
                 data.Add(new XElement("Notifications", Notifications));
                 data.Add(new XElement("Gifts", string.Join(",", Gifts)));
             }
-
+            data.Add(new XElement("VisitedTutorial", VisitedTutorial));
             data.Add(Stats.Export(appExport));
 
             return data;
