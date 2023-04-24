@@ -12,7 +12,7 @@
         - [Needs Polish] Manor of the Immortals (Enemy Behaviors)
         - [Done] Mad Lab 
         - [Done] Abyss of Demons 
-        - [Not created] Haunted Cemetery
+        - [Done] Haunted Cemetery
         - [Done] Beachzone
         - [Done] Davy Jones' Locker
         - [Done] Ocean Trench
