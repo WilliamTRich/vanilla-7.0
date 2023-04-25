@@ -10,7 +10,7 @@ namespace RotMG.Game.Logic.Database
         public void Init(BehaviorDb db)
         {
             db.Init("Septavius the Ghost God",
-                new DropPortalOnDeath("Glowing Portal", 1f),
+                new DropPortalOnDeath("Glowing Realm Portal", 1f),
                 new State("wait",
                     new ConditionalEffect(ConditionEffectIndex.Invulnerable),
                     new PlayerWithinTransition(14, false, "transition1")

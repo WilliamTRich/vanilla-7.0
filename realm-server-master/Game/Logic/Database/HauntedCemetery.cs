@@ -2072,6 +2072,7 @@ namespace RotMG.Game.Logic.Database
                 )
             );
             db.Init("Ghost of Skuld",
+                    new DropPortalOnDeath("Glowing Realm Portal"),
                     new ConditionalEffect(ConditionEffectIndex.Invincible, true, -1),
                     new State("Start",
                         new SetAltTexture(11),

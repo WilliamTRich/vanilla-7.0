@@ -87,9 +87,15 @@
 		<Portals>0x0890</Portals>
 		<Background>0</Background>
 		<BlockSight>1</BlockSight>
+	</World>	
+	
+	<World name="Tomb" display="Tomb of the Ancients">
+		<Maps>Tomb/0.jm</Maps>
+		<Portals>0x072c</Portals>
+		<Background>0</Background>
+		<BlockSight>1</BlockSight>
 	</World>
 	
-		
 	<World name="Treasure Cave" display="Treasure Cave">
 		<Maps>TCave/test.jm</Maps>
 		<Portals>0x5e2e</Portals>
@@ -117,6 +123,7 @@
 		<Background>0</Background>
 		<BlockSight>1</BlockSight>
 	</World>
+	
 	<World name="DavyJonesLocker" display="Davy Jones's Locker">
 		<Maps>DavyJonesLocker/DavyJonesLocker.jm</Maps>
 		<Portals>0x0741</Portals>
@@ -182,6 +189,13 @@
 	<World name="CandyLand" display="Candy Land">
 		<Maps>CandyLand/0.jm</Maps>
 		<Portals>0x074a</Portals>
+		<Background>0</Background>
+		<BlockSight>1</BlockSight>
+	</World>
+	
+	<World name="UndeadLair" display="Undead Lair">
+		<Maps>UndeadLair/0.jm</Maps>
+		<Portals>0x071a</Portals>
 		<Background>0</Background>
 		<BlockSight>1</BlockSight>
 	</World>

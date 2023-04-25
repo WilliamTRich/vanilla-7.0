@@ -72,6 +72,7 @@ namespace RotMG.Game.Logic.Database
                 )
             );
             db.Init("Limon the Sprite God",   
+                new DropPortalOnDeath("Glowing Realm Portal"),
                 new State("start_the_fun",
                     new ConditionalEffect(ConditionEffectIndex.Invulnerable),
                     new PlayerWithinTransition(11, targetStates: "begin_teleport1", seeInvis: true)

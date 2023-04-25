@@ -1476,4 +1476,50 @@
 			</Texture>
 		</Corner>
 	</Ground>
+	<Ground type="0x751d" id="Flowing Sand1">
+		<Texture>
+			<File>lofiEnvironment2</File>
+			<Index>0x08</Index>
+		</Texture>
+		<Animate dx="2.0">Flow</Animate>
+		<Push/>
+		<XOffset>.0625</XOffset>
+		<YOffset>.0625</YOffset>
+	</Ground>
+	<Ground type="0x751e" id="Flowing Sand2">
+		<Texture>
+			<File>lofiEnvironment2</File>
+			<Index>0x08</Index>
+		</Texture>
+		<Animate dx="-2.0">Flow</Animate>
+		<Push/>
+		<XOffset>.0625</XOffset>
+		<YOffset>.0625</YOffset>
+	</Ground>
+	<Ground type="0x751f" id="Flowing Sand3">
+		<Texture>
+			<File>lofiEnvironment2</File>
+			<Index>0x08</Index>
+		</Texture>
+		<Animate dy="2.0">Flow</Animate>
+		<Push/>
+		<XOffset>.0625</XOffset>
+		<YOffset>.0625</YOffset>
+	</Ground>
+	<Ground type="0x7520" id="Flowing Sand4">
+		<Texture>
+			<File>lofiEnvironment2</File>
+			<Index>0x08</Index>
+		</Texture>
+		<Animate dy="-2.0">Flow</Animate>
+		<Push/>
+		<XOffset>.0625</XOffset>
+		<YOffset>.0625</YOffset>
+	</Ground>
+	<Ground type="0x7525" id="Not Flowing Sand">
+		<Texture>
+			<File>lofiEnvironment2</File>
+			<Index>0x08</Index>
+		</Texture>
+	</Ground>
 </GroundTypes>
