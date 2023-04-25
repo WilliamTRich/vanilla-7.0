@@ -84,6 +84,7 @@
 	
 	<World name="Mad Lab" display="Mad Lab">
 		<Maps>MadLab/0.jm</Maps>
+		<Portals>0x0890</Portals>
 		<Background>0</Background>
 		<BlockSight>1</BlockSight>
 	</World>

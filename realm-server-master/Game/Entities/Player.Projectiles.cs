@@ -70,7 +70,7 @@ namespace RotMG.Game.Entities
 
             foreach (var aoe in AwaitingAoes)
             {
-                if (Manager.TotalTime - aoe.Time > TimeUntilAckTimeout + MaxLatencyMS)
+                if (ClientTime - aoe.Time > TimeUntilAckTimeout + MaxLatencyMS)
                 {
 #if DEBUG
                     Program.Print(PrintType.Error, "Aoe ack timed out");
@@ -84,7 +84,7 @@ namespace RotMG.Game.Entities
             {
                 foreach (var ap in apList)
                 {
-                    if (Manager.TotalTime - ap.Time > TimeUntilAckTimeout + MaxLatencyMS)
+                    if (ClientTime - ap.Time > TimeUntilAckTimeout + MaxLatencyMS)
                     {
 #if DEBUG
                         Program.Print(PrintType.Error, "Proj ack timed out");

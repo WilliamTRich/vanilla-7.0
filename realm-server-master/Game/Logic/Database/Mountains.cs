@@ -40,7 +40,7 @@ namespace RotMG.Game.Logic.Database
                     new Shoot(15, 3, 25),
                     new Shoot(15, index: 1, cooldown: 1000)
                 ),
-                new DropPortalOnDeath("Haunted Cemetery Portal", .3f)
+                new DropPortalOnDeath("Haunted Cemetery Portal", .7f)
             );
             
             db.Init("White Demon",
@@ -229,7 +229,6 @@ namespace RotMG.Game.Logic.Database
                 )
             );
             db.Init("Rock Bot",
-                new DropPortalOnDeath("Haunted Cemetery Portal"),
                 new Spawn("Paper Bot", 1, 1, 10000, givesNoXp: false),
                 new Spawn("Steel Bot", 1, 1, 10000, givesNoXp: false),
                 new Swirl(0.6f, 3, targeted: false),
