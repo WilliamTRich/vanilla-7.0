@@ -136,12 +136,9 @@ namespace RotMG.Game.Entities
             set => TrySetSV(StatType.Mp, _mp = value);
         }
 
-        private int _maxMp;
-        public int MaxMP
-        {
-            get => _maxMp;
-            set => TrySetSV(StatType.MaxMp, _maxMp = value);
-        }
+        public int MaxMP => GetStat(1);
+        public new int MaxHp => GetStat(0);
+
 
         private int _oxygen;
         public int Oxygen

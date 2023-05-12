@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using RotMG.Common;
 using RotMG.Game.Entities;
 using RotMG.Networking;
@@ -37,14 +37,14 @@ namespace RotMG.Game.Logic.Behaviors
                 {
                     if (en.Parent == null || !(en is Player player) || player.HasConditionEffect(ConditionEffectIndex.Sick))
                         continue;
-                    
-                    
+
+
                     var newHp = !MPHeal ? player.MaxHp : player.MaxMP;
 
-                    var newHealth = (int) Amount + (!MPHeal ? player.MaxHp : player.MaxMP);
+                    var newHealth = (int)Amount + (!MPHeal ? player.Hp : player.MaxMP);
                     if (newHp > newHealth)
                         newHp = newHealth;
-                    
+
 
                     if (newHp != (!MPHeal ? player.Hp : player.MP))
                     {
@@ -71,7 +71,7 @@ namespace RotMG.Game.Logic.Behaviors
                 host.StateCooldown[Id] = Cooldown.NextCooldown(CooldownVariance);
                 return true;
             }
-            
+
             return false;
         }
 
