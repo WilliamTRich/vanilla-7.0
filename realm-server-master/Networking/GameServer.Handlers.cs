@@ -2,6 +2,7 @@
 using RotMG.Game;
 using RotMG.Game.Entities;
 using RotMG.Utils;
+using SimpleLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -81,13 +82,13 @@ namespace RotMG.Networking
             //To much spam imo
 #if DEBUG
             if (id != (int)PacketId.Move)
-                //Program.Print(PrintType.Debug, $"Packet received <{(PacketId)id}> <{string.Join(" ,",data.Select(k => k.ToString()).ToArray())}>");
+                //SLog.Debug( $"Packet received <{(PacketId)id}> <{string.Join(" ,",data.Select(k => k.ToString()).ToArray())}>");
 #endif
 
             if (!client.Active)
             {
 #if DEBUG
-                //Program.Print(PrintType.Error, "Didn't process packet, client not active");
+                //SLog.Error( "Didn't process packet, client not active");
 #endif
                 return;
             }
@@ -436,7 +437,7 @@ namespace RotMG.Networking
             if (!(en is ISellable))
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Tried buying from non sellable object");
+                SLog.Error( "Tried buying from non sellable object");
                 return;
 #endif
             }
@@ -609,7 +610,7 @@ namespace RotMG.Networking
 #if DEBUG
                 if (client.TargetWorldId == Manager.EditorId)
                 {
-                    Program.Print(PrintType.Debug, "Loading editor world");
+                    SLog.Debug( "Loading editor world");
                     var map = new JSMap(Encoding.UTF8.GetString(mapJson));
                     world = new World(map, Resources.Worlds["Dreamland"]);
                     client.TargetWorldId = Manager.AddWorld(world);
@@ -651,7 +652,7 @@ namespace RotMG.Networking
                     targetWorld = Manager.TutorialId;
                 }
 
-                Program.Print(PrintType.Debug, $"Connecting player to {targetWorld} | {client.TargetWorldId} | {client.Account.NextCharId} {client.Account.VisitedTutorial}");
+                SLog.Debug( $"Connecting player to {targetWorld} | {client.TargetWorldId} | {client.Account.NextCharId} {client.Account.VisitedTutorial}");
 
                 var world = Manager.GetWorld(targetWorld, client);
                 client.Character = character;

@@ -1,6 +1,7 @@
 ﻿using RotMG.Common;
 using RotMG.Game;
 using RotMG.Game.Entities;
+using SimpleLog;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -47,18 +48,18 @@ namespace RotMG.Networking
             if (State == ProtocolState.Disconnected)
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Already dcd");
+                SLog.Error("Already dcd");
 #endif
                 return;
             }
 #if DEBUG
             try
             {
-                Program.Print(PrintType.Debug, $"Disconnecting client from <{_socket.RemoteEndPoint}>");
+                SLog.Debug($"Disconnecting client from <{_socket.RemoteEndPoint}>");
             }
             catch (Exception ex) 
             {
-                Program.Print(PrintType.Error, ex.ToString());
+                SLog.Error(ex.ToString());
             }
 #endif
             //Save what's needed
@@ -92,7 +93,7 @@ namespace RotMG.Networking
 #if DEBUG
             catch (Exception ex)
             {
-                Program.Print(PrintType.Error, ex);
+                SLog.Error( ex);
             }
 #endif
 #if RELEASE
@@ -147,7 +148,7 @@ namespace RotMG.Networking
 #if DEBUG
             catch (Exception ex)
             {
-                Program.Print(PrintType.Error, ex.ToString());
+                SLog.Error( ex.ToString());
                 Disconnect();
             }
 #endif

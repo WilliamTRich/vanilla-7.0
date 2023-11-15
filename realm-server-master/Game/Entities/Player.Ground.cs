@@ -3,6 +3,7 @@ using RotMG.Common;
 using RotMG.Networking;
 using RotMG.Utils;
 using System.Collections.Generic;
+using SimpleLog;
 
 namespace RotMG.Game.Entities
 {
@@ -48,7 +49,7 @@ namespace RotMG.Game.Entities
             if (pos.Distance(pushedServer) > distanceTraveled && pos.Distance(Position) > distanceTraveled)
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Move stuffs... DIST/SPD = " + pos.Distance(pushedServer) + " : " + distanceTraveled);
+                SLog.Error( "Move stuffs... DIST/SPD = " + pos.Distance(pushedServer) + " : " + distanceTraveled);
 #endif
                 return false;
             }
@@ -69,13 +70,13 @@ namespace RotMG.Game.Entities
                 {
                     if (gt + TimeUntilAckTimeout < time)
                     {
-                        Program.Print(PrintType.Error, "Goto ack timed out");
+                        SLog.Error( "Goto ack timed out");
                         Client.Disconnect();
                         return;
                     }
                 }
 #if DEBUG
-                Program.Print(PrintType.Error, "Waiting for goto ack...");
+                SLog.Error( "Waiting for goto ack...");
 #endif
                 return;
             }
@@ -83,7 +84,7 @@ namespace RotMG.Game.Entities
             if (!ValidMove(time, pos))
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Invalid move");
+                SLog.Error( "Invalid move");
 #endif
                 Client.Disconnect();
                 return;
@@ -92,7 +93,7 @@ namespace RotMG.Game.Entities
             if (TileFullOccupied(pos.X, pos.Y))
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Tile occupied");
+                SLog.Error( "Tile occupied");
 #endif
                 Client.Disconnect();
                 return;
@@ -102,7 +103,7 @@ namespace RotMG.Game.Entities
             if (AwaitingMoves < 0)
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Too many move packets");
+                SLog.Error( "Too many move packets");
 #endif
                 Client.Disconnect();
                 return;
@@ -143,7 +144,7 @@ namespace RotMG.Game.Entities
             if (!ValidTime(time))
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "GotoAck invalid time");
+                SLog.Error( "GotoAck invalid time");
 #endif
                 Client.Disconnect();
                 return;
@@ -152,7 +153,7 @@ namespace RotMG.Game.Entities
             if (!AwaitingGoto.TryDequeue(out var t))
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "No GotoAck to ack");
+                SLog.Error( "No GotoAck to ack");
 #endif
                 Client.Disconnect();
                 return;
@@ -164,7 +165,7 @@ namespace RotMG.Game.Entities
             if (!ValidTime(time))
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Invalid time Teleport");
+                SLog.Error( "Invalid time Teleport");
 #endif
                 return false;
             }
@@ -172,7 +173,7 @@ namespace RotMG.Game.Entities
             if (Manager.TotalTime < NextTeleportTime)
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Too early to teleport");
+                SLog.Error( "Too early to teleport");
 #endif
                 return false;
             }

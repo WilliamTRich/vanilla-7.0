@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Linq;
 using RotMG.Game.Worlds;
 using RotMG.Game.Logic.Commands;
+using SimpleLog;
 
 namespace RotMG.Game
 {
@@ -69,7 +70,7 @@ namespace RotMG.Game
             if (world is Realm)
                 Realms[world.Id] = world;
 #if DEBUG
-            Program.Print(PrintType.Debug, $"Added World ID <{world.Id}> <{desc.Name}:{desc.DisplayName}>");
+            SLog.Debug("Added World ID <{0}> <{1}:{2}>", world.Id, desc.Name, desc.DisplayName);
 #endif
             return world;
         }
@@ -90,7 +91,7 @@ namespace RotMG.Game
             if (world is Realm)
                 Realms.Remove(world.Id);
 #if DEBUG
-            Program.Print(PrintType.Debug, $"Removed World ID <{world.Id}> <{world.DisplayName}>");
+            SLog.Debug("Removed World ID <{0}> <{1}>", world.Id, world.DisplayName);
 #endif
         }
 

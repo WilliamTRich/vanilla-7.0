@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Ionic.Zlib;
 using RotMG.Common;
+using SimpleLog;
 
 namespace RotMG.Game
 {
@@ -31,7 +32,7 @@ namespace RotMG.Game
                         tile.ObjectType = Resources.Id2Object[obj].Type;
 #if DEBUG
                     else if (!string.IsNullOrEmpty(obj))
-                        Program.Print(PrintType.Warn, $"Object: {obj} not found.");
+                        SLog.Warn( $"Object: {obj} not found.");
 #endif
                     
                     tile.Key = rdr.ReadString();

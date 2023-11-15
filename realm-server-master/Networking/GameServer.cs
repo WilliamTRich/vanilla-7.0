@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using RotMG.Utils;
+using SimpleLog;
 
 namespace RotMG.Networking
 {
@@ -106,7 +107,7 @@ namespace RotMG.Networking
         public static void Start()
         {
             _listener.Listen((int)(Settings.MaxClients * 2f));
-            Program.Print(PrintType.Info, $"Started GameServer listening at <{_listener.LocalEndPoint}>");
+            SLog.Info( $"Started GameServer listening at <{_listener.LocalEndPoint}>");
 
             while (!_terminating)
             {
@@ -138,20 +139,20 @@ namespace RotMG.Networking
 #if DEBUG
                     if (skt == null || !skt.Connected)
                     {
-                        Program.Print(PrintType.Warn, "<Socket connection aborted>");
+                        SLog.Warn( "<Socket connection aborted>");
                         continue;
                     }
 #endif
 
 #if DEBUG
-                    Program.Print(PrintType.Debug, $"Client connected from <{skt.RemoteEndPoint}>");
+                    SLog.Debug( $"Client connected from <{skt.RemoteEndPoint}>");
 #endif
 
                     Client client;
                     if (!_clients.TryDequeue(out client))
                     {
 #if DEBUG
-                        Program.Print(PrintType.Warn, $"No pooled client available, aborted connection from <{skt.RemoteEndPoint}>");
+                        SLog.Warn( $"No pooled client available, aborted connection from <{skt.RemoteEndPoint}>");
 #endif
                         skt.Disconnect(false);
                         continue;
@@ -165,7 +166,7 @@ namespace RotMG.Networking
                         if (_connected[ip] == MaxClientsPerIp)
                         {
 #if DEBUG
-                            Program.Print(PrintType.Warn, $"Too many clients connected, disconnecting <{skt.RemoteEndPoint}>");
+                            SLog.Warn( $"Too many clients connected, disconnecting <{skt.RemoteEndPoint}>");
 #endif
                             skt.Disconnect(false);
                             continue;
@@ -183,7 +184,7 @@ namespace RotMG.Networking
 #if DEBUG
                 catch (Exception ex)
                 {
-                    Program.Print(PrintType.Error, ex.ToString());
+                    SLog.Error( ex.ToString());
                 }
 #endif
 #if RELEASE

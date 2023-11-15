@@ -2,6 +2,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using RotMG.Common;
 using RotMG.Networking;
+using SimpleLog;
 
 namespace RotMG.Game.Entities
 {
@@ -33,7 +34,7 @@ namespace RotMG.Game.Entities
             if (!Resources.PortalId2World.TryGetValue(Type, out var worldDesc))
             {
 #if DEBUG
-                Program.Print(PrintType.Error, $"No world data for {Desc.DungeonName}");
+                SLog.Error( $"No world data for {Desc.DungeonName}");
 #endif
                 return null;
             }

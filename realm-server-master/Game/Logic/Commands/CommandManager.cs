@@ -7,6 +7,7 @@ using System.Text;
 using RotMG.Common;
 using RotMG.Game.Entities;
 using RotMG.Game.Logic.Commands;
+using SimpleLog;
 
 namespace RotMG.Game.Logic.Commands
 {
@@ -131,7 +132,7 @@ namespace RotMG.Game.Logic.Commands
             }
             catch(Exception e)
             {
-                Program.Print(PrintType.Error, "[Command Manager] " + e.Message + "\n" + e.StackTrace);
+                SLog.Error( "[Command Manager] " + e.Message + "\n" + e.StackTrace);
             }
         }
 

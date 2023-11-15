@@ -9,6 +9,7 @@ using RotMG.Game.SetPieces;
 using RotMG.Game.Worlds;
 using RotMG.Utils;
 using RotMG.Game.Logic.Commands;
+using SimpleLog;
 
 namespace RotMG.Game.Entities
 {
@@ -47,7 +48,7 @@ namespace RotMG.Game.Entities
             if (text.Length <= 0 || text.Length > 128)
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Text too short or too long");
+                SLog.Error( "Text too short or too long");
 #endif
                 Client.Disconnect();
                 return;

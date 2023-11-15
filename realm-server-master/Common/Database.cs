@@ -11,6 +11,7 @@ using System.Xml.Linq;
 using RotMG.Game.Logic.Loots;
 using RotMG.Game.Worlds;
 using RotMG.Networking;
+using SimpleLog;
 
 namespace RotMG.Common
 {
@@ -69,7 +70,7 @@ namespace RotMG.Common
             if (Environment.TickCount - ResetTime >= ResetCooldown)
             {
 #if DEBUG
-                Program.Print(PrintType.Debug, "Database reset");
+                SLog.Debug( "Database reset");
 #endif
                 RegisteredAccounts.Clear();
                 InvalidLoginAttempts.Clear();

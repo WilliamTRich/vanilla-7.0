@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RotMG.Common;
 using RotMG.Utils;
+using SimpleLog;
 
 namespace RotMG.Game.Worlds
 {
@@ -10,7 +11,7 @@ namespace RotMG.Game.Worlds
     {
         public DavyJonesLocker(Map map, WorldDesc desc) : base(map, desc)
         {
-            Program.Print(PrintType.Info,"[DJL Setup Running]");
+            SLog.Info("[DJL Setup Running]");
             SpawnKeys();
         }
 

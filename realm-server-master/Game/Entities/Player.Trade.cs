@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RotMG.Common;
 using RotMG.Networking;
+using SimpleLog;
 
 namespace RotMG.Game.Entities
 {
@@ -118,7 +119,7 @@ namespace RotMG.Game.Entities
             if (TradePartner == null)
             {
 #if DEBUG
-                Program.Print(PrintType.Error, $"{Name} tried trading without a partner");
+                SLog.Error( $"{Name} tried trading without a partner");
 #endif
                 TradeDone(TradeResult.Canceled);
                 return;
@@ -133,19 +134,19 @@ namespace RotMG.Game.Entities
             if (TradeAccepted)
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Trade already accepted");
+                SLog.Error( "Trade already accepted");
 #endif
                 return;
             }
 
             if (VerifyTrade(myOffer, this))
             {
-                Program.Print(PrintType.Error, $"{Name} tried to trade a Soulbound item");
+                SLog.Error( $"{Name} tried to trade a Soulbound item");
             }
 
             if (VerifyTrade(theirOffer, TradePartner))
             {
-                Program.Print(PrintType.Error, $"{TradePartner.Name} tried to trade a Soulbound item");
+                SLog.Error( $"{TradePartner.Name} tried to trade a Soulbound item");
             }
 
             Trade = myOffer;
@@ -192,7 +193,7 @@ namespace RotMG.Game.Entities
             if (TradePartner == null || !TradePartner.Parent.Equals(Parent))
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Invalid trade target");
+                SLog.Error( "Invalid trade target");
 #endif
                 TradeDone(TradeResult.Canceled);
                 return;
@@ -201,7 +202,7 @@ namespace RotMG.Game.Entities
             if (!TradeAccepted || !TradePartner.TradeAccepted)
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "No trade consent");
+                SLog.Error( "No trade consent");
 #endif
                 return;
             }
@@ -264,7 +265,7 @@ namespace RotMG.Game.Entities
             if (TradePartner == null)
             {
 #if DEBUG
-                Program.Print(PrintType.Error, $"{Name} tried trading without a trade partner");
+                SLog.Error( $"{Name} tried trading without a trade partner");
 #endif
                 return;
             }
@@ -280,7 +281,7 @@ namespace RotMG.Game.Entities
 
             if (triedSoulbound)
             {
-                Program.Print(PrintType.Error, $"{Name} tried to trade a Soulbound item");
+                SLog.Error( $"{Name} tried to trade a Soulbound item");
                 SendError("Can not trade Soulbound items");
             }
         }

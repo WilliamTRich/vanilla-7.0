@@ -1,6 +1,7 @@
 using RotMG.Common;
 using RotMG.Game.Worlds;
 using RotMG.Utils;
+using SimpleLog;
 
 namespace RotMG.Game.Logic.Behaviors
 {
@@ -32,7 +33,7 @@ namespace RotMG.Game.Logic.Behaviors
                 if (entity.Desc.DisplayId == "Ocean Vent")//add vent to list of vents
                 {
 #if DEBUG
-                    Program.Print(PrintType.Debug, "Trying to add vent");
+                    SLog.Debug( "Trying to add vent");
 #endif
                     ((OceanTrench)host.Parent).addVentToWorld(entity);
                 }

@@ -7,6 +7,7 @@ using RotMG.Game.Logic;
 using RotMG.Game.Worlds;
 using RotMG.Networking;
 using System.Linq;
+using SimpleLog;
 
 namespace RotMG.Game
 {
@@ -263,7 +264,7 @@ namespace RotMG.Game
                 if (!Resources.Type2Object[type].Static)
                 {
 #if DEBUG
-                    Program.Print(PrintType.Error, $"Entity <{type}> is not a static object");
+                    SLog.Error( $"Entity <{type}> is not a static object");
 #endif
                     return;
                 }

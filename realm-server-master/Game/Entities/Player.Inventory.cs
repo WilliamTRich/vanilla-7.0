@@ -1,6 +1,7 @@
 ﻿using RotMG.Common;
 using RotMG.Networking;
 using RotMG.Utils;
+using SimpleLog;
 using System;
 using System.Linq;
 
@@ -109,7 +110,7 @@ namespace RotMG.Game.Entities
             if (!ValidSlot(slot))
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Invalid slot");
+                SLog.Error( "Invalid slot");
 #endif
                 return;
             }
@@ -119,7 +120,7 @@ namespace RotMG.Game.Entities
             if (item == -1)
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Nothing to drop");
+                SLog.Error( "Nothing to drop");
 #endif
                 return;
             }
@@ -150,7 +151,7 @@ namespace RotMG.Game.Entities
             if (en1 == null || en2 == null)
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Undefined entities");
+                SLog.Error( "Undefined entities");
 #endif
                 Client.Send(InvalidInvSwap);
                 return;
@@ -160,7 +161,7 @@ namespace RotMG.Game.Entities
             if (!(en1 is IContainer) || !(en2 is IContainer))
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Not containers");
+                SLog.Error( "Not containers");
 #endif
                 Client.Send(InvalidInvSwap);
                 return;
@@ -169,7 +170,7 @@ namespace RotMG.Game.Entities
             if (en1 is Player && en2 is OneWayContainer)
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Tried adding to one way container");
+                SLog.Error( "Tried adding to one way container");
 #endif
                 Client.Send(InvalidInvSwap);
                 return;
@@ -178,7 +179,7 @@ namespace RotMG.Game.Entities
             if (en1.Position.Distance(en2) > ContainerMinimumDistance)
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Too far away from container");
+                SLog.Error( "Too far away from container");
 #endif
                 Client.Send(InvalidInvSwap);
                 return;
@@ -188,7 +189,7 @@ namespace RotMG.Game.Entities
                 (en2 as Player)?.TradePartner != null)
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Tried swapping items while trading");
+                SLog.Error( "Tried swapping items while trading");
 #endif
                 Client.Send(InvalidInvSwap);
                 return;
@@ -199,7 +200,7 @@ namespace RotMG.Game.Entities
                 en2 is Player && slot2.ObjectId != Id)
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Player manipulation attempt");
+                SLog.Error( "Player manipulation attempt");
 #endif
                 Client.Send(InvalidInvSwap);
                 return;
@@ -214,7 +215,7 @@ namespace RotMG.Game.Entities
              AccountId != (en2 as Container).OwnerId)
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Container manipulation attempt");
+                SLog.Error( "Container manipulation attempt");
 #endif
                 Client.Send(InvalidInvSwap);
                 return;
@@ -227,7 +228,7 @@ namespace RotMG.Game.Entities
             if (!con1.ValidSlot(slot1.SlotId) || !con2.ValidSlot(slot2.SlotId))
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Invalid inv swap");
+                SLog.Error( "Invalid inv swap");
 #endif
                 Client.Send(InvalidInvSwap);
                 return;
@@ -254,7 +255,7 @@ namespace RotMG.Game.Entities
                             d2 != null && d.SlotTypes[i] != d2.SlotType)
                         {
 #if DEBUG
-                            Program.Print(PrintType.Error, "Invalid slot type");
+                            SLog.Error( "Invalid slot type");
 #endif
                             Client.Send(InvalidInvSwap);
                             return;
@@ -273,7 +274,7 @@ namespace RotMG.Game.Entities
                             d2 != null && d.SlotTypes[i] != d2.SlotType)
                         {
 #if DEBUG
-                            Program.Print(PrintType.Error, "Invalid slot type");
+                            SLog.Error( "Invalid slot type");
 #endif
                             Client.Send(InvalidInvSwap);
                             return;

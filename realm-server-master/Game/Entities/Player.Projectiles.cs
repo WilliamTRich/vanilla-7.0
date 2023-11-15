@@ -1,6 +1,7 @@
 ﻿using RotMG.Common;
 using RotMG.Networking;
 using RotMG.Utils;
+using SimpleLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,7 +74,7 @@ namespace RotMG.Game.Entities
                 if (ClientTime - aoe.Time > TimeUntilAckTimeout + MaxLatencyMS)
                 {
 #if DEBUG
-                    Program.Print(PrintType.Error, "Aoe ack timed out");
+                    SLog.Error( "Aoe ack timed out");
 #endif
                     Client.Disconnect();
                     return;
@@ -87,7 +88,7 @@ namespace RotMG.Game.Entities
                     if (ClientTime - ap.Time > TimeUntilAckTimeout + MaxLatencyMS)
                     {
 #if DEBUG
-                        Program.Print(PrintType.Error, "Proj ack timed out");
+                        SLog.Error( "Proj ack timed out");
 #endif
                         Client.Disconnect();
                         return;
@@ -117,7 +118,7 @@ namespace RotMG.Game.Entities
             if (!ValidTime(time))
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Invalid time for enemy hit");
+                SLog.Error( "Invalid time for enemy hit");
 #endif
                 Client.Disconnect();
                 return;
@@ -129,7 +130,7 @@ namespace RotMG.Game.Entities
                 if (target == null || !target.Desc.Enemy)
                 {
 #if DEBUG
-                    Program.Print(PrintType.Error, "Invalid enemy target");
+                    SLog.Error( "Invalid enemy target");
 #endif
                     return;
                 }
@@ -166,9 +167,9 @@ namespace RotMG.Game.Entities
                             }
                         }
 #if DEBUG
-                    Console.WriteLine(pos);
-                    Console.WriteLine(target);
-                    Program.Print(PrintType.Error, "Enemy hit aborted, too far away from projectile");
+                    //Console.WriteLine(pos);
+                    //Console.WriteLine(target);
+                    SLog.Error( "Enemy hit aborted, too far away from projectile");
 #endif
                     }
                     else //Check collisions to make sure player isn't shooting through walls etc
@@ -179,7 +180,7 @@ namespace RotMG.Game.Entities
                             tile.StaticObject != null && !tile.StaticObject.Desc.Enemy && (tile.StaticObject.Desc.EnemyOccupySquare || !p.Desc.PassesCover && tile.StaticObject.Desc.OccupySquare))
                         {
 #if DEBUG
-                            Program.Print(PrintType.Error, "Shot projectile hit wall, removed");
+                            SLog.Error( "Shot projectile hit wall, removed");
 #endif
                             ShotProjectiles.Remove(bulletId);
                             return;
@@ -190,7 +191,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
             else
             {
-                Program.Print(PrintType.Error, "Tried to hit enemy with undefined projectile");
+                SLog.Error( "Tried to hit enemy with undefined projectile");
             }
 #endif
         }
@@ -200,7 +201,7 @@ namespace RotMG.Game.Entities
             if (!ValidTime(time))
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Invalid time for player shoot");
+                SLog.Error( "Invalid time for player shoot");
 #endif
                 Client.Disconnect();
                 return;
@@ -215,7 +216,7 @@ namespace RotMG.Game.Entities
             if (!ValidMove(time, pos))
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Invalid move for player shoot");
+                SLog.Error( "Invalid move for player shoot");
 #endif
                 Client.Disconnect();
                 return;
@@ -228,7 +229,7 @@ namespace RotMG.Game.Entities
             if (desc == null)
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Undefined item descriptor");
+                SLog.Error( "Undefined item descriptor");
 #endif
                 Client.Random.Drop(numShots);
                 return;
@@ -238,7 +239,7 @@ namespace RotMG.Game.Entities
             if (numShots != desc.NumProjectiles)
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Manipulated num shots");
+                SLog.Error( "Manipulated num shots");
 #endif
                 Client.Random.Drop(numShots);
                 return;
@@ -247,7 +248,7 @@ namespace RotMG.Game.Entities
             if (HasConditionEffect(ConditionEffectIndex.Stunned))
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Stunned...");
+                SLog.Error( "Stunned...");
 #endif
                 Client.Random.Drop(numShots);
                 return;
@@ -283,7 +284,7 @@ namespace RotMG.Game.Entities
                 else
                 {
 #if DEBUG
-                    Program.Print(PrintType.Error, "Invalid ShootAE");
+                    SLog.Error( "Invalid ShootAE");
 #endif
                     Client.Random.Drop(numShots);
                 }
@@ -318,7 +319,7 @@ namespace RotMG.Game.Entities
                 else
                 {
 #if DEBUG
-                    Program.Print(PrintType.Error, "Shot too early, ignored");
+                    SLog.Error( "Shot too early, ignored");
 #endif
                     Client.Random.Drop(numShots);
                 }
@@ -360,19 +361,19 @@ namespace RotMG.Game.Entities
                         if (HitByProjectile(p.Value.Projectile))
                         {
 #if DEBUG
-                            //Program.Print(PrintType.Error, "Died cause of server collision");
+                            //SLog.Error( "Died cause of server collision");
 #endif
                             return true;
                         }
                         AckedProjectiles.Remove(p.Key);
 #if DEBUG
-                        //Program.Print(PrintType.Error, "Collided on server");
+                        //SLog.Error( "Collided on server");
 #endif
                     }
 #if DEBUG
                     else
                     {
-                        //Program.Print(PrintType.Error, "In range but can't hit...?");
+                        //SLog.Error( "In range but can't hit...?");
                     }
 #endif
                 }
@@ -393,7 +394,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
             else
             {
-                Program.Print(PrintType.Error, "Tried to hit with undefined projectile");
+                SLog.Error( "Tried to hit with undefined projectile");
             }
 #endif
         }
@@ -416,7 +417,7 @@ namespace RotMG.Game.Entities
             if (!ValidTime(time))
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "HitSquare invalid time");
+                SLog.Error( "HitSquare invalid time");
 #endif
                 Client.Disconnect();
                 return;
@@ -433,14 +434,14 @@ namespace RotMG.Game.Entities
 #if DEBUG
                 else
                 {
-                    Program.Print(PrintType.Error, "Manipualted SquareHit?");
+                    SLog.Error( "Manipualted SquareHit?");
                 }
 #endif
             }
 #if DEBUG
             else
             {
-                Program.Print(PrintType.Error, "Tried to hit square with undefined projectile");
+                SLog.Error( "Tried to hit square with undefined projectile");
             }
 #endif
         }
@@ -450,7 +451,7 @@ namespace RotMG.Game.Entities
             if (!ValidTime(time))
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "AoeAck invalid time");
+                SLog.Error( "AoeAck invalid time");
 #endif
                 Client.Disconnect();
                 return;
@@ -461,7 +462,7 @@ namespace RotMG.Game.Entities
                 if (!ValidMove(time, pos) && AwaitingGoto.Count == 0)
                 {
 #if DEBUG
-                    Program.Print(PrintType.Error, "INVALID MOVE FOR AOEACK!");
+                    SLog.Error( "INVALID MOVE FOR AOEACK!");
 #endif
                     Client.Disconnect();
                     return;
@@ -475,7 +476,7 @@ namespace RotMG.Game.Entities
             else
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "AoeAck desync");
+                SLog.Error( "AoeAck desync");
 #endif
                 Client.Disconnect();
             }
@@ -486,7 +487,7 @@ namespace RotMG.Game.Entities
             if (!ValidTime(time))
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "ShootAck invalid time");
+                SLog.Error( "ShootAck invalid time");
 #endif
                 Client.Disconnect();
                 return;
@@ -506,7 +507,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
                         if (AckedProjectiles.ContainsKey(p.Id))
                         {
-                            Program.Print(PrintType.Warn, "Duplicate ack key");
+                            SLog.Warn("Duplicate ack key");
                         }
 #endif
                         var ack = new ProjectileAck { Projectile = p, Time = time };
@@ -517,7 +518,7 @@ namespace RotMG.Game.Entities
             else
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "ShootAck desync");
+                SLog.Error( "ShootAck desync");
 #endif
                 Client.Disconnect();
             }

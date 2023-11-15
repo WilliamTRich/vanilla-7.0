@@ -6,6 +6,7 @@ using RotMG.Common;
 using RotMG.Game.Entities;
 using RotMG.Game.Logic.Loots;
 using RotMG.Utils;
+using SimpleLog;
 
 namespace RotMG.Game.Logic
 {
@@ -29,7 +30,7 @@ namespace RotMG.Game.Logic
 
             if(!Resources.IdLower2Item.TryGetValue(item.ToLower(), out var desc))
             {
-                Program.Print(PrintType.Warn, $"Item not found {item}");
+                SLog.Warn( $"Item not found {item}");
                 return;
             }
             Item = desc.Type;

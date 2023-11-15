@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Web;
 using RotMG.Utils;
+using SimpleLog;
 
 namespace RotMG.Networking
 {
@@ -34,7 +35,7 @@ namespace RotMG.Networking
         public static void Start()
         {
             _listener.Start();
-            Program.Print(PrintType.Info, $"Started AppServer listening at <{_listener.Prefixes.First()}>");
+            SLog.Info( $"Started AppServer listening at <{_listener.Prefixes.First()}>");
 
             while (!_terminating)
             {
@@ -45,7 +46,7 @@ namespace RotMG.Networking
                     //Process request and push work to main thread.
                     var request = context.Request.Url.LocalPath;
 #if DEBUG
-                            Program.Print(PrintType.Debug, $"Received <{request}> request from <{context.Request.RemoteEndPoint}>");
+                            SLog.Debug( $"Received <{request}> request from <{context.Request.RemoteEndPoint}>");
 #endif
 
                     NameValueCollection query;
@@ -98,13 +99,13 @@ namespace RotMG.Networking
 
 #if DEBUG
                             foreach (var k in query.AllKeys)
-                                Program.Print(PrintType.Debug, $"<{k}> <{query[k]}>");
+                                SLog.Debug( $"<{k}> <{query[k]}>");
 #endif
 
                     if (buffer == null)
                     {
 #if DEBUG
-                                Program.Print(PrintType.Warn, $"No request handler for <{request}> request from <{context.Request.RemoteEndPoint}>");
+                                SLog.Warn( $"No request handler for <{request}> request from <{context.Request.RemoteEndPoint}>");
 #endif
                         buffer = WriteError("Internal server error");
                     }
@@ -119,7 +120,7 @@ namespace RotMG.Networking
 #if DEBUG
                 catch (Exception ex)
                 {
-                    Program.Print(PrintType.Error, ex.ToString());
+                    SLog.Error( ex.ToString());
                 }
 #endif
 #if RELEASE

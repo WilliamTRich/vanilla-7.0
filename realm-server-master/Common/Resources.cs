@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using RotMG.Game;
+using SimpleLog;
 
 namespace RotMG.Common
 {
@@ -60,7 +61,7 @@ namespace RotMG.Common
             {
 
 #if DEBUG
-                Program.Print(PrintType.Debug, $"Parsing GameData <{paths[i].Split('/').Last()}>");
+                SLog.Debug( $"Parsing GameData <{paths[i].Split('/').Last()}>");
 #endif
                 var data = XElement.Parse(File.ReadAllText(paths[i]));
 
@@ -113,11 +114,11 @@ namespace RotMG.Common
             }
 
 #if DEBUG
-            Program.Print(PrintType.Debug, $"Parsed <{Type2Object.Count}> Objects");
-            Program.Print(PrintType.Debug, $"Parsed <{Type2Player.Count}> Player Classes");
-            Program.Print(PrintType.Debug, $"Parsed <{Type2Skin.Count}> Skins");
-            Program.Print(PrintType.Debug, $"Parsed <{Type2Item.Count}> Items");
-            Program.Print(PrintType.Debug, $"Parsed <{Type2Tile.Count}> Tiles");
+            SLog.Debug($"Parsed <{Type2Object.Count}> Objects");
+            SLog.Debug($"Parsed <{Type2Player.Count}> Player Classes");
+            SLog.Debug($"Parsed <{Type2Skin.Count}> Skins");
+            SLog.Debug($"Parsed <{Type2Item.Count}> Items");
+            SLog.Debug($"Parsed <{Type2Tile.Count}> Tiles");
 #endif
         }
 
@@ -137,7 +138,7 @@ namespace RotMG.Common
             foreach (var e in XElement.Parse(File.ReadAllText(CombineResourcePath("Worlds/Worlds.xml"))).Elements("World"))
             {
 #if DEBUG
-                Program.Print(PrintType.Debug, $"Parsing World <{e.ParseString("@name")}>");
+                SLog.Debug( $"Parsing World <{e.ParseString("@name")}>");
 #endif
                 var desc = new WorldDesc(e);
                 Worlds[desc.Name] = desc;
@@ -151,7 +152,7 @@ namespace RotMG.Common
             foreach (var e in XElement.Parse(File.ReadAllText(CombineResourcePath("SetPieces/SetPieces.xml"))).Elements("SetPiece"))
             {
 #if DEBUG
-                Program.Print(PrintType.Debug, $"Parsing World <{e.ParseString("@id")}>");
+                SLog.Debug( $"Parsing World <{e.ParseString("@id")}>");
 #endif
                 var name = e.ParseString("Map");
                 Map map;
@@ -171,7 +172,7 @@ namespace RotMG.Common
             {
                 var display = '/' + paths[i].Split('/')[2].Replace(@"\", "/");
 #if DEBUG
-                Program.Print(PrintType.Debug, $"Loading Web File <{display}>");
+                SLog.Debug( $"Loading Web File <{display}>");
 #endif
                 WebFiles[display] = File.ReadAllBytes(paths[i]);
             }

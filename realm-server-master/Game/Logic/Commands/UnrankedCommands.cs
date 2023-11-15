@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using RotMG.Common;
+using SimpleLog;
 
 namespace RotMG.Game.Logic.Commands
 {
@@ -196,7 +197,7 @@ namespace RotMG.Game.Logic.Commands
             catch (Exception e)
             {
 #if DEBUG
-                Program.Print(PrintType.Warn, "[Command] Where Exception: " + e.Message);
+                SLog.Warn( "[Command] Where Exception: " + e.Message);
 #endif
             }
             if (findTarget == null)

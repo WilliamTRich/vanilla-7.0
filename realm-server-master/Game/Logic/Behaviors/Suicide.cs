@@ -1,5 +1,6 @@
 using RotMG.Common;
 using RotMG.Game.Entities;
+using SimpleLog;
 
 namespace RotMG.Game.Logic.Behaviors
 {
@@ -24,7 +25,7 @@ namespace RotMG.Game.Logic.Behaviors
 #if DEBUG
             if (!(host is Enemy))
             {
-                Program.Print(PrintType.Error, "Use Decay instead");
+                SLog.Error( "Use Decay instead");
                 return false;
             }
 #endif

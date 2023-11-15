@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using RotMG.Game.Logic.Loots;
+using SimpleLog;
 
 namespace RotMG.Game.Logic
 {
@@ -64,7 +65,7 @@ namespace RotMG.Game.Logic
             foreach (var k in results)
             {
 #if DEBUG
-                Program.Print(PrintType.Debug, $"Initializing Behavior <{k}>");
+                SLog.Debug( $"Initializing Behavior <{k}>");
 #endif
                 var bd = (IBehaviorDatabase)Activator.CreateInstance(k);
                 bd?.Init(this);

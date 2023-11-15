@@ -1,6 +1,7 @@
 ﻿using RotMG.Common;
 using RotMG.Networking;
 using RotMG.Utils;
+using SimpleLog;
 using System;
 using System.Collections.Generic;
 
@@ -21,7 +22,7 @@ namespace RotMG.Game.Entities
             if (!(entity is Portal portal))
             {
 #if DEBUG
-                Program.Print(PrintType.Error, $"{entity} from UsePortal is not a portal");
+                SLog.Error( $"{entity} from UsePortal is not a portal");
 #endif
                 return;
             }
@@ -29,7 +30,7 @@ namespace RotMG.Game.Entities
             if (entity.Position.Distance(this) > ContainerMinimumDistance)
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Too far away from portal");
+                SLog.Error( "Too far away from portal");
 #endif
                 return;
             }
@@ -56,7 +57,7 @@ namespace RotMG.Game.Entities
             if (!ValidTime(time))
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Invalid time useitem");
+                SLog.Error( "Invalid time useitem");
 #endif
                 Client.Disconnect();
                 return;
@@ -87,7 +88,7 @@ namespace RotMG.Game.Entities
             if (en == null || !(en is IContainer))
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Undefined entity");
+                SLog.Error( "Undefined entity");
 #endif
                 return;
             }
@@ -95,7 +96,7 @@ namespace RotMG.Game.Entities
             if (en is Player && !en.Equals(this))
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Trying to use items from another players inventory");
+                SLog.Error( "Trying to use items from another players inventory");
 #endif
                 return;
             }
@@ -105,7 +106,7 @@ namespace RotMG.Game.Entities
                 if ((en as Container).OwnerId != -1 && (en as Container).OwnerId != AccountId)
                 {
 #if DEBUG
-                    Program.Print(PrintType.Error, "Trying to use items from another players container/bag");
+                    SLog.Error( "Trying to use items from another players container/bag");
 #endif
                     return;
                 }
@@ -113,7 +114,7 @@ namespace RotMG.Game.Entities
                 if (en.Position.Distance(this) > ContainerMinimumDistance)
                 {
 #if DEBUG
-                    Program.Print(PrintType.Error, "Too far away from container");
+                    SLog.Error( "Too far away from container");
 #endif
                     return;
                 }
@@ -127,7 +128,7 @@ namespace RotMG.Game.Entities
             if (desc == null)
             {
 #if DEBUG
-                Program.Print(PrintType.Error, "Invalid use item");
+                SLog.Error( "Invalid use item");
 #endif
                 return;
             }
@@ -138,7 +139,7 @@ namespace RotMG.Game.Entities
                 if (slot.ObjectId != Id)
                 {
 #if DEBUG
-                    Program.Print(PrintType.Error, "Trying to use ability from a container?");
+                    SLog.Error( "Trying to use ability from a container?");
 #endif
                     return;
                 }
@@ -146,7 +147,7 @@ namespace RotMG.Game.Entities
                 if (UseTime + UseDuration * (1f / UseCooldownThreshold) > time)
                 {
 #if DEBUG
-                    Program.Print(PrintType.Error, "Used ability too soon");
+                    SLog.Error( "Used ability too soon");
 #endif
                     return;
                 }
@@ -154,7 +155,7 @@ namespace RotMG.Game.Entities
                 if (MP - desc.MpCost < 0)
                 {
 #if DEBUG
-                    Program.Print(PrintType.Error, "Not enough MP");
+                    SLog.Error( "Not enough MP");
 #endif
                     return;
                 }
@@ -194,7 +195,7 @@ namespace RotMG.Game.Entities
                         if (eff.Stat == -1)
                         {
 #if DEBUG
-                            Program.Print(PrintType.Error, "Increment stat called without stat declared");
+                            SLog.Error( "Increment stat called without stat declared");
 #endif
                             break;
                         }
@@ -581,7 +582,7 @@ namespace RotMG.Game.Entities
                         if (!Resources.Id2Object.TryGetValue(eff.Id, out var obj))
                         {
 #if DEBUG
-                            Program.Print(PrintType.Error, $"{eff.Id} not found for AE Create");
+                            SLog.Error( $"{eff.Id} not found for AE Create");
 #endif
                             return;
                         }
@@ -603,7 +604,7 @@ namespace RotMG.Game.Entities
                         break;
 #if DEBUG
                     default:
-                        Program.Print(PrintType.Error, $"Unhandled AE <{eff.Index.ToString()}>");
+                        SLog.Error( $"Unhandled AE <{eff.Index.ToString()}>");
                         break;
 #endif
                 }

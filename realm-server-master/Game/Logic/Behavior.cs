@@ -1,4 +1,5 @@
 ﻿using RotMG.Common;
+using SimpleLog;
 
 namespace RotMG.Game.Logic
 {
@@ -22,7 +23,7 @@ namespace RotMG.Game.Logic
             if (!Resources.Id2Object.TryGetValue(id, out var desc))
             {
 #if DEBUG
-                Program.Print(PrintType.Warn, $"Object type '{id}' not found. Using Pirate.");
+                SLog.Warn( $"Object type '{id}' not found. Using Pirate.");
 #endif
                 desc = Resources.Id2Object["Pirate"];
             }
