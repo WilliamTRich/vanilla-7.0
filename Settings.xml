@@ -1,8 +1,10 @@
 ﻿<Settings res="Resources" db="Database">
+	<ServerName>Localhost</ServerName>
 	<MaxClients>256</MaxClients>
 	<Address>127.0.0.1</Address>
-	<Ports>7777:2050</Ports>
+	<Ports>8080:2050</Ports>
 	<MaxRealms>2</MaxRealms>
 	<TicksPerSecond>10</TicksPerSecond>
+	<AdminOnly/>
 <!--Client & Server designed to run at 10TPS, changing that might result in laggy animations/movement-->
 </Settings>

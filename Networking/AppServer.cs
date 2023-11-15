@@ -46,7 +46,7 @@ namespace RotMG.Networking
                     //Process request and push work to main thread.
                     var request = context.Request.Url.LocalPath;
 #if DEBUG
-                            SLog.Debug( $"Received <{request}> request from <{context.Request.RemoteEndPoint}>");
+                    SLog.Debug($"Received <{request}> request from <{context.Request.RemoteEndPoint}>");
 #endif
 
                     NameValueCollection query;
