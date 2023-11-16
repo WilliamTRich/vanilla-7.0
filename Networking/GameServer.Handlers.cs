@@ -14,177 +14,253 @@ namespace RotMG.Networking
 {
     public static partial class GameServer
     {
-        public enum PacketId
+        public enum C2SPacketId : byte //Client 2 Server 
         {
-            Failure,
-            CreateSuccess,
-            Create,
-            PlayerShoot,
-            Move,
-            PlayerText,
-            Text,
-            ServerPlayerShoot,
-            Damage,
-            Update,
-            Notification,
-            NewTick,
-            InvSwap,
-            UseItem,
-            ShowEffect,
-            Hello,
-            Goto,
-            InvDrop,
-            InvResult,
-            Reconnect,
-            MapInfo,
-            Load,
-            Teleport,
-            UsePortal,
-            Death,
-            Buy,
-            BuyResult,
-            Aoe,
-            PlayerHit,
-            EnemyHit,
-            AoeAck,
-            ShootAck,
-            SquareHit,
-            EditAccountList,
-            AccountList,
-            QuestObjId,
-            CreateGuild,
-            GuildResult,
-            GuildRemove,
-            GuildInvite,
-            AllyShoot,
-            EnemyShoot,
-            Escape,
-            InvitedToGuild,
-            JoinGuild,
-            ChangeGuildRank,
-            PlaySound,
-            Reskin,
-            GotoAck,
-            TradeRequest,
-            TradeRequested,
-            TradeStart,
-            ChangeTrade,
-            TradeChanged,
-            CancelTrade,
-            TradeDone,
-            AcceptTrade,
-            TradeAccepted,
-            SwitchMusic
+            Unknown = 0,
+            AcceptTrade = 1,
+            AoeAck = 2,
+            Buy = 3,
+            CancelTrade = 4,
+            ChangeGuildRank = 5,
+            ChangeTrade = 6,
+            ChooseName = 8,
+            CreateGuild = 10,
+            EditAccountList = 11,
+            EnemyHit = 12,
+            Escape = 13,
+            GroundDamage = 15,
+            GuildInvite = 16,
+            GuildRemove = 17,
+            Hello = 18,
+            InvDrop = 19,
+            InvSwap = 20,
+            JoinGuild = 21,
+            Move = 23,
+            OtherHit = 24,
+            PlayerHit = 25,
+            PlayerShoot = 26,
+            PlayerText = 27,
+            Pong = 28,
+            RequestTrade = 29,
+            Reskin = 30,
+            ShootAck = 32,
+            SquareHit = 33,
+            Teleport = 34,
+            UpdateAck = 35,
+            UseItem = 36,
+            UsePortal = 37
         }
+
+        public enum S2CPacketId : byte //Server 2 Client
+        {
+            Unknown = 0,
+            AccountList = 1,
+            AllyShoot = 2,
+            Aoe = 3,
+            BuyResult = 4,
+            ClientStat = 5,
+            CreateSuccess = 6,
+            Damage = 7,
+            Death = 8,
+            EnemyShoot = 9,
+            Failure = 10,
+            File = 11,
+            GlobalNotification = 12,
+            GoTo = 13,
+            GuildResult = 14,
+            InvResult = 15,
+            InvitedToGuild = 16,
+            MapInfo = 17,
+            NameResult = 18,
+            NewTick = 19,
+            Notification = 20,
+            Pic = 21,
+            Ping = 22,
+            PlaySound = 23,
+            QuestObjId = 24,
+            Reconnect = 25,
+            ServerPlayerShoot = 26,
+            ShowEffect = 27,
+            Text = 28,
+            TradeAccepted = 29,
+            TradeChanged = 30,
+            TradeDone = 31,
+            TradeRequested = 32,
+            TradeStart = 33,
+            Update = 34
+        }
+
+        //public enum PacketId
+        //{
+        //    Failure,
+        //    CreateSuccess,
+        //    Create,
+        //    PlayerShoot,
+        //    Move,
+        //    PlayerText,
+        //    Text,
+        //    ServerPlayerShoot,
+        //    Damage,
+        //    Update,
+        //    Notification,
+        //    NewTick,
+        //    InvSwap,
+        //    UseItem,
+        //    ShowEffect,
+        //    Hello,
+        //    Goto,
+        //    InvDrop,
+        //    InvResult,
+        //    Reconnect,
+        //    MapInfo,
+        //    Load,
+        //    Teleport,
+        //    UsePortal,
+        //    Death,
+        //    Buy,
+        //    BuyResult,
+        //    Aoe,
+        //    PlayerHit,
+        //    EnemyHit,
+        //    AoeAck,
+        //    ShootAck,
+        //    SquareHit,
+        //    EditAccountList,
+        //    AccountList,
+        //    QuestObjId,
+        //    CreateGuild,
+        //    GuildResult,
+        //    GuildRemove,
+        //    GuildInvite,
+        //    AllyShoot,
+        //    EnemyShoot,
+        //    Escape,
+        //    InvitedToGuild,
+        //    JoinGuild,
+        //    ChangeGuildRank,
+        //    PlaySound,
+        //    Reskin,
+        //    GotoAck,
+        //    TradeRequest,
+        //    TradeRequested,
+        //    TradeStart,
+        //    ChangeTrade,
+        //    TradeChanged,
+        //    CancelTrade,
+        //    TradeDone,
+        //    AcceptTrade,
+        //    TradeAccepted,
+        //    SwitchMusic
+        //}
 
         public static void Read(Client client, int id, byte[] data)
         {
             //To much spam imo
 #if DEBUG
-            if (id != (int)PacketId.Move)
+            if (id != (int)C2SPacketId.Move)
                 //SLog.Debug( $"Packet received <{(PacketId)id}> <{string.Join(" ,",data.Select(k => k.ToString()).ToArray())}>");
 #endif
 
-            if (!client.Active)
-            {
+            if (!client.Active) {
 #if DEBUG
-                //SLog.Error( "Didn't process packet, client not active");
+                SLog.Error( "Didn't process packet, client not active");
 #endif
                 return;
             }
 
-            using (var rdr = new PacketReader(new MemoryStream(data)))
+            using var rdr = new PacketReader(new MemoryStream(data));
+
+            switch ((C2SPacketId)id)
             {
-                switch ((PacketId)id)
-                {
-                    case PacketId.Hello:
-                        Hello(client, rdr);
-                        break;
-                    case PacketId.Create:
-                        Create(client, rdr);
-                        break;
-                    case PacketId.Load:
-                        Load(client, rdr);
-                        break;
-                    case PacketId.Move:
-                        Move(client, rdr);
-                        break;
-                    case PacketId.InvSwap:
-                        InvSwap(client, rdr);
-                        break;
-                    case PacketId.ShootAck:
-                        ShootAck(client, rdr);
-                        break;
-                    case PacketId.AoeAck:
-                        AoeAck(client, rdr);
-                        break;
-                    case PacketId.PlayerHit:
-                        PlayerHit(client, rdr);
-                        break;
-                    case PacketId.SquareHit:
-                        SquareHit(client, rdr);
-                        break;
-                    case PacketId.PlayerShoot:
-                        PlayerShoot(client, rdr);
-                        break;
-                    case PacketId.EnemyHit:
-                        EnemyHit(client, rdr);
-                        break;
-                    case PacketId.PlayerText:
-                        PlayerText(client, rdr);
-                        break;
-                    case PacketId.EditAccountList:
-                        EditAccountList(client, rdr);
-                        break;
-                    case PacketId.UseItem:
-                        UseItem(client, rdr);
-                        break;
-                    case PacketId.GotoAck:
-                        GotoAck(client, rdr);
-                        break;
-                    case PacketId.Escape:
-                        Escape(client, rdr);
-                        break;
-                    case PacketId.InvDrop:
-                        InvDrop(client, rdr);
-                        break;
-                    case PacketId.UsePortal:
-                        UsePortal(client, rdr);
-                        break;
-                    case PacketId.Buy:
-                        Buy(client, rdr);
-                        break;
-                    case PacketId.Teleport:
-                        Teleport(client, rdr);
-                        break;
-                    case PacketId.CreateGuild:
-                        CreateGuild(client, rdr);
-                        break;
-                    case PacketId.GuildRemove:
-                        GuildRemove(client, rdr);
-                        break;
-                    case PacketId.GuildInvite:
-                        GuildInvite(client, rdr);
-                        break;
-                    case PacketId.JoinGuild:
-                        JoinGuild(client, rdr);
-                        break;
-                    case PacketId.ChangeGuildRank:
-                        ChangeGuildRank(client, rdr);
-                        break;
-                    case PacketId.TradeRequest:
-                        TradeRequest(client, rdr);
-                        break;
-                    case PacketId.ChangeTrade:
-                        ChangeTrade(client, rdr);
-                        break;
-                    case PacketId.CancelTrade:
-                        CancelTrade(client, rdr);
-                        break;
-                    case PacketId.AcceptTrade:
-                        AcceptTrade(client, rdr);
-                        break;
-                }
+                case C2SPacketId.Hello:
+                    Hello(client, rdr);
+                    break;
+                case C2SPacketId.UpdateAck:
+                    break;
+                //case C2SPacketId.Create:
+                //    Create(client, rdr);
+                //    break;
+                //case C2SPacketId.Load:
+                //    Load(client, rdr);
+                //    break;
+                case C2SPacketId.Move:
+                    Move(client, rdr);
+                    break;
+                case C2SPacketId.InvSwap:
+                    InvSwap(client, rdr);
+                    break;
+                case C2SPacketId.ShootAck:
+                    ShootAck(client, rdr);
+                    break;
+                case C2SPacketId.AoeAck:
+                    AoeAck(client, rdr);
+                    break;
+                case C2SPacketId.PlayerHit:
+                    PlayerHit(client, rdr);
+                    break;
+                case C2SPacketId.SquareHit:
+                    SquareHit(client, rdr);
+                    break;
+                case C2SPacketId.PlayerShoot:
+                    PlayerShoot(client, rdr);
+                    break;
+                case C2SPacketId.EnemyHit:
+                    EnemyHit(client, rdr);
+                    break;
+                case C2SPacketId.PlayerText:
+                    PlayerText(client, rdr);
+                    break;
+                case C2SPacketId.EditAccountList:
+                    EditAccountList(client, rdr);
+                    break;
+                case C2SPacketId.UseItem:
+                    UseItem(client, rdr);
+                    break;
+                //case C2SPacketId.GotoAck:
+                //    GotoAck(client, rdr);
+                //    break;
+                case C2SPacketId.Escape:
+                    Escape(client, rdr);
+                    break;
+                case C2SPacketId.InvDrop:
+                    InvDrop(client, rdr);
+                    break;
+                case C2SPacketId.UsePortal:
+                    UsePortal(client, rdr);
+                    break;
+                case C2SPacketId.Buy:
+                    Buy(client, rdr);
+                    break;
+                case C2SPacketId.Teleport:
+                    Teleport(client, rdr);
+                    break;
+                case C2SPacketId.CreateGuild:
+                    CreateGuild(client, rdr);
+                    break;
+                case C2SPacketId.GuildRemove:
+                    GuildRemove(client, rdr);
+                    break;
+                case C2SPacketId.GuildInvite:
+                    GuildInvite(client, rdr);
+                    break;
+                case C2SPacketId.JoinGuild:
+                    JoinGuild(client, rdr);
+                    break;
+                case C2SPacketId.ChangeGuildRank:
+                    ChangeGuildRank(client, rdr);
+                    break;
+                case C2SPacketId.RequestTrade:
+                    TradeRequest(client, rdr);
+                    break;
+                case C2SPacketId.ChangeTrade:
+                    ChangeTrade(client, rdr);
+                    break;
+                case C2SPacketId.CancelTrade:
+                    CancelTrade(client, rdr);
+                    break;
+                case C2SPacketId.AcceptTrade:
+                    AcceptTrade(client, rdr);
+                    break;
             }
         }
 
@@ -193,7 +269,7 @@ namespace RotMG.Networking
         {
             using (var wtr = new PacketWriter(new MemoryStream()))
             {
-                wtr.Write((byte)PacketId.Text);
+                wtr.Write((byte)S2CPacketId.Text);
                 wtr.Write(name);
                 wtr.Write(objectId);
                 wtr.Write(numStars);
@@ -564,7 +640,11 @@ namespace RotMG.Networking
             var gameId = rdr.ReadInt32();
             var username = rdr.ReadString();
             var password = rdr.ReadString();
-            var mapJson = rdr.ReadBytes(rdr.ReadInt32());
+            var chrId = rdr.ReadInt16();
+            var createChar = rdr.ReadBoolean();
+            ushort chrType = (ushort)(createChar ? rdr.ReadInt16() : 0);
+            ushort chrSkin = (ushort)(createChar ? rdr.ReadInt16() : 0);
+            
 
             if (client.State == ProtocolState.Handshaked) //Only allow Hello to be processed once.
             {
@@ -583,11 +663,17 @@ namespace RotMG.Networking
                     return;
                 }
 
-                if (!acc.Ranked && gameId == Manager.EditorId)
-                {
-                    client.Send(Failure(0, "Not ranked."));
+                if(!acc.Ranked && Settings.AdminOnly) {
+                    client.Send(Failure(0, "Admin Only."));
                     Manager.AddTimedAction(1000, client.Disconnect);
+                    return;
                 }
+
+                //if (!acc.Ranked && gameId == Manager.EditorId)
+                //{
+                //    client.Send(Failure(0, "Not ranked."));
+                //    Manager.AddTimedAction(1000, client.Disconnect);
+                //}
 
                 Manager.GetClient(acc.Id)?.Disconnect();
 
@@ -607,14 +693,15 @@ namespace RotMG.Networking
                 Manager.AccountIdToClientId[client.Account.Id] = client.Id;
                 var world = Manager.GetWorld(gameId, client);
 
+                
 #if DEBUG
-                if (client.TargetWorldId == Manager.EditorId)
-                {
-                    SLog.Debug( "Loading editor world");
-                    var map = new JSMap(Encoding.UTF8.GetString(mapJson));
-                    world = new World(map, Resources.Worlds["Dreamland"]);
-                    client.TargetWorldId = Manager.AddWorld(world);
-                }
+                //if (client.TargetWorldId == Manager.EditorId)
+                //{
+                //    SLog.Debug( "Loading editor world");
+                //    var map = new JSMap(Encoding.UTF8.GetString(mapJson));
+                //    world = new World(map, Resources.Worlds["Dreamland"]);
+                //    client.TargetWorldId = Manager.AddWorld(world);
+                //}
 #endif
 
                 if (world == null)
@@ -628,46 +715,45 @@ namespace RotMG.Networking
                 client.Random = new wRandom(seed);
                 client.Send(MapInfo(world.Width, world.Height, world.Name, world.DisplayName, seed, world.Background, world.ShowDisplays, world.AllowTeleport, world.Music));
                 client.State = ProtocolState.Awaiting; //Allow the processing of Load/Create.
+
+
+                if (createChar) {
+                    Create(client, chrType, chrSkin);
+                }
+                else Load(client, chrId);
             }
         }
 
-        private static void Create(Client client, PacketReader rdr)
+        private static void Create(Client client, ushort classType, ushort skinType)
         {
-            int classType = rdr.ReadInt16();
-            int skinType = rdr.ReadInt16();
-
-            if (client.State == ProtocolState.Awaiting)
+            var character = Database.CreateCharacter(client.Account, classType, skinType);
+            if (character == null)
             {
-                var character = Database.CreateCharacter(client.Account, classType, skinType);
-                if (character == null)
-                {
-                    client.Send(Failure(0, "Failed to create character."));
-                    client.Disconnect();
-                    return;
-                }
-                var targetWorld = client.TargetWorldId;
-                //If this is their first character
-                if (client.Account.NextCharId == 1 && !client.Account.VisitedTutorial)
-                {
-                    targetWorld = Manager.TutorialId;
-                }
-
-                SLog.Debug( $"Connecting player to {targetWorld} | {client.TargetWorldId} | {client.Account.NextCharId} {client.Account.VisitedTutorial}");
-
-                var world = Manager.GetWorld(targetWorld, client);
-                client.Character = character;
-                client.Player = new Player(client);
-                client.State = ProtocolState.Connected;
-                client.Send(CreateSuccess(world.AddEntity(client.Player, world.GetSpawnRegion().ToVector2()), client.Character.Id));
+                client.Send(Failure(0, "Failed to create character."));
+                client.Disconnect();
+                return;
             }
+            var targetWorld = client.TargetWorldId;
+            //If this is their first character
+            if (client.Account.NextCharId == 1 && !client.Account.VisitedTutorial) {
+                targetWorld = Manager.TutorialId;
+            }
+
+            SLog.Debug( $"Connecting player to {targetWorld} | {client.TargetWorldId} | {client.Account.NextCharId} {client.Account.VisitedTutorial}");
+            
+            var world = Manager.GetWorld(targetWorld, client);
+            client.Character = character;
+            client.Player = new Player(client);
+            client.State = ProtocolState.Connected;
+            client.Send(CreateSuccess(world.AddEntity(client.Player, world.GetSpawnRegion().ToVector2()), client.Character.Id));
         }
 
-        private static void Load(Client client, PacketReader rdr)
+        private static void Load(Client client, int charId)
         {
-            var charId = rdr.ReadInt32();
+            //var charId = rdr.ReadInt32();
 
-            if (client.State == ProtocolState.Awaiting)
-            {
+            //if (client.State == ProtocolState.Awaiting)
+            //{
                 var character = Database.LoadCharacter(client.Account, charId);
                 if (character == null || character.Dead)
                 {
@@ -681,7 +767,7 @@ namespace RotMG.Networking
                 client.Player = new Player(client);
                 client.State = ProtocolState.Connected;
                 client.Send(CreateSuccess(world.AddEntity(client.Player, world.GetSpawnRegion().ToVector2()), client.Character.Id));
-            }
+            //}
         }
 
         private static void Move(Client client, PacketReader rdr)
@@ -707,391 +793,322 @@ namespace RotMG.Networking
             return length + 5;
         }
 
-        public static byte[] SwitchMusic(string song)
-        {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.SwitchMusic);
-                wtr.Write(song);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
-        }
+        //public static byte[] SwitchMusic(string song)
+        //{
+        //    using (var wtr = new PacketWriter(new MemoryStream()))
+        //    {
+        //        wtr.Write((byte)S2CPacketId.SwitchMusic);
+        //        wtr.Write(song);
+        //        return (wtr.BaseStream as MemoryStream).ToArray();
+        //    }
+        //}
 
         public static byte[] TradeStart(string name, TradeItem[] myItems, TradeItem[] theirItems)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.TradeStart);
-                wtr.Write((byte)myItems.Length);
-                foreach (var item in myItems)
-                    item.Write(wtr);
-                wtr.Write(name);
-                wtr.Write((byte)theirItems.Length);
-                foreach (var item in theirItems)
-                    item.Write(wtr);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.TradeStart);
+            wtr.Write((byte)myItems.Length);
+            foreach (var item in myItems)
+                item.Write(wtr);
+            wtr.Write(name);
+            wtr.Write((byte)theirItems.Length);
+            foreach (var item in theirItems)
+                item.Write(wtr);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] TradeRequested(string name)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.TradeRequested);
-                wtr.Write(name);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.TradeRequested);
+            wtr.Write(name);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] TradeChanged(bool[] offer)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.TradeChanged);
-                wtr.Write((byte)offer.Length);
-                foreach (var item in offer)
-                    wtr.Write(item);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.TradeChanged);
+            wtr.Write((byte)offer.Length);
+            foreach (var item in offer)
+                wtr.Write(item);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] TradeAccepted(bool[] myOffer, bool[] theirOffer)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.TradeAccepted);
-                wtr.Write((byte)myOffer.Length);
-                foreach (var item in myOffer)
-                    wtr.Write(item);
-                wtr.Write((byte)theirOffer.Length);
-                foreach (var item in theirOffer)
-                    wtr.Write(item);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.TradeAccepted);
+            wtr.Write((byte)myOffer.Length);
+            foreach (var item in myOffer)
+                wtr.Write(item);
+            wtr.Write((byte)theirOffer.Length);
+            foreach (var item in theirOffer)
+                wtr.Write(item);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] TradeDone(Player.TradeResult result)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.TradeDone);
-                wtr.Write((byte)result);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.TradeDone);
+            wtr.Write((byte)result);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] MapInfo(int width, int height, string name, string displayName, uint seed, int background, bool showDisplays, bool allowPlayerTeleport, string music)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.MapInfo);
-                wtr.Write(width);
-                wtr.Write(height);
-                wtr.Write(name);
-                wtr.Write(displayName);
-                wtr.Write(seed);
-                wtr.Write(background);
-                wtr.Write(showDisplays);
-                wtr.Write(allowPlayerTeleport);
-                wtr.Write(music);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.MapInfo);
+            wtr.Write(width);
+            wtr.Write(height);
+            wtr.Write(name);
+            wtr.Write(displayName);
+            wtr.Write(seed);
+            wtr.Write(background);
+            wtr.Write(showDisplays);
+            wtr.Write(allowPlayerTeleport);
+            wtr.Write(music);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] InvResult(int result)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.InvResult);
-                wtr.Write(result);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.InvResult);
+            wtr.Write(result);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] BuyResult(byte result, BuyResult message)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.BuyResult);
-                wtr.Write(result);
-                wtr.Write((byte)message);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.BuyResult);
+            wtr.Write(result);
+            wtr.Write((byte)message);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] GuildResult(bool success, string message)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.GuildResult);
-                wtr.Write(success);
-                wtr.Write(message);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.GuildResult);
+            wtr.Write(success);
+            wtr.Write(message);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] InvitedToGuild(string name, string guildName)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.InvitedToGuild);
-                wtr.Write(name);
-                wtr.Write(guildName);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.InvitedToGuild);
+            wtr.Write(name);
+            wtr.Write(guildName);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] Failure(int errorId, string description)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.Failure);
-                wtr.Write(errorId);
-                wtr.Write(description);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.Failure);
+            wtr.Write(errorId);
+            wtr.Write(description);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] CreateSuccess(int objectId, int charId)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.CreateSuccess);
-                wtr.Write(objectId);
-                wtr.Write(charId);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.CreateSuccess);
+            wtr.Write(objectId);
+            wtr.Write(charId);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] Update(List<TileData> tiles, List<ObjectDefinition> adds, List<ObjectDrop> drops)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.Update);
-                wtr.Write((short)tiles.Count);
-                foreach (var k in tiles)
-                    k.Write(wtr);
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.Update);
+            wtr.Write((short)tiles.Count);
+            foreach (var k in tiles)
+                k.Write(wtr);
 
-                wtr.Write((short)adds.Count);
-                foreach (var k in adds)
-                    k.Write(wtr);
+            wtr.Write((short)adds.Count);
+            foreach (var k in adds)
+                k.Write(wtr);
 
-                wtr.Write((short)drops.Count);
-                foreach (var k in drops)
-                    k.Write(wtr);
+            wtr.Write((short)drops.Count);
+            foreach (var k in drops)
+                k.Write(wtr);
 
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] NewTick(List<ObjectStatus> statuses, Dictionary<StatType, object> playerStats)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.NewTick);
+            wtr.Write((short)statuses.Count);
+            foreach (var k in statuses)
+                k.Write(wtr);
+            if (playerStats.Count > 0)
             {
-                wtr.Write((byte)PacketId.NewTick);
-                wtr.Write((short)statuses.Count);
-                foreach (var k in statuses)
-                    k.Write(wtr);
-                if (playerStats.Count > 0)
+                wtr.Write((byte)playerStats.Count);
+                foreach (var k in playerStats)
                 {
-                    wtr.Write((byte)playerStats.Count);
-                    foreach (var k in playerStats)
-                    {
-                        wtr.Write((byte)k.Key);
-                        if (ObjectStatus.IsStringStat(k.Key))
-                            wtr.Write((string)k.Value);
-                        else
-                            wtr.Write((int)k.Value);
-                    }
+                    wtr.Write((byte)k.Key);
+                    if (ObjectStatus.IsStringStat(k.Key))
+                        wtr.Write((string)k.Value);
+                    else
+                        wtr.Write((int)k.Value);
                 }
-                return (wtr.BaseStream as MemoryStream).ToArray();
             }
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] EnemyShoot(int bulletId, int ownerId, byte bulletType, Vector2 startPos, float angle, short damage, byte numShots, float angleInc)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.EnemyShoot);
+            wtr.Write(bulletId);
+            wtr.Write(ownerId);
+            wtr.Write(bulletType);
+            startPos.Write(wtr);
+            wtr.Write(angle);
+            wtr.Write(damage);
+            if (numShots > 1)
             {
-                wtr.Write((byte)PacketId.EnemyShoot);
-                wtr.Write(bulletId);
-                wtr.Write(ownerId);
-                wtr.Write(bulletType);
-                startPos.Write(wtr);
-                wtr.Write(angle);
-                wtr.Write(damage);
-                if (numShots > 1)
-                {
-                    wtr.Write(numShots);
-                    wtr.Write(angleInc);
-                }
-                return (wtr.BaseStream as MemoryStream).ToArray();
+                wtr.Write(numShots);
+                wtr.Write(angleInc);
             }
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] ShowEffect(ShowEffectIndex effect, int targetObjectId, uint color, Vector2 pos1 = new Vector2(), Vector2 pos2 = new Vector2())
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.ShowEffect);
-                wtr.Write((byte)effect);
-                wtr.Write(targetObjectId);
-                wtr.Write((int)color);
-                pos1.Write(wtr);
-                if (pos2.X != 0 || pos2.Y != 0)
-                    pos2.Write(wtr);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.ShowEffect);
+            wtr.Write((byte)effect);
+            wtr.Write(targetObjectId);
+            wtr.Write((int)color);
+            pos1.Write(wtr);
+            if (pos2.X != 0 || pos2.Y != 0)
+                pos2.Write(wtr);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] Goto(int objectId, Vector2 pos)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.Goto);
-                wtr.Write(objectId);
-                pos.Write(wtr);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.GoTo);
+            wtr.Write(objectId);
+            pos.Write(wtr);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] Aoe(Vector2 pos, float radius, int damage, ConditionEffectIndex effect, uint color)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.Aoe);
-                pos.Write(wtr);
-                wtr.Write(radius);
-                wtr.Write((short)damage);
-                wtr.Write((byte)effect);
-                wtr.Write((int)color);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.Aoe);
+            pos.Write(wtr);
+            wtr.Write(radius);
+            wtr.Write((short)damage);
+            wtr.Write((byte)effect);
+            wtr.Write((int)color);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] Damage(int targetId, ConditionEffectIndex[] effects, int damage)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.Damage);
-                wtr.Write(targetId);
-                wtr.Write((byte)effects.Length);
-                for (var i = 0; i < effects.Length; i++)
-                    wtr.Write((byte)effects[i]);
-                wtr.Write((ushort)damage);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.Damage);
+            wtr.Write(targetId);
+            wtr.Write((byte)effects.Length);
+            for (var i = 0; i < effects.Length; i++)
+                wtr.Write((byte)effects[i]);
+            wtr.Write((ushort)damage);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] Death(int accountId, int charId, string killer)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.Death);
-                wtr.Write(accountId);
-                wtr.Write(charId);
-                wtr.Write(killer);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.Death);
+            wtr.Write(accountId);
+            wtr.Write(charId);
+            wtr.Write(killer);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] AllyShoot(int ownerId, int containerType, float angle)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.AllyShoot);
-                wtr.Write(ownerId);
-                wtr.Write((short)containerType);
-                wtr.Write(angle);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.AllyShoot);
+            wtr.Write(ownerId);
+            wtr.Write((short)containerType);
+            wtr.Write(angle);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
         
         public static byte[] PlaySound(string sound)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.PlaySound);
-                wtr.Write(sound);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.PlaySound);
+            wtr.Write(sound);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] AccountList(int accountListId, List<int> accountIds)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.AccountList);
-                wtr.Write(accountListId);
-                wtr.Write((short)accountIds.Count);
-                for (var i = 0; i < accountIds.Count; i++)
-                    wtr.Write(accountIds[i]);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.AccountList);
+            wtr.Write(accountListId);
+            wtr.Write((short)accountIds.Count);
+            for (var i = 0; i < accountIds.Count; i++)
+                wtr.Write(accountIds[i]);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] ServerPlayerShoot(int bulletId, int ownerId, int containerType, Vector2 startPos, float angle, float angleInc, List<Projectile> projs)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.ServerPlayerShoot);
-                wtr.Write(bulletId);
-                wtr.Write(ownerId);
-                wtr.Write((short)containerType);
-                startPos.Write(wtr);
-                wtr.Write(angle);
-                wtr.Write(angleInc);
-                wtr.Write((byte)projs.Count);
-                for (var i = 0; i < projs.Count; i++)
-                    wtr.Write((short)projs[i].Damage);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.ServerPlayerShoot);
+            wtr.Write(bulletId);
+            wtr.Write(ownerId);
+            wtr.Write((short)containerType);
+            startPos.Write(wtr);
+            wtr.Write(angle);
+            wtr.Write(angleInc);
+            wtr.Write((byte)projs.Count);
+            for (var i = 0; i < projs.Count; i++)
+                wtr.Write((short)projs[i].Damage);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] Reconnect(int gameId)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.Reconnect);
-                wtr.Write(gameId);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.Reconnect);
+            wtr.Write(gameId);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] Notification(int objectId, string text, uint color)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.Notification);
-                wtr.Write(objectId);
-                wtr.Write(text);
-                wtr.Write((int)color);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.Notification);
+            wtr.Write(objectId);
+            wtr.Write(text);
+            wtr.Write((int)color);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
 
         public static byte[] QuestObjId(int objectId)
         {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.Write((byte)PacketId.QuestObjId);
-                wtr.Write(objectId);
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
-        }
-
-        public static byte[] PolicyFile = _policyFile();
-        static byte[] _policyFile()
-        {
-            using (var wtr = new PacketWriter(new MemoryStream()))
-            {
-                wtr.WriteNullTerminatedString(
-                    @"<cross-domain-policy>" +
-                    @"<allow-access-from domain=""*"" to-ports=""*"" />" +
-                    @"</cross-domain-policy>");
-                wtr.Write((byte)'\r');
-                wtr.Write((byte)'\n');
-                return (wtr.BaseStream as MemoryStream).ToArray();
-            }
+            using var wtr = new PacketWriter(new MemoryStream());
+            wtr.Write((byte)S2CPacketId.QuestObjId);
+            wtr.Write(objectId);
+            return (wtr.BaseStream as MemoryStream).ToArray();
         }
     }
 }

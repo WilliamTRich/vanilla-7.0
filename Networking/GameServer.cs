@@ -57,9 +57,8 @@ namespace RotMG.Networking
 
         public readonly byte[] Data;
 
-        public SendState()
-        {
-            Data = new byte[0x50000];
+        public SendState() {
+            Data = new byte[GameServer.BufferSize];
         }
 
         public void Reset()
@@ -73,7 +72,7 @@ namespace RotMG.Networking
 
     public static partial class GameServer
     {
-        public const int BufferSize = 0x10000;
+        public const int BufferSize = ushort.MaxValue;
         public const int PrefixLength = 5;
         public const int PrefixLengthWithId = PrefixLength - 1;
         public const int AddBackMinDelay = 10000;

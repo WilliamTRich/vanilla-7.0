@@ -1,6 +1,9 @@
 ﻿using RotMG.Common;
+using RotMG.Game;
+using SimpleLog;
 using System.Collections.Specialized;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Xml.Linq;
 
 namespace RotMG.Networking
@@ -12,29 +15,47 @@ namespace RotMG.Networking
             var data = new XElement("Chars");
 
             var accountInUse = false;
-            var username = query["username"];
+            var email = query["email"];
             var password = query["password"];
 
             _listenEvent.Reset();
+
+
+
             Program.PushWork(() =>
-            {
-                var acc = Database.Verify(username, password, GetIPFromContext(context)) ?? Database.GuestAccount();
-                if (!(accountInUse = Database.IsAccountInUse(acc)))
                 {
-                    data.Add(new XAttribute("nextCharId", acc.NextCharId));
-                    data.Add(new XAttribute("maxNumChars", acc.MaxNumChars));
-                    data.Add(acc.Export());
-                    data.Add(Database.GetNews(acc));
-                    data.Add(new XElement("OwnedSkins", string.Join(",", acc.OwnedSkins)));
-                    foreach (var charId in acc.AliveChars)
+                    var servers = new XElement("Servers");
+                    servers.Add(new XElement("Server",
+                            new XElement("Name", Settings.ServerName),
+                            new XElement("DNS", Settings.Address),
+                            new XElement("Port", Settings.Ports[1]),
+                            new XElement("Lat", 0.0),
+                            new XElement("Long", 0.0),
+                            new XElement("Usage", Manager.Clients.Count / Settings.MaxClients),
+                            new XElement("AdminOnly", Settings.AdminOnly))
+                        );
+
+                    var acc = Database.Verify(email, password, GetIPFromContext(context)) ?? Database.GuestAccount();
+                    if (!(accountInUse = Database.IsAccountInUse(acc)))
                     {
-                        var character = Database.LoadCharacter(acc, charId);
-                        var export = character.Export();
-                        export.Add(new XAttribute("id", charId));
-                        data.Add(export);
+                        data.Add(new XAttribute("nextCharId", acc.NextCharId));
+                        data.Add(new XAttribute("maxNumChars", acc.MaxNumChars));
+                        data.Add(acc.Export());
+                        data.Add(Database.GetNews(acc));
+                        data.Add(new XElement("OwnedSkins", string.Join(",", acc.OwnedSkins)));
+                        foreach (var charId in acc.AliveChars) {
+                            var character = Database.LoadCharacter(acc, charId);
+                            var export = character.Export();
+                            export.Add(new XAttribute("id", charId));
+                            data.Add(export);
+                        }
+
+                        data.Add(servers);
                     }
-                }
-            }, () => _listenEvent.Set());
+
+                    SLog.Info($"Response::{data.ToString()}");
+
+                }, () => _listenEvent.Set());
             _listenEvent.WaitOne();
 
             return accountInUse ? WriteError("Account in use!") : Write(data.ToString());
@@ -44,19 +65,19 @@ namespace RotMG.Networking
         {
             byte[] data = null;
 
-            var username = query["username"];
+            var email = query["email"];
             var password = query["password"];
 
             _listenEvent.Reset();
             Program.PushWork(() =>
             {
-                var acc = Database.Verify(username, password, GetIPFromContext(context));
+                var acc = Database.Verify(email, password, GetIPFromContext(context));
                 if (acc == null)
                     data = WriteError("Invalid account.");
                 else if (Database.IsAccountInUse(acc))
                     data = WriteError("Account in use!");
                 else
-                    data = WriteSuccess();
+                    data = Write(acc.Export().ToString());
             }, () => _listenEvent.Set());
             _listenEvent.WaitOne();
 
@@ -66,19 +87,23 @@ namespace RotMG.Networking
         private static byte[] Register(HttpListenerContext context, NameValueCollection query)
         {
             byte[] data = null;
-            var newUsername = query["newUsername"];
-            var newPassword = query["newPassword"];
+            var email = query["email"];
+            var password = query["password"];
+            var name = query["username"];
 
-            if (!Database.IsValidUsername(newUsername))
+            if (!Database.IsValidEmail(email))
                 return WriteError("Invalid username.");
 
-            if (!Database.IsValidPassword(newPassword))
+            if (!Database.IsValidPassword(password))
                 return WriteError("Invalid password.");
+
+            if (Database.IsNameTaken(name))
+                return WriteError("Name Taken");
 
             _listenEvent.Reset();
             Program.PushWork(() =>
             {
-                var status = Database.RegisterAccount(newUsername, newPassword, GetIPFromContext(context));
+                var status = Database.RegisterAccount(email, password, name, GetIPFromContext(context));
                 if (status == RegisterStatus.Success)
                     data = WriteSuccess();
                 else data = WriteError(status.ToString());
@@ -119,14 +144,14 @@ namespace RotMG.Networking
         {
             byte[] data = null;
 
-            var username = query["username"];
+            var email = query["email"];
             var password = query["password"];
             var charId = int.Parse(query["charId"]);
 
             _listenEvent.Reset();
             Program.PushWork(() =>
             {
-                var acc = Database.Verify(username, password, GetIPFromContext(context));
+                var acc = Database.Verify(email, password, GetIPFromContext(context));
                 if (acc == null)
                     data = WriteError("Invalid account.");
                 else if (Database.IsAccountInUse(acc))
@@ -144,13 +169,13 @@ namespace RotMG.Networking
 
             byte[] data = null;
 
-            var username = query["username"];
+            var email = query["email"];
             var password = query["password"];
 
             _listenEvent.Reset();
             Program.PushWork(() =>
             {
-                var acc = Database.Verify(username, password, GetIPFromContext(context));
+                var acc = Database.Verify(email, password, GetIPFromContext(context));
                 if (acc == null)
                     data = WriteError("Invalid account.");
                 else if (Database.IsAccountInUse(acc))
@@ -168,14 +193,14 @@ namespace RotMG.Networking
 
             byte[] data = null;
 
-            var username = query["username"];
+            var email = query["email"];
             var password = query["password"];
             var skinType = int.Parse(query["skinType"]);
 
             _listenEvent.Reset();
             Program.PushWork(() =>
             {
-                var acc = Database.Verify(username, password, GetIPFromContext(context));
+                var acc = Database.Verify(email, password, GetIPFromContext(context));
                 if (acc == null)
                     data = WriteError("Invalid account.");
                 else if (Database.IsAccountInUse(acc))
@@ -193,14 +218,14 @@ namespace RotMG.Networking
 
             byte[] data = null;
 
-            var username = query["username"];
+            var email = query["email"];
             var password = query["password"];
             var newPassword = query["newPassword"];
 
             _listenEvent.Reset();
             Program.PushWork(() =>
             {
-                var acc = Database.Verify(username, password, GetIPFromContext(context));
+                var acc = Database.Verify(email, password, GetIPFromContext(context));
                 if (acc == null)
                     data = WriteError("Invalid account.");
                 else if (Database.IsAccountInUse(acc))
@@ -217,13 +242,13 @@ namespace RotMG.Networking
         {
             byte[] data = null;
             
-            var username = query["username"];
+            var email = query["email"];
             var password = query["password"];
 
             _listenEvent.Reset();
             Program.PushWork(() =>
             {
-                var acc = Database.Verify(username, password, GetIPFromContext(context));
+                var acc = Database.Verify(email, password, GetIPFromContext(context));
                 if (acc == null)
                     data = WriteError("Invalid account");
                 else if (string.IsNullOrEmpty(acc.GuildName))
@@ -242,13 +267,13 @@ namespace RotMG.Networking
         {
             byte[] data = null;
             
-            var username = query["username"];
+            var email = query["email"];
             var password = query["password"];
 
             _listenEvent.Reset();
             Program.PushWork(() =>
             {
-                var acc = Database.Verify(username, password, GetIPFromContext(context));
+                var acc = Database.Verify(email, password, GetIPFromContext(context));
                 if (acc == null)
                     data = WriteError("Invalid account");
                 else if (string.IsNullOrEmpty(acc.GuildName))
@@ -267,13 +292,13 @@ namespace RotMG.Networking
         {
             byte[] data = null;
             
-            var username = query["username"];
+            var email = query["email"];
             var password = query["password"];
 
             _listenEvent.Reset();
             Program.PushWork(() =>
             {
-                var acc = Database.Verify(username, password, GetIPFromContext(context));
+                var acc = Database.Verify(email, password, GetIPFromContext(context));
                 if (acc == null)
                     data = WriteError("Invalid account");
                 else if (string.IsNullOrEmpty(acc.GuildName))

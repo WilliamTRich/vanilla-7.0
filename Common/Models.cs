@@ -452,7 +452,7 @@ namespace RotMG.Common
             Id = key;
 
             if (Data != null)
-                Name = Database.UsernameFromId(key);
+                Name = Database.NameFromId(key);
         }
 
         public override void Save()

@@ -12,6 +12,7 @@ using RotMG.Game.Logic.Loots;
 using RotMG.Game.Worlds;
 using RotMG.Networking;
 using SimpleLog;
+using System.Globalization;
 
 namespace RotMG.Common
 {
@@ -58,6 +59,7 @@ namespace RotMG.Common
             CreateKey("nextAccId", "0", true);
             CreateKey("news", "", true);
             CreateKey("guilds", "", true);
+            CreateKey("names", "", true);
 
             foreach (var span in TimeSpans.Keys)
                 CreateKey($"legends.{span}", "", true);
@@ -183,29 +185,78 @@ namespace RotMG.Common
             return true;
         }
 
-        public static bool IsValidUsername(string input)
+        public static bool IsValidEmail(string strIn)
         {
-            if (string.IsNullOrWhiteSpace(input)) return false;
-            if (input.Length < 1 || input.Length > 12) return false;
-            return Regex.IsMatch(input, @"^[a-zA-Z0-9]+$");
+            var invalid = false;
+            if (string.IsNullOrEmpty(strIn))
+                return false;
+
+            MatchEvaluator domainMapper = match => {
+                // IdnMapping class with default property values.
+                var idn = new IdnMapping();
+
+                var domainName = match.Groups[2].Value;
+                try
+                {
+                    domainName = idn.GetAscii(domainName);
+                }
+                catch (ArgumentException)
+                {
+                    invalid = true;
+                }
+
+                return match.Groups[1].Value + domainName;
+            };
+
+            // Use IdnMapping class to convert Unicode domain names. 
+            strIn = Regex.Replace(strIn, @"(@)(.+)$", domainMapper);
+            if (invalid)
+                return false;
+
+            // Return true if strIn is in valid e-mail format. 
+            return Regex.IsMatch(strIn,
+                @"^(?("")(""[^""]+?""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +
+                @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-\w]*[0-9a-z]*\.)+[a-z0-9]{2,17}))$",
+                RegexOptions.IgnoreCase);
+
+            //if (string.IsNullOrWhiteSpace(input)) return false;
+            //if (input.Length < 1 || input.Length > 12) return false;
+            //return Regex.IsMatch(input, @"^[a-zA-Z0-9]+$");
         }
 
-        public static int IdFromUsername(string username)
-        {
-            var value = GetKey($"login.username.{username}");
+        public static int IdFromEmail(string email) {
+            var value = GetKey($"login.email.{email}");
             return string.IsNullOrWhiteSpace(value) ? -1 : int.Parse(value);
         }
 
-        public static string UsernameFromId(int id)
-        {
+        public static string EmailFromId(int id) {
             var value = GetKey($"login.id.{id}");
             return string.IsNullOrWhiteSpace(value) ? null : value;
         }
 
-        public static bool AccountExists(string username, out AccountModel acc)
+        public static string NameFromId(int id) {
+            var value = GetKey($"name.{id}");
+            return string.IsNullOrWhiteSpace(value) ? null : value;
+        }
+
+        public static bool IsNameTaken(string name)
+        {
+            string[] names = GetKeyLines("names", true);
+            foreach(var item in names) 
+                if (item.Equals(name, StringComparison.InvariantCultureIgnoreCase))
+                    return true;
+            
+            return false;
+        }
+        public static void AddNameToNames(string name)
+        {
+            string[] names = GetKeyLines("names", true);
+            SetKeyLines("names", [.. names, name], true);
+        }
+        public static bool AccountExists(string email, out AccountModel acc)
         {
             acc = null;
-            var id = IdFromUsername(username);
+            var id = IdFromEmail(email);
             if (id == -1)
                 return false;
 
@@ -354,28 +405,32 @@ namespace RotMG.Common
             return true;
         }
 
-        public static RegisterStatus RegisterAccount(string username, string password, string ip)
+        public static RegisterStatus RegisterAccount(string email, string password, string name, string ip)
         {
             if (!CanRegisterAccount(ip))
                 return RegisterStatus.TooManyRegisters;
 
-            if (!IsValidUsername(username))
-                return RegisterStatus.InvalidUsername;
+            if (!IsValidEmail(email))
+                return RegisterStatus.InvalidEmail;
 
             if (!IsValidPassword(password))
                 return RegisterStatus.InvalidPassword;
 
-            if (IdFromUsername(username) != -1)
-                return RegisterStatus.UsernameTaken;
+            if (IdFromEmail(email) != -1)
+                return RegisterStatus.EmailTaken;
 
             var id = int.Parse(GetKey("nextAccId", true));
             var salt = MathUtils.GenerateSalt();
             SetKey("nextAccId", (id + 1).ToString(), true);
 
-            SetKey($"login.username.{username}", id.ToString());
-            SetKey($"login.id.{id}", username);
+            SetKey($"login.email.{email}", id.ToString());
+            SetKey($"login.id.{id}", email);
             SetKey($"login.hash.{id}", (password + salt).ToSHA1());
             SetKey($"login.salt.{id}", salt);
+            SetKey($"name.{id}", name);
+
+            AddNameToNames(name);
+
 
             var acc = new AccountModel(id)
             {
@@ -435,15 +490,15 @@ namespace RotMG.Common
             return accountInUse;
         }
 
-        public static AccountModel Verify(string username, string password, string ip)
+        public static AccountModel Verify(string email, string password, string ip)
         {
             if (!CanAttemptLogin(ip))
                 return null;
 
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
                 return null;
 
-            var id = IdFromUsername(username);
+            var id = IdFromEmail(email);
             if (id == -1) return null;
 
             var hash = GetKey($"login.hash.{id}");

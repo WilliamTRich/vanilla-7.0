@@ -393,7 +393,7 @@ namespace RotMG.Game.Logic.Commands
                 return;
             }
 
-            var acc = new AccountModel(Common.Database.IdFromUsername(name));
+            var acc = new AccountModel(Common.Database.IdFromEmail(name));
 
             if (string.IsNullOrEmpty(acc.GuildName))
             {

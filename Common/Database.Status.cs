@@ -3,10 +3,11 @@
     public enum RegisterStatus
     {
         Success,
-        UsernameTaken,
-        InvalidUsername,
+        EmailTaken,
+        InvalidEmail,
         InvalidPassword,
-        TooManyRegisters
+        TooManyRegisters,
+        NameTaken,
     }
     
     public enum GuildCreateStatus

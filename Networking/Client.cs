@@ -179,23 +179,17 @@ namespace RotMG.Networking
                     }
                     break;
                 case SocketEventState.InProgress:
-                    if (_receive.PacketLength == 1014001516) //Hacky policy file..
-                    {
-                        _socket.Send(GameServer.PolicyFile, 0, GameServer.PolicyFile.Length, SocketFlags.None);
-                        return;
-                    }
-
-                    if (_receive.PacketLength < GameServer.PrefixLength ||
-                        _receive.PacketLength > GameServer.BufferSize)
-                    {
+                    if (_receive.PacketLength < GameServer.PrefixLength || _receive.PacketLength > GameServer.BufferSize) {
                         Disconnect();
                         return;
                     }
-
-                    if (_socket.Available + GameServer.PrefixLength >= _receive.PacketLength) //Full packet now arrived. Time to process it.
-                    {
+                    //Full packet now arrived. Time to process it.
+                    if (_socket.Available + GameServer.PrefixLength >= _receive.PacketLength) {
                         if (_socket.Available != 0)
                             _socket.Receive(_receive.PacketBytes, GameServer.PrefixLength, _receive.PacketLength - GameServer.PrefixLength, SocketFlags.None);
+
+                        SLog.Debug("Data: {0}", _receive.PacketBytes);
+
                         GameServer.Read(this, _receive.GetPacketId(), _receive.GetPacketBody());
                         _receive.Reset();
                     }

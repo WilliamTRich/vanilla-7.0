@@ -53,6 +53,11 @@ namespace RotMG.Networking
                     using (var r = new StreamReader(context.Request.InputStream))
                         query = HttpUtility.ParseQueryString(r.ReadToEnd());
 
+#if DEBUG
+                    foreach (var k in query.AllKeys)
+                        SLog.Debug($"<{k}> <{query[k]}>");
+#endif
+
                     byte[] buffer = null;
                     switch (request)
                     {
@@ -97,15 +102,10 @@ namespace RotMG.Networking
                             break;
                     }
 
-#if DEBUG
-                            foreach (var k in query.AllKeys)
-                                SLog.Debug( $"<{k}> <{query[k]}>");
-#endif
-
                     if (buffer == null)
                     {
 #if DEBUG
-                                SLog.Warn( $"No request handler for <{request}> request from <{context.Request.RemoteEndPoint}>");
+                        SLog.Warn( $"No request handler for <{request}> request from <{context.Request.RemoteEndPoint}>");
 #endif
                         buffer = WriteError("Internal server error");
                     }
