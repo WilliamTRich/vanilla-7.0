@@ -54,8 +54,8 @@ namespace RotMG.Networking
                         query = HttpUtility.ParseQueryString(r.ReadToEnd());
 
 #if DEBUG
-                    foreach (var k in query.AllKeys)
-                        SLog.Debug($"<{k}> <{query[k]}>");
+                    //foreach (var k in query.AllKeys)
+                    //    SLog.Debug($"<{k}> <{query[k]}>");
 #endif
 
                     byte[] buffer = null;

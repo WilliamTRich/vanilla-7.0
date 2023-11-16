@@ -103,7 +103,7 @@ namespace RotMG.Networking
             Thread.Sleep(200);
         }
 
-        public static void Start()
+        public static async void Start()
         {
             _listener.Listen((int)(Settings.MaxClients * 2f));
             SLog.Info( $"Started GameServer listening at <{_listener.LocalEndPoint}>");
@@ -112,8 +112,13 @@ namespace RotMG.Networking
             {
                 try
                 {
+                    Socket skt;
+                    skt = await _listener.AcceptAsync(CancellationToken.None);
+                    if (skt == null)
+                        continue;
+
                     //Wait for a client to connect and validate the connection.
-                    var skt = _listener.Accept();
+                    //var skt = _listener.Accept();
 
                     var queueBack = new List<Client>();
                     while (_addBack.TryDequeue(out var add))
@@ -147,22 +152,21 @@ namespace RotMG.Networking
                     SLog.Debug( $"Client connected from <{skt.RemoteEndPoint}>");
 #endif
 
-                    Client client;
-                    if (!_clients.TryDequeue(out client))
+                    if (!_clients.TryDequeue(out Client client))
                     {
 #if DEBUG
-                        SLog.Warn( $"No pooled client available, aborted connection from <{skt.RemoteEndPoint}>");
+                        SLog.Warn($"No pooled client available, aborted connection from <{skt.RemoteEndPoint}>");
 #endif
                         skt.Disconnect(false);
                         continue;
                     }
 
                     var ip = skt.RemoteEndPoint.ToString().Split(':')[0];
-                    if (!_connected.ContainsKey(ip))
+                    if (!_connected.TryGetValue(ip, out int value))
                         _connected[ip] = 1;
                     else
                     {
-                        if (_connected[ip] == MaxClientsPerIp)
+                        if (value == MaxClientsPerIp)
                         {
 #if DEBUG
                             SLog.Warn( $"Too many clients connected, disconnecting <{skt.RemoteEndPoint}>");
@@ -170,13 +174,13 @@ namespace RotMG.Networking
                             skt.Disconnect(false);
                             continue;
                         }
-                        _connected[ip]++;
+                        _connected[ip] = ++value;
                     }
 
-                    Program.PushWork(() =>
-                    {
-                        client.BeginHandling(skt, ip);
-                    });
+                    client.BeginHandling(skt, ip);
+                    //Program.PushWork(() =>
+                    //{
+                    //});
 
                     Thread.Sleep(10);
                 }
@@ -197,6 +201,7 @@ namespace RotMG.Networking
 
         public static void AddBack(Client client)
         {
+            client.TokenSource = new();
             client.DCTime = Manager.TotalTimeUnsynced;
             _addBack.Enqueue(client);
         }

@@ -6,6 +6,12 @@ using System.Collections.Generic;
 
 namespace RotMG.Common
 {
+    public struct MoveRecord
+    {
+        public long Time;
+        public float X;
+        public float Y;
+    }
     public struct FameStats
     {
         public int BaseFame;

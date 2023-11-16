@@ -155,8 +155,8 @@ namespace RotMG.Game
         {
             TotalTimeUnsynced = (int)TickWatch.ElapsedMilliseconds;
 
-            foreach (var client in Clients.Values.ToArray())
-                client.Tick();
+            //foreach (var client in Clients.Values.ToArray())
+            //    client.Tick();
 
             if ((int)TickWatch.ElapsedMilliseconds - LastTickTime >= Settings.MillisecondsPerTick - TickDelta)
             {

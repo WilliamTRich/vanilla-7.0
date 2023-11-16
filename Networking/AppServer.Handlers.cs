@@ -53,8 +53,6 @@ namespace RotMG.Networking
                         data.Add(servers);
                     }
 
-                    SLog.Info($"Response::{data.ToString()}");
-
                 }, () => _listenEvent.Set());
             _listenEvent.WaitOne();
 

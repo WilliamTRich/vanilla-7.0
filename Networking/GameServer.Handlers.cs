@@ -90,75 +90,12 @@ namespace RotMG.Networking
             Update = 34
         }
 
-        //public enum PacketId
-        //{
-        //    Failure,
-        //    CreateSuccess,
-        //    Create,
-        //    PlayerShoot,
-        //    Move,
-        //    PlayerText,
-        //    Text,
-        //    ServerPlayerShoot,
-        //    Damage,
-        //    Update,
-        //    Notification,
-        //    NewTick,
-        //    InvSwap,
-        //    UseItem,
-        //    ShowEffect,
-        //    Hello,
-        //    Goto,
-        //    InvDrop,
-        //    InvResult,
-        //    Reconnect,
-        //    MapInfo,
-        //    Load,
-        //    Teleport,
-        //    UsePortal,
-        //    Death,
-        //    Buy,
-        //    BuyResult,
-        //    Aoe,
-        //    PlayerHit,
-        //    EnemyHit,
-        //    AoeAck,
-        //    ShootAck,
-        //    SquareHit,
-        //    EditAccountList,
-        //    AccountList,
-        //    QuestObjId,
-        //    CreateGuild,
-        //    GuildResult,
-        //    GuildRemove,
-        //    GuildInvite,
-        //    AllyShoot,
-        //    EnemyShoot,
-        //    Escape,
-        //    InvitedToGuild,
-        //    JoinGuild,
-        //    ChangeGuildRank,
-        //    PlaySound,
-        //    Reskin,
-        //    GotoAck,
-        //    TradeRequest,
-        //    TradeRequested,
-        //    TradeStart,
-        //    ChangeTrade,
-        //    TradeChanged,
-        //    CancelTrade,
-        //    TradeDone,
-        //    AcceptTrade,
-        //    TradeAccepted,
-        //    SwitchMusic
-        //}
-
         public static void Read(Client client, int id, byte[] data)
         {
             //To much spam imo
 #if DEBUG
             if (id != (int)C2SPacketId.Move)
-                //SLog.Debug( $"Packet received <{(PacketId)id}> <{string.Join(" ,",data.Select(k => k.ToString()).ToArray())}>");
+                SLog.Debug( $"Packet received <{(C2SPacketId)id}> <{string.Join(" ,",data.Select(k => k.ToString()).ToArray())}>");
 #endif
 
             if (!client.Active) {
