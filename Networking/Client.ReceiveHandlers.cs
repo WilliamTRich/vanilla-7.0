@@ -16,6 +16,42 @@ namespace RotMG.Networking;
 
 public sealed partial class Client
 {
+    public enum C2SPacketId : byte //Client 2 Server 
+    {
+        Unknown = 0,
+        AcceptTrade = 1,
+        AoeAck = 2,
+        Buy = 3,
+        CancelTrade = 4,
+        ChangeGuildRank = 5,
+        ChangeTrade = 6,
+        ChooseName = 8,
+        CreateGuild = 10,
+        EditAccountList = 11,
+        EnemyHit = 12,
+        Escape = 13,
+        GroundDamage = 15,
+        GuildInvite = 16,
+        GuildRemove = 17,
+        Hello = 18,
+        InvDrop = 19,
+        InvSwap = 20,
+        JoinGuild = 21,
+        Move = 23,
+        OtherHit = 24,
+        PlayerHit = 25,
+        PlayerShoot = 26,
+        PlayerText = 27,
+        Pong = 28,
+        RequestTrade = 29,
+        Reskin = 30,
+        ShootAck = 32,
+        SquareHit = 33,
+        Teleport = 34,
+        UpdateAck = 35,
+        UseItem = 36,
+        UsePortal = 37
+    }
     private void ProcessHello(string buildVer, int gameId, string email, string pwd, short charId, bool createChar,
         ushort charType, ushort skinType)
     {
@@ -25,23 +61,23 @@ public sealed partial class Client
         }
 
         var acc = Database.Verify(email, pwd, IP);
-        if (acc == null)
-        {
-            Send(Failure(0, "Invalid account."));
+        if (acc == null) {
+            SLog.Info("Invalid account, disconnecting {0}", IP);
+            SendFailure(0, "Invalid account.");
             Manager.AddTimedAction(1000, Disconnect);
             return;
         }
 
-        if (acc.Banned)
-        {
-            Send(Failure(0, "Banned."));
+        if (acc.Banned) {
+            SLog.Info("Banned, disconnecting {0}", IP);
+            SendFailure(0, "Banned.");
             Manager.AddTimedAction(1000, Disconnect);
             return;
         }
 
-        if (!acc.Ranked && Settings.AdminOnly)
-        {
-            Send(Failure(0, "Admin Only."));
+        if (!acc.Ranked && Settings.AdminOnly) {
+            SLog.Info("Admin Only, disconnecting {0}", IP);
+            SendFailure(0, "Admin Only.");
             Manager.AddTimedAction(1000, Disconnect);
             return;
         }
@@ -54,12 +90,13 @@ public sealed partial class Client
 
         Manager.GetClient(acc.Id)?.Disconnect();
 
-        if (Database.IsAccountInUse(acc))
-        {
-            Send(Failure(0, "Account in use!"));
+        if (Database.IsAccountInUse(acc)) {
+            SLog.Info("Account in use! disconnecting {0}", IP);
+            SendFailure(0, "Account in use!");
             Manager.AddTimedAction(1000, Disconnect);
             return;
         }
+
 
         Account = acc;
         Account.Connected = true;
@@ -81,9 +118,9 @@ public sealed partial class Client
         //}
 #endif
 
-        if (world == null)
-        {
-            Send(Failure(0, "Invalid world!"));
+        if (world == null) {
+            SLog.Info("Invalid world! disconnecting {0}", IP);
+            SendFailure(0, "Invalid world!");
             Manager.AddTimedAction(1000, Disconnect);
             return;
         }
@@ -111,7 +148,7 @@ public sealed partial class Client
         SLog.Debug("Creating new character {0}, {1}", classType, skinType);
         var character = Database.CreateCharacter(Account, classType, skinType);
         if (character == null) {
-            Send(Failure(0, "Failed to create character."));
+            SendFailure(0, "Failed to create character.");
             Disconnect();
             return;
         }
@@ -127,7 +164,7 @@ public sealed partial class Client
         Character = character;
         Player = new Player(this);
         State = ProtocolState.Connected;
-        Send(CreateSuccess(world.AddEntity(Player, world.GetSpawnRegion().ToVector2()), Character.Id));
+        SendCreateSuccess(world.AddEntity(Player, world.GetSpawnRegion().ToVector2()), Character.Id);
     }
 
     private void Load(int charId)
@@ -135,7 +172,7 @@ public sealed partial class Client
         SLog.Debug("Loading character {0}", charId);
         var character = Database.LoadCharacter(Account, charId);
         if (character == null || character.Dead) {
-            Send(Failure(0, "Failed to load character."));
+            SendFailure(0, "Failed to load character.");
             Disconnect();
             return;
         }
@@ -144,6 +181,6 @@ public sealed partial class Client
         Character = character;
         Player = new Player(this);
         State = ProtocolState.Connected;
-        Send(CreateSuccess(world.AddEntity(Player, world.GetSpawnRegion().ToVector2()), Character.Id));
+        SendCreateSuccess(world.AddEntity(Player, world.GetSpawnRegion().ToVector2()), Character.Id);
     }
 }

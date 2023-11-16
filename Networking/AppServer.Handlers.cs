@@ -3,7 +3,6 @@ using RotMG.Game;
 using SimpleLog;
 using System.Collections.Specialized;
 using System.Net;
-using System.Runtime.InteropServices;
 using System.Xml.Linq;
 
 namespace RotMG.Networking

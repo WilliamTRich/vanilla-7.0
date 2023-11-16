@@ -9,87 +9,12 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using static RotMG.Networking.Client;
 
 namespace RotMG.Networking
 {
     public static partial class GameServer
     {
-        public enum C2SPacketId : byte //Client 2 Server 
-        {
-            Unknown = 0,
-            AcceptTrade = 1,
-            AoeAck = 2,
-            Buy = 3,
-            CancelTrade = 4,
-            ChangeGuildRank = 5,
-            ChangeTrade = 6,
-            ChooseName = 8,
-            CreateGuild = 10,
-            EditAccountList = 11,
-            EnemyHit = 12,
-            Escape = 13,
-            GroundDamage = 15,
-            GuildInvite = 16,
-            GuildRemove = 17,
-            Hello = 18,
-            InvDrop = 19,
-            InvSwap = 20,
-            JoinGuild = 21,
-            Move = 23,
-            OtherHit = 24,
-            PlayerHit = 25,
-            PlayerShoot = 26,
-            PlayerText = 27,
-            Pong = 28,
-            RequestTrade = 29,
-            Reskin = 30,
-            ShootAck = 32,
-            SquareHit = 33,
-            Teleport = 34,
-            UpdateAck = 35,
-            UseItem = 36,
-            UsePortal = 37
-        }
-
-        public enum S2CPacketId : byte //Server 2 Client
-        {
-            Unknown = 0,
-            AccountList = 1,
-            AllyShoot = 2,
-            Aoe = 3,
-            BuyResult = 4,
-            ClientStat = 5,
-            CreateSuccess = 6,
-            Damage = 7,
-            Death = 8,
-            EnemyShoot = 9,
-            Failure = 10,
-            File = 11,
-            GlobalNotification = 12,
-            GoTo = 13,
-            GuildResult = 14,
-            InvResult = 15,
-            InvitedToGuild = 16,
-            MapInfo = 17,
-            NameResult = 18,
-            NewTick = 19,
-            Notification = 20,
-            Pic = 21,
-            Ping = 22,
-            PlaySound = 23,
-            QuestObjId = 24,
-            Reconnect = 25,
-            ServerPlayerShoot = 26,
-            ShowEffect = 27,
-            Text = 28,
-            TradeAccepted = 29,
-            TradeChanged = 30,
-            TradeDone = 31,
-            TradeRequested = 32,
-            TradeStart = 33,
-            Update = 34
-        }
-
         public static void Read(Client client, int id, byte[] data)
         {
             //To much spam imo

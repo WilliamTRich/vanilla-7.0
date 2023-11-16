@@ -150,9 +150,9 @@ namespace RotMG.Networking
 
             try
             {
-                SLog.Info($"Sending packet {(S2CPacketId)_send.PacketBytes.AsSpan()[LENGTH_PREFIX]} {len}");
-                BinaryPrimitives.WriteUInt16LittleEndian(_send.PacketBytes.AsSpan(), (ushort)(len - LENGTH_PREFIX));
-                _ = await _socket.SendAsync(_send.PacketBytes[..len]);
+                SLog.Info($"Sending packet {(S2CPacketId)_send.Data.AsSpan()[LENGTH_PREFIX]} {len}");
+                BinaryPrimitives.WriteUInt16LittleEndian(_send.Data.AsSpan(), (ushort)(len - LENGTH_PREFIX));
+                _ = await _socket.SendAsync(_send.Data[..len]);
             }
             catch (Exception e)
             {
