@@ -1,6 +1,7 @@
 ﻿using RotMG.Common;
 using RotMG.Game;
 using RotMG.Game.Entities;
+using RotMG.Utils;
 using SimpleLog;
 using System;
 using System.Buffers.Binary;
@@ -43,7 +44,7 @@ namespace RotMG.Networking
         private ReceiveState _receive;
 
         public CancellationTokenSource TokenSource;
-
+        public bool Reconnecting;
         public Client(SendState send, ReceiveState receive)
         {
             _pending = new Queue<byte[]>();
@@ -52,7 +53,7 @@ namespace RotMG.Networking
             TokenSource = new();
         }
 
-        public void Disconnect() //Disconnects, clears all individual client data and pushes the instance back to the server queue.
+        public void Disconnect(string message = "") //Disconnects, clears all individual client data and pushes the instance back to the server queue.
         {
             TokenSource.Cancel();
 
@@ -68,30 +69,12 @@ namespace RotMG.Networking
             {
                 SLog.Debug($"Disconnecting client from <{_socket.RemoteEndPoint}>");
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 SLog.Error(ex.ToString());
             }
 #endif
-            //Save what's needed
-            if (Account != null)
-            {
-                Account.Connected = false;
-                Account.LastSeen = Database.UnixTime();
-                Account.Save();
-                Manager.AccountIdToClientId.Remove(Account.Id);
-
-                if (Player != null && Player.Parent != null)
-                {
-                    Player.TradeDone(Player.TradeResult.Canceled);
-                    Player.SaveToCharacter();
-                    Player.Parent.RemoveEntity(Player);
-                    if (!Character.Dead) //Already saved during death.
-                    {
-                        Database.SaveCharacter(Character);
-                    }
-                }
-            }
+            TrySave();
 
             //Shutdown socket
             State = ProtocolState.Disconnected;
@@ -104,7 +87,7 @@ namespace RotMG.Networking
 #if DEBUG
             catch (Exception ex)
             {
-                SLog.Error( ex);
+                SLog.Error(ex);
             }
 #endif
 #if RELEASE
@@ -130,6 +113,88 @@ namespace RotMG.Networking
             GameServer.AddBack(this);
         }
 
+        private void TrySave() {
+            try {
+                if (Account == null)
+                    return;
+
+                Account.Connected = false;
+                Account.LastSeen = Database.UnixTime();
+                Account.Save();
+            
+                Manager.AccountIdToClientId.Remove(Account.Id);
+
+                if (Player == null || Player.Parent == null)
+                    return;
+                
+                Player.TradeDone(Player.TradeResult.Canceled);
+                Player.SaveToCharacter();
+                Player.Parent.RemoveEntity(Player);
+
+                //Already saved during death.
+                if (Character.Dead)
+                    return;
+                
+                Database.SaveCharacter(Character);
+            }
+            catch(Exception e) {
+                SLog.Error(e);
+            }
+        }
+        public void Reconnect(int gameId)
+        {
+            var player = Player;
+            var currentWorld = Player.Parent;
+
+            var world = Manager.GetWorld(gameId, this);
+            if (world == null || world.Deleted)
+                world = Manager.GetWorld(Manager.NexusId, this);
+
+            if (!world.AllowedAccess(this)) {
+                if (gameId == Manager.NexusId)
+                {
+                    Disconnect();
+                    return;
+                }
+
+                world = Manager.GetWorld(Manager.NexusId, this);
+            }
+
+            var seed = (uint)((long)Environment.TickCount * Account.Id.GetHashCode()) % uint.MaxValue;
+            Random = new wRandom(seed);
+
+            // send out map info
+            var mapSize = Math.Max(world.Map.Width, world.Map.Height);
+            SendMapInfo(mapSize, mapSize, world.Name, world.DisplayName, seed, 0/*world.Difficulty*/,
+                world.Background, world.AllowTeleport, world.ShowDisplays,
+                0, 0, 0, 0, //Lights
+                /*world.BgLightColor, world.BgLightIntensity, world.DayLightIntensity, world.NightLightIntensity,*/
+                (long)Manager.TickWatch.Elapsed.TotalMicroseconds);
+
+            // send out account lock/ignore list
+            //SendAccountList(0, Account.LockedIds);
+            //SendAccountList(1, Account.IgnoredIds);
+
+            if (Character != null) {
+                if (Character.Dead) {
+                    Disconnect("Character is dead");
+                    return;
+                }
+
+                currentWorld?.RemoveEntity(player);
+                player.CleanupReconnect();
+
+                // dispose update
+                var at = world.GetSpawnRegion().ToVector2();
+
+                var objectId = world.AddEntity(player, at, true);
+                SendCreateSuccess(objectId, Character.Id);
+            }
+            else
+            {
+                Disconnect("Failed to load character");
+            }
+        }
         public void BeginHandling(Socket socket, string ip)
         {
             _socket = socket;
@@ -189,30 +254,31 @@ namespace RotMG.Networking
             }
         }
 
-        private void ProcessPacket(int len)
-        {
+        private void ProcessPacket(int len) {
             var ptr = 0;
             ref var spanRef = ref MemoryMarshal.GetReference(_receive.PacketBytes.AsSpan());
-            while (ptr < len)
-            {
+            while (ptr < len) {
                 var packetLen = PacketUtils.ReadUShort(ref ptr, ref spanRef, len);
                 var nextPacketPtr = ptr + packetLen - 2;
                 var packetId = (C2SPacketId)PacketUtils.ReadByte(ref ptr, ref spanRef, nextPacketPtr);
 
+                if (Reconnecting) 
+                    SLog.Debug("Handling: {0} while reconnect is in process", packetId);
+                
+
                 SLog.Info("Packet received {0}", packetId);
 
-                switch (packetId)
-                {
+                switch (packetId) {
                     //case C2SPacketId.AcceptTrade:
                     //    ProcessAcceptTrade(PacketUtils.ReadBoolArray(ref ptr, ref spanRef, nextPacketPtr),
                     //        PacketUtils.ReadBoolArray(ref ptr, ref spanRef, nextPacketPtr));
                     //
                     //    break;
-                    //case C2SPacketId.AoeAck:
-                    //    ProcessAoeAck(PacketUtils.ReadLong(ref ptr, ref spanRef, nextPacketPtr), PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr));
-                    //
-                    //    break;
+                    case C2SPacketId.AoeAck:
+                        ProcessAoeAck(PacketUtils.ReadLong(ref ptr, ref spanRef, nextPacketPtr), PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr));
+                    
+                        break;
                     //case C2SPacketId.Buy:
                     //    ProcessBuy(PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr));
                     //    break;
@@ -239,15 +305,15 @@ namespace RotMG.Networking
                     //        PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr));
                     //
                     //    break;
-                    //case C2SPacketId.EnemyHit:
-                    //    ProcessEnemyHit(PacketUtils.ReadLong(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadByte(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr), ReadBool(ref ptr, ref spanRef, nextPacketPtr));
-                    //
-                    //    break;
-                    //case C2SPacketId.Escape:
-                    //    ProcessEscape();
-                    //    break;
+                    case C2SPacketId.EnemyHit:
+                        ProcessEnemyHit(PacketUtils.ReadLong(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadByte(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr), PacketUtils.ReadBool(ref ptr, ref spanRef, nextPacketPtr));
+                    
+                        break;
+                    case C2SPacketId.Escape:
+                        ProcessEscape();
+                        break;
                     //case C2SPacketId.GroundDamage:
                     //    ProcessGroundDamage(PacketUtils.ReadLong(ref ptr, ref spanRef, nextPacketPtr),
                     //        PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr),
@@ -273,92 +339,92 @@ namespace RotMG.Networking
                             ProcessHello(buildVer, gameId, guid, pwd, chrId, createChar, charType, skinType);
                             break;
                         }
-                    //case C2SPacketId.InvDrop:
-                    //    ProcessInvDrop(PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadByte(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr));
-                    //
-                    //    break;
-                    //case C2SPacketId.InvSwap:
-                    //    ProcessInvSwap(PacketUtils.ReadLong(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr), PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadByte(ref ptr, ref spanRef, nextPacketPtr), PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr), PacketUtils.ReadByte(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr));
-                    //
-                    //    break;
+                    case C2SPacketId.InvDrop:
+                        ProcessInvDrop(PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadByte(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr));
+                    
+                        break;
+                    case C2SPacketId.InvSwap:
+                        ProcessInvSwap(PacketUtils.ReadLong(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr), PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadByte(ref ptr, ref spanRef, nextPacketPtr), PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr), PacketUtils.ReadByte(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr));
+                    
+                        break;
                     //case C2SPacketId.JoinGuild:
                     //    ProcessJoinGuild(PacketUtils.ReadString(ref ptr, ref spanRef, nextPacketPtr));
                     //    break;
-                    //case C2SPacketId.Move:
-                    //    {
-                    //        var tickId = PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr);
-                    //        var time = PacketUtils.ReadLong(ref ptr, ref spanRef, nextPacketPtr);
-                    //        var x = PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr);
-                    //        var y = PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr);
-                    //        ProcessMove(tickId, time, x, y, PacketUtils.ReadMoveRecordArray(ref ptr, ref spanRef, nextPacketPtr));
-                    //        break;
-                    //    }
-                    //case C2SPacketId.OtherHit:
-                    //    ProcessOtherHit(PacketUtils.ReadLong(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadByte(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr), PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr));
-                    //
-                    //    break;
-                    //case C2SPacketId.PlayerHit:
-                    //    ProcessPlayerHit(PacketUtils.ReadByte(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr));
-                    //
-                    //    break;
-                    //case C2SPacketId.PlayerShoot:
-                    //    ProcessPlayerShoot(PacketUtils.ReadLong(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadByte(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadUShort(ref ptr, ref spanRef, nextPacketPtr), PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr), PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr));
-                    //
-                    //    break;
-                    //case C2SPacketId.PlayerText:
-                    //    ProcessPlayerText(PacketUtils.ReadString(ref ptr, ref spanRef, nextPacketPtr));
-                    //    break;
-                    //case C2SPacketId.Pong:
-                    //    ProcessPong(PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadLong(ref ptr, ref spanRef, nextPacketPtr));
-                    //
-                    //    break;
+                    case C2SPacketId.Move:
+                        {
+                            var tickId = PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr);
+                            var time = PacketUtils.ReadLong(ref ptr, ref spanRef, nextPacketPtr);
+                            var x = PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr);
+                            var y = PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr);
+                            ProcessMove(tickId, time, x, y, PacketUtils.ReadMoveRecordArray(ref ptr, ref spanRef, nextPacketPtr));
+                            break;
+                        }
+                    case C2SPacketId.OtherHit:
+                        ProcessOtherHit(PacketUtils.ReadLong(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadByte(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr), PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr));
+                    
+                        break;
+                    case C2SPacketId.PlayerHit:
+                        ProcessPlayerHit(PacketUtils.ReadByte(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr));
+                    
+                        break;
+                    case C2SPacketId.PlayerShoot:
+                        ProcessPlayerShoot(PacketUtils.ReadLong(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadByte(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadUShort(ref ptr, ref spanRef, nextPacketPtr), PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr), PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr));
+                    
+                        break;
+                    case C2SPacketId.PlayerText:
+                        ProcessPlayerText(PacketUtils.ReadString(ref ptr, ref spanRef, nextPacketPtr));
+                        break;
+                    case C2SPacketId.Pong:
+                        ProcessPong(PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadLong(ref ptr, ref spanRef, nextPacketPtr));
+                    
+                        break;
                     //case C2SPacketId.RequestTrade:
                     //    ProcessRequestTrade(PacketUtils.ReadString(ref ptr, ref spanRef, nextPacketPtr));
                     //    break;
                     //case C2SPacketId.Reskin:
                     //    ProcessReskin((ushort)PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr));
                     //    break;
-                    //case C2SPacketId.ShootAck:
-                    //    ProcessShootAck(PacketUtils.ReadLong(ref ptr, ref spanRef, nextPacketPtr));
-                    //    break;
-                    //case C2SPacketId.SquareHit:
-                    //    ProcessSquareHit(PacketUtils.ReadLong(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadByte(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr));
-                    //
-                    //    break;
-                    //case C2SPacketId.Teleport:
-                    //    ProcessTeleport(PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr));
-                    //    break;
-                    //case C2SPacketId.UpdateAck:
-                    //    ProcessUpdateAck();
-                    //    break;
-                    //case C2SPacketId.UseItem:
-                    //    ProcessUseItem(PacketUtils.ReadLong(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadByte(ref ptr, ref spanRef, nextPacketPtr),
-                    //        (ushort)PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr), PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr),
-                    //        PacketUtils.ReadByte(ref ptr, ref spanRef, nextPacketPtr));
-                    //
-                    //    break;
-                    //case C2SPacketId.UsePortal:
-                    //    ProcessUsePortal(PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr));
-                    //    break;
+                    case C2SPacketId.ShootAck:
+                        ProcessShootAck(PacketUtils.ReadLong(ref ptr, ref spanRef, nextPacketPtr));
+                        break;
+                    case C2SPacketId.SquareHit:
+                        ProcessSquareHit(PacketUtils.ReadLong(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadByte(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr));
+                    
+                        break;
+                    case C2SPacketId.Teleport:
+                        ProcessTeleport(PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr));
+                        break;
+                    case C2SPacketId.UpdateAck:
+                        ProcessUpdateAck();
+                        break;
+                    case C2SPacketId.UseItem:
+                        ProcessUseItem(PacketUtils.ReadLong(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadByte(ref ptr, ref spanRef, nextPacketPtr),
+                            (ushort)PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr), PacketUtils.ReadFloat(ref ptr, ref spanRef, nextPacketPtr),
+                            PacketUtils.ReadByte(ref ptr, ref spanRef, nextPacketPtr));
+                    
+                        break;
+                    case C2SPacketId.UsePortal:
+                        ProcessUsePortal(PacketUtils.ReadInt(ref ptr, ref spanRef, nextPacketPtr));
+                        break;
                     default:
                         SLog.Warn($"Unhandled packet '.{packetId}'.");
                         break;

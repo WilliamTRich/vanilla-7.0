@@ -71,12 +71,15 @@ namespace RotMG.Game
             }
         }
 
+        public bool Deleted;
+
         private event Action OnClosedChanged;
 
         protected int AliveTime;
 
         public World(Map map, WorldDesc desc)
         {
+            Deleted = false;
             Map = map;
             Width = map.Width;
             Height = map.Height;
@@ -176,6 +179,7 @@ namespace RotMG.Game
                 }
             }
             UpdateCount = int.MaxValue / 2;
+            Deleted = false;
         }
 
         public IntPoint GetRegion(Region region)
@@ -324,7 +328,12 @@ namespace RotMG.Game
             var tile = GetTile(x, y);
             return tile == null || tile.BlocksSight;
         }
-
+        public bool InBounds(int x, int y)
+        {
+            if (x < 0 || y < 0 || x >= Width || y >= Height)
+                return false;
+            return true;
+        }
         public Tile GetTileF(float x, float y)
         {
             if (x < 0 || y < 0 || x >= Width || y >= Height)
@@ -391,7 +400,9 @@ namespace RotMG.Game
 #endif
             if (en.Position != to)
             {
+                var previous = en.Position;
                 en.Position = to;
+                en.PreviousPosition = previous;
                 en.UpdateCount++;
 
                 if (en is StaticObject)
@@ -403,19 +414,21 @@ namespace RotMG.Game
             }
         }
 
-        public virtual int AddEntity(Entity en, Vector2 at)
+        public virtual int AddEntity(Entity en, Vector2 at, bool noIdChange = false)
         {
 #if DEBUG
             if (en == null)
                 throw new Exception("Entity is null.");
-            if (en.Id != 0)
+            if (!noIdChange && en.Id != 0)
                 throw new Exception("Entity has already been added.");
 #endif
 
             if (GetTileF(at.X, at.Y) == null)
                 return -1;
 
-            en.Id = ++NextObjectId;
+            if(!noIdChange)
+                en.Id = ++NextObjectId;
+            
             en.Parent = this;
             en.Position = at;
             en.SpawnPoint = at;
@@ -595,6 +608,8 @@ namespace RotMG.Game
 
         public virtual void Dispose()
         {
+            Deleted = true;
+
             foreach (var en in Entities.Values.ToArray()) RemoveEntity(en);
             foreach (Entity en in Players.Values.ToArray()) RemoveEntity(en);
             foreach (Entity en in Statics.Values.ToArray()) RemoveEntity(en);

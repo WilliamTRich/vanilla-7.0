@@ -4,6 +4,7 @@ using RotMG.Networking;
 using RotMG.Utils;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 
 namespace RotMG.Game.Entities
@@ -169,10 +170,9 @@ namespace RotMG.Game.Entities
         }
 
         public FameStatsInfo FameStats;
-
         public Player(Client client) : base((ushort)client.Character.ClassType)
         {
-            PrivateSVs = new Dictionary<StatType, object>();
+            PrivateSVs = [];
 
             Client = client;
             Hp = client.Character.HP;
@@ -396,11 +396,14 @@ namespace RotMG.Game.Entities
 
         public override void Tick()
         {
-            if (TooLongSinceLastValidation())
-            {
-                Client.Disconnect();
+            if (!KeepAlive())
                 return;
-            }
+
+            //if (TooLongSinceLastValidation())
+            //{
+            //    Client.Disconnect();
+            //    return;
+            //}
 
             if (Manager.TotalTime % 60000 == 0)
                 FameStats.MinutesActive++;
@@ -474,6 +477,23 @@ namespace RotMG.Game.Entities
             AwaitingGoto.Clear();
             PrivateSVs.Clear();
             base.Dispose();
+        }
+
+        public void CleanupReconnect()
+        {
+            Dispose();
+
+            TickId = 0;
+            _pingTime = -1;
+            _pongTime = -1;
+            LastClientTime = -1;
+            LastServerTime = -1;
+
+            _move.Clear();
+            _shootAckTimeout.Clear();
+            _updateAckTimeout.Clear();
+            _clientTimeLog.Clear();
+            _serverTimeLog.Clear();
         }
     }
 }

@@ -15,116 +15,116 @@ namespace RotMG.Networking
 {
     public static partial class GameServer
     {
-        public static void Read(Client client, int id, byte[] data)
-        {
-            //To much spam imo
-#if DEBUG
-            if (id != (int)C2SPacketId.Move)
-                SLog.Debug( $"Packet received <{(C2SPacketId)id}> <{string.Join(" ,",data.Select(k => k.ToString()).ToArray())}>");
-#endif
-
-            if (!client.Active) {
-#if DEBUG
-                SLog.Error( "Didn't process packet, client not active");
-#endif
-                return;
-            }
-
-            using var rdr = new PacketReader(new MemoryStream(data));
-
-            switch ((C2SPacketId)id)
-            {
-                case C2SPacketId.Hello:
-                    Hello(client, rdr);
-                    break;
-                case C2SPacketId.UpdateAck:
-                    break;
-                //case C2SPacketId.Create:
-                //    Create(client, rdr);
-                //    break;
-                //case C2SPacketId.Load:
-                //    Load(client, rdr);
-                //    break;
-                case C2SPacketId.Move:
-                    Move(client, rdr);
-                    break;
-                case C2SPacketId.InvSwap:
-                    InvSwap(client, rdr);
-                    break;
-                case C2SPacketId.ShootAck:
-                    ShootAck(client, rdr);
-                    break;
-                case C2SPacketId.AoeAck:
-                    AoeAck(client, rdr);
-                    break;
-                case C2SPacketId.PlayerHit:
-                    PlayerHit(client, rdr);
-                    break;
-                case C2SPacketId.SquareHit:
-                    SquareHit(client, rdr);
-                    break;
-                case C2SPacketId.PlayerShoot:
-                    PlayerShoot(client, rdr);
-                    break;
-                case C2SPacketId.EnemyHit:
-                    EnemyHit(client, rdr);
-                    break;
-                case C2SPacketId.PlayerText:
-                    PlayerText(client, rdr);
-                    break;
-                case C2SPacketId.EditAccountList:
-                    EditAccountList(client, rdr);
-                    break;
-                case C2SPacketId.UseItem:
-                    UseItem(client, rdr);
-                    break;
-                //case C2SPacketId.GotoAck:
-                //    GotoAck(client, rdr);
-                //    break;
-                case C2SPacketId.Escape:
-                    Escape(client, rdr);
-                    break;
-                case C2SPacketId.InvDrop:
-                    InvDrop(client, rdr);
-                    break;
-                case C2SPacketId.UsePortal:
-                    UsePortal(client, rdr);
-                    break;
-                case C2SPacketId.Buy:
-                    Buy(client, rdr);
-                    break;
-                case C2SPacketId.Teleport:
-                    Teleport(client, rdr);
-                    break;
-                case C2SPacketId.CreateGuild:
-                    CreateGuild(client, rdr);
-                    break;
-                case C2SPacketId.GuildRemove:
-                    GuildRemove(client, rdr);
-                    break;
-                case C2SPacketId.GuildInvite:
-                    GuildInvite(client, rdr);
-                    break;
-                case C2SPacketId.JoinGuild:
-                    JoinGuild(client, rdr);
-                    break;
-                case C2SPacketId.ChangeGuildRank:
-                    ChangeGuildRank(client, rdr);
-                    break;
-                case C2SPacketId.RequestTrade:
-                    TradeRequest(client, rdr);
-                    break;
-                case C2SPacketId.ChangeTrade:
-                    ChangeTrade(client, rdr);
-                    break;
-                case C2SPacketId.CancelTrade:
-                    CancelTrade(client, rdr);
-                    break;
-                case C2SPacketId.AcceptTrade:
-                    AcceptTrade(client, rdr);
-                    break;
-            }
-        }
+        //public static void Read(Client client, int id, byte[] data)
+        //{
+        //    //To much spam imo
+#if DEBU//G
+        //    if (id != (int)C2SPacketId.Move)
+        //        SLog.Debug( $"Packet received <{(C2SPacketId)id}> <{string.Join(" ,",data.Select(k => k.ToString()).ToArray())}>");
+#endif  //
+        //
+        //    if (!client.Active) {
+#if DEBU//G
+        //        SLog.Error( "Didn't process packet, client not active");
+#endif  //
+        //        return;
+        //    }
+        //
+        //    using var rdr = new PacketReader(new MemoryStream(data));
+        //
+        //    switch ((C2SPacketId)id)
+        //    {
+        //        case C2SPacketId.Hello:
+        //            Hello(client, rdr);
+        //            break;
+        //        case C2SPacketId.UpdateAck:
+        //            break;
+        //        //case C2SPacketId.Create:
+        //        //    Create(client, rdr);
+        //        //    break;
+        //        //case C2SPacketId.Load:
+        //        //    Load(client, rdr);
+        //        //    break;
+        //        case C2SPacketId.Move:
+        //            Move(client, rdr);
+        //            break;
+        //        case C2SPacketId.InvSwap:
+        //            InvSwap(client, rdr);
+        //            break;
+        //        case C2SPacketId.ShootAck:
+        //            ShootAck(client, rdr);
+        //            break;
+        //        case C2SPacketId.AoeAck:
+        //            AoeAck(client, rdr);
+        //            break;
+        //        case C2SPacketId.PlayerHit:
+        //            PlayerHit(client, rdr);
+        //            break;
+        //        case C2SPacketId.SquareHit:
+        //            SquareHit(client, rdr);
+        //            break;
+        //        case C2SPacketId.PlayerShoot:
+        //            PlayerShoot(client, rdr);
+        //            break;
+        //        case C2SPacketId.EnemyHit:
+        //            EnemyHit(client, rdr);
+        //            break;
+        //        case C2SPacketId.PlayerText:
+        //            PlayerText(client, rdr);
+        //            break;
+        //        case C2SPacketId.EditAccountList:
+        //            EditAccountList(client, rdr);
+        //            break;
+        //        case C2SPacketId.UseItem:
+        //            UseItem(client, rdr);
+        //            break;
+        //        //case C2SPacketId.GotoAck:
+        //        //    GotoAck(client, rdr);
+        //        //    break;
+        //        case C2SPacketId.Escape:
+        //            Escape(client, rdr);
+        //            break;
+        //        case C2SPacketId.InvDrop:
+        //            InvDrop(client, rdr);
+        //            break;
+        //        case C2SPacketId.UsePortal:
+        //            UsePortal(client, rdr);
+        //            break;
+        //        case C2SPacketId.Buy:
+        //            Buy(client, rdr);
+        //            break;
+        //        case C2SPacketId.Teleport:
+        //            Teleport(client, rdr);
+        //            break;
+        //        case C2SPacketId.CreateGuild:
+        //            CreateGuild(client, rdr);
+        //            break;
+        //        case C2SPacketId.GuildRemove:
+        //            GuildRemove(client, rdr);
+        //            break;
+        //        case C2SPacketId.GuildInvite:
+        //            GuildInvite(client, rdr);
+        //            break;
+        //        case C2SPacketId.JoinGuild:
+        //            JoinGuild(client, rdr);
+        //            break;
+        //        case C2SPacketId.ChangeGuildRank:
+        //            ChangeGuildRank(client, rdr);
+        //            break;
+        //        case C2SPacketId.RequestTrade:
+        //            TradeRequest(client, rdr);
+        //            break;
+        //        case C2SPacketId.ChangeTrade:
+        //            ChangeTrade(client, rdr);
+        //            break;
+        //        case C2SPacketId.CancelTrade:
+        //            CancelTrade(client, rdr);
+        //            break;
+        //        case C2SPacketId.AcceptTrade:
+        //            AcceptTrade(client, rdr);
+        //            break;
+        //    }
+        //}
 
         //outbound
         public static byte[] Text(string name, int objectId, int numStars, int bubbleTime, string recipient, string text, uint chatColor = 0, uint textColor = 0, int accoundId = -1)
@@ -383,33 +383,33 @@ namespace RotMG.Networking
             (en as ISellable).Buy(client.Player);    
         }
 
-        private static void UsePortal(Client client, PacketReader rdr)
-        {
-            var objectId = rdr.ReadInt32();
-            client.Player.UsePortal(objectId);
-        }
+        //private static void UsePortal(Client client, PacketReader rdr)
+        //{
+        //    var objectId = rdr.ReadInt32();
+        //    client.Player.UsePortal(objectId);
+        //}
 
-        private static void InvDrop(Client client, PacketReader rdr)
-        {
-            var slot = rdr.ReadByte();
-            client.Player.DropItem(slot);
-        }
+        //private static void InvDrop(Client client, PacketReader rdr)
+        //{
+        //    var slot = rdr.ReadByte();
+        //    client.Player.DropItem(slot);
+        //}
 
-        private static void Escape(Client client, PacketReader rdr)
-        {
-            client.Active = false;
-            client.Player.FameStats.Escapes++;
-            if (client.Player.Hp <= 10)
-                client.Player.FameStats.NearDeathEscapes++;
-            client.Send(Reconnect(Manager.NexusId));
-            Manager.AddTimedAction(2000, client.Disconnect);
-        }
+        //private static void Escape(Client client, PacketReader rdr)
+        //{
+        //    client.Active = false;
+        //    client.Player.FameStats.Escapes++;
+        //    if (client.Player.Hp <= 10)
+        //        client.Player.FameStats.NearDeathEscapes++;
+        //    client.Send(Reconnect(Manager.NexusId));
+        //    Manager.AddTimedAction(2000, () => { client.Disconnect(); });
+        //}
 
-        private static void GotoAck(Client client, PacketReader rdr)
-        {
-            var time = rdr.ReadInt32(); 
-            client.Player.TryGotoAck(time);
-        }
+        //private static void GotoAck(Client client, PacketReader rdr)
+        //{
+        //    var time = rdr.ReadInt32(); 
+        //    client.Player.TryGotoAck(time);
+        //}
 
         private static void UseItem(Client client, PacketReader rdr)
         {
@@ -452,192 +452,192 @@ namespace RotMG.Networking
             client.Player.Chat(text);
         }
 
-        private static void EnemyHit(Client client, PacketReader rdr)
-        {
-            var time = rdr.ReadInt32();
-            var bulletId = rdr.ReadInt32();
-            var targetId = rdr.ReadInt32(); 
-            client.Player.TryHitEnemy(time, bulletId, targetId);
-        }
+        //private static void EnemyHit(Client client, PacketReader rdr)
+        //{
+        //    var time = rdr.ReadInt32();
+        //    var bulletId = rdr.ReadInt32();
+        //    var targetId = rdr.ReadInt32(); 
+        //    client.Player.TryHitEnemy(time, bulletId, targetId);
+        //}
 
-        private static void PlayerShoot(Client client, PacketReader rdr)
-        {
-            var time = rdr.ReadInt32();
-            var pos = new Vector2(rdr);
-            var angle = rdr.ReadSingle();
-            var ability = rdr.ReadBoolean();
-            var numShots = rdr.PeekChar() != -1 ? rdr.ReadByte() : (byte)1; 
-            client.Player.TryShoot(time, pos, angle, ability, numShots);
-        }
+        //private static void PlayerShoot(Client client, PacketReader rdr)
+        //{
+        //    var time = rdr.ReadInt32();
+        //    var pos = new Vector2(rdr);
+        //    var angle = rdr.ReadSingle();
+        //    var ability = rdr.ReadBoolean();
+        //    var numShots = rdr.PeekChar() != -1 ? rdr.ReadByte() : (byte)1; 
+        //    client.Player.TryShoot(time, pos, angle, ability, numShots);
+        //}
 
-        private static void SquareHit(Client client, PacketReader rdr)
-        {
-            var time = rdr.ReadInt32();
-            var bulletId = rdr.ReadInt32(); 
-            client.Player.TryHitSquare(time, bulletId);
-        }
+        //private static void SquareHit(Client client, PacketReader rdr)
+        //{
+        //    var time = rdr.ReadInt32();
+        //    var bulletId = rdr.ReadInt32(); 
+        //    client.Player.TryHitSquare(time, bulletId);
+        //}
 
-        private static void PlayerHit(Client client, PacketReader rdr)
-        {
-            var bulletId = rdr.ReadInt32(); 
-            client.Player.TryHit(bulletId);
-        }
+        //private static void PlayerHit(Client client, PacketReader rdr)
+        //{
+        //    var bulletId = rdr.ReadInt32(); 
+        //    client.Player.TryHit(bulletId);
+        //}
 
-        private static void ShootAck(Client client, PacketReader rdr)
-        {
-            var time = rdr.ReadInt32(); 
-            client.Player.TryShootAck(time);
-        }
+        //private static void ShootAck(Client client, PacketReader rdr)
+        //{
+        //    var time = rdr.ReadInt32(); 
+        //    client.Player.TryShootAck(time);
+        //}
 
-        private static void AoeAck(Client client, PacketReader rdr)
-        {
-            var time = rdr.ReadInt32();
-            var pos = new Vector2(rdr); 
-            client.Player.TryAckAoe(time, pos);
-        }
+        //private static void AoeAck(Client client, PacketReader rdr)
+        //{
+        //    var time = rdr.ReadInt32();
+        //    var pos = new Vector2(rdr); 
+        //    client.Player.TryAckAoe(time, pos);
+        //}
 
-        private static void Hello(Client client, PacketReader rdr)
-        {
-            var buildVersion = rdr.ReadString();
-            var gameId = rdr.ReadInt32();
-            var username = rdr.ReadString();
-            var password = rdr.ReadString();
-            var chrId = rdr.ReadInt16();
-            var createChar = rdr.ReadBoolean();
-            ushort chrType = (ushort)(createChar ? rdr.ReadInt16() : 0);
-            ushort chrSkin = (ushort)(createChar ? rdr.ReadInt16() : 0);
-            
-
-            if (client.State == ProtocolState.Handshaked) //Only allow Hello to be processed once.
-            {
-                var acc = Database.Verify(username, password, client.IP);
-                if (acc == null)
-                {
-                    client.Send(Failure(0, "Invalid account."));
-                    Manager.AddTimedAction(1000, client.Disconnect);
-                    return;
-                }
-
-                if (acc.Banned)
-                {
-                    client.Send(Failure(0, "Banned."));
-                    Manager.AddTimedAction(1000, client.Disconnect);
-                    return;
-                }
-
-                if(!acc.Ranked && Settings.AdminOnly) {
-                    client.Send(Failure(0, "Admin Only."));
-                    Manager.AddTimedAction(1000, client.Disconnect);
-                    return;
-                }
-
-                //if (!acc.Ranked && gameId == Manager.EditorId)
-                //{
-                //    client.Send(Failure(0, "Not ranked."));
-                //    Manager.AddTimedAction(1000, client.Disconnect);
-                //}
-
-                Manager.GetClient(acc.Id)?.Disconnect();
-
-                if (Database.IsAccountInUse(acc))
-                {
-                    client.Send(Failure(0, "Account in use!"));
-                    Manager.AddTimedAction(1000, client.Disconnect);
-                    return;
-                }
-
-                client.Account = acc;
-                client.Account.Connected = true;
-                client.Account.LastSeen = Database.UnixTime();
-                client.Account.Save();
-                client.TargetWorldId = gameId;
-
-                Manager.AccountIdToClientId[client.Account.Id] = client.Id;
-                var world = Manager.GetWorld(gameId, client);
-
-                
-#if DEBUG
-                //if (client.TargetWorldId == Manager.EditorId)
-                //{
-                //    SLog.Debug( "Loading editor world");
-                //    var map = new JSMap(Encoding.UTF8.GetString(mapJson));
-                //    world = new World(map, Resources.Worlds["Dreamland"]);
-                //    client.TargetWorldId = Manager.AddWorld(world);
-                //}
-#endif
-
-                if (world == null)
-                {
-                    client.Send(Failure(0, "Invalid world!"));
-                    Manager.AddTimedAction(1000, client.Disconnect);
-                    return;
-                }
-
-                var seed = (uint)MathUtils.NextInt(1, int.MaxValue - 1);
-                client.Random = new wRandom(seed);
-                client.Send(MapInfo(world.Width, world.Height, world.Name, world.DisplayName, seed, world.Background, world.ShowDisplays, world.AllowTeleport, world.Music));
-                client.State = ProtocolState.Awaiting; //Allow the processing of Load/Create.
-
-
-                if (createChar) {
-                    Create(client, chrType, chrSkin);
-                }
-                else Load(client, chrId);
-            }
-        }
-
-        private static void Create(Client client, ushort classType, ushort skinType)
-        {
-            var character = Database.CreateCharacter(client.Account, classType, skinType);
-            if (character == null)
-            {
-                client.Send(Failure(0, "Failed to create character."));
-                client.Disconnect();
-                return;
-            }
-            var targetWorld = client.TargetWorldId;
-            //If this is their first character
-            if (client.Account.NextCharId == 1 && !client.Account.VisitedTutorial) {
-                targetWorld = Manager.TutorialId;
-            }
-
-            SLog.Debug( $"Connecting player to {targetWorld} | {client.TargetWorldId} | {client.Account.NextCharId} {client.Account.VisitedTutorial}");
-            
-            var world = Manager.GetWorld(targetWorld, client);
-            client.Character = character;
-            client.Player = new Player(client);
-            client.State = ProtocolState.Connected;
-            client.Send(CreateSuccess(world.AddEntity(client.Player, world.GetSpawnRegion().ToVector2()), client.Character.Id));
-        }
-
-        private static void Load(Client client, int charId)
-        {
-            //var charId = rdr.ReadInt32();
-
-            //if (client.State == ProtocolState.Awaiting)
-            //{
-                var character = Database.LoadCharacter(client.Account, charId);
-                if (character == null || character.Dead)
-                {
-                    client.Send(Failure(0, "Failed to load character."));
-                    client.Disconnect();
-                    return;
-                }
-
-                var world = Manager.GetWorld(client.TargetWorldId, client);
-                client.Character = character;
-                client.Player = new Player(client);
-                client.State = ProtocolState.Connected;
-                client.Send(CreateSuccess(world.AddEntity(client.Player, world.GetSpawnRegion().ToVector2()), client.Character.Id));
-            //}
-        }
-
-        private static void Move(Client client, PacketReader rdr)
-        {
-            var time = rdr.ReadInt32();
-            var position = new Vector2(rdr); 
-            client.Player.TryMove(time, position);
-        }
+        //private static void Hello(Client client, PacketReader rdr)
+        //{
+        //    var buildVersion = rdr.ReadString();
+        //    var gameId = rdr.ReadInt32();
+        //    var username = rdr.ReadString();
+        //    var password = rdr.ReadString();
+        //    var chrId = rdr.ReadInt16();
+        //    var createChar = rdr.ReadBoolean();
+        //    ushort chrType = (ushort)(createChar ? rdr.ReadInt16() : 0);
+        //    ushort chrSkin = (ushort)(createChar ? rdr.ReadInt16() : 0);
+        //    
+        //
+        //    if (client.State == ProtocolState.Handshaked) //Only allow Hello to be processed once.
+        //    {
+        //        var acc = Database.Verify(username, password, client.IP);
+        //        if (acc == null)
+        //        {
+        //            client.Send(Failure(0, "Invalid account."));
+        //            Manager.AddTimedAction(1000, () => { client.Disconnect("Invalid account."); });
+        //            return;
+        //        }
+        //
+        //        if (acc.Banned)
+        //        {
+        //            client.Send(Failure(0, "Banned."));
+        //            Manager.AddTimedAction(1000, () => { client.Disconnect("Bannedaccount."); });
+        //            return;
+        //        }
+        //
+        //        if(!acc.Ranked && Settings.AdminOnly) {
+        //            client.Send(Failure(0, "Admin Only."));
+        //            Manager.AddTimedAction(1000, client.Disconnect);
+        //            return;
+        //        }
+        //
+        //        //if (!acc.Ranked && gameId == Manager.EditorId)
+        //        //{
+        //        //    client.Send(Failure(0, "Not ranked."));
+        //        //    Manager.AddTimedAction(1000, client.Disconnect);
+        //        //}
+        //
+        //        Manager.GetClient(acc.Id)?.Disconnect();
+        //
+        //        if (Database.IsAccountInUse(acc))
+        //        {
+        //            client.Send(Failure(0, "Account in use!"));
+        //            Manager.AddTimedAction(1000, client.Disconnect);
+        //            return;
+        //        }
+        //
+        //        client.Account = acc;
+        //        client.Account.Connected = true;
+        //        client.Account.LastSeen = Database.UnixTime();
+        //        client.Account.Save();
+        //        client.TargetWorldId = gameId;
+        //
+        //        Manager.AccountIdToClientId[client.Account.Id] = client.Id;
+        //        var world = Manager.GetWorld(gameId, client);
+        //
+        //        
+#if DEBU//G
+        //        //if (client.TargetWorldId == Manager.EditorId)
+        //        //{
+        //        //    SLog.Debug( "Loading editor world");
+        //        //    var map = new JSMap(Encoding.UTF8.GetString(mapJson));
+        //        //    world = new World(map, Resources.Worlds["Dreamland"]);
+        //        //    client.TargetWorldId = Manager.AddWorld(world);
+        //        //}
+#endif  //
+        //
+        //        if (world == null)
+        //        {
+        //            client.Send(Failure(0, "Invalid world!"));
+        //            Manager.AddTimedAction(1000, client.Disconnect);
+        //            return;
+        //        }
+        //
+        //        var seed = (uint)MathUtils.NextInt(1, int.MaxValue - 1);
+        //        client.Random = new wRandom(seed);
+        //        client.Send(MapInfo(world.Width, world.Height, world.Name, world.DisplayName, seed, world.Background, world.ShowDisplays, world.AllowTeleport, world.Music));
+        //        client.State = ProtocolState.Awaiting; //Allow the processing of Load/Create.
+        //
+        //
+        //        if (createChar) {
+        //            Create(client, chrType, chrSkin);
+        //        }
+        //        else Load(client, chrId);
+        //    }
+        //}
+        //
+        //private static void Create(Client client, ushort classType, ushort skinType)
+        //{
+        //    var character = Database.CreateCharacter(client.Account, classType, skinType);
+        //    if (character == null)
+        //    {
+        //        client.Send(Failure(0, "Failed to create character."));
+        //        client.Disconnect();
+        //        return;
+        //    }
+        //    var targetWorld = client.TargetWorldId;
+        //    //If this is their first character
+        //    if (client.Account.NextCharId == 1 && !client.Account.VisitedTutorial) {
+        //        targetWorld = Manager.TutorialId;
+        //    }
+        //
+        //    SLog.Debug( $"Connecting player to {targetWorld} | {client.TargetWorldId} | {client.Account.NextCharId} {client.Account.VisitedTutorial}");
+        //    
+        //    var world = Manager.GetWorld(targetWorld, client);
+        //    client.Character = character;
+        //    client.Player = new Player(client);
+        //    client.State = ProtocolState.Connected;
+        //    client.Send(CreateSuccess(world.AddEntity(client.Player, world.GetSpawnRegion().ToVector2()), client.Character.Id));
+        //}
+        //
+        //private static void Load(Client client, int charId)
+        //{
+        //    //var charId = rdr.ReadInt32();
+        //
+        //    //if (client.State == ProtocolState.Awaiting)
+        //    //{
+        //        var character = Database.LoadCharacter(client.Account, charId);
+        //        if (character == null || character.Dead)
+        //        {
+        //            client.Send(Failure(0, "Failed to load character."));
+        //            client.Disconnect();
+        //            return;
+        //        }
+        //
+        //        var world = Manager.GetWorld(client.TargetWorldId, client);
+        //        client.Character = character;
+        //        client.Player = new Player(client);
+        //        client.State = ProtocolState.Connected;
+        //        client.Send(CreateSuccess(world.AddEntity(client.Player, world.GetSpawnRegion().ToVector2()), client.Character.Id));
+        //    //}
+        //}
+        //
+        //private static void Move(Client client, PacketReader rdr)
+        //{
+        //    var time = rdr.ReadInt32();
+        //    var position = new Vector2(rdr); 
+        //    client.Player.TryMove(time, position);
+        //}
 
         private static void InvSwap(Client client, PacketReader rdr)
         {

@@ -19,37 +19,32 @@ namespace RotMG.Game.Entities
         public void UsePortal(int objectId)
         {
             var entity = Parent.GetEntity(objectId);
-            if (!(entity is Portal portal))
-            {
+            if (entity is not Portal portal) {
 #if DEBUG
-                SLog.Error( $"{entity} from UsePortal is not a portal");
+                SLog.Error("{0} from UsePortal is not a portal", entity);
 #endif
                 return;
             }
             
-            if (entity.Position.Distance(this) > ContainerMinimumDistance)
-            {
+            if (entity.Position.Distance(this) > ContainerMinimumDistance) {
 #if DEBUG
-                SLog.Error( "Too far away from portal");
+                SLog.Error("Too far away from portal");
 #endif
                 return;
             }
 
             var world = portal.GetWorldInstance(Client);
-            if (world == null)
-            {
+            if (world == null) {
                 SendError($"{portal.Desc.DungeonName} not yet implemented");
                 return;
             }
             
-            if (!world.AllowedAccess(Client))
-            {
+            if (!world.AllowedAccess(Client)) {
                 SendError("Access denied");
                 return;
             }
-            
-            Client.Send(GameServer.Reconnect(world.Id));
-            Manager.AddTimedAction(2000, Client.Disconnect);
+
+            Client.PrepareReconnect(world.Name, world.Id);
         }
 
         public void TryUseItem(int time, SlotData slot, Vector2 target)

@@ -34,7 +34,7 @@ namespace RotMG.Game
         Attack,
         Defense,
         Speed,
-        Vitality,
+        Vitality = 26,
         Wisdom,
         Dexterity,
         Condition,
@@ -43,8 +43,8 @@ namespace RotMG.Game
         Tex1,
         Tex2,
         MerchandiseType,
-        MerchandisePrice,
         Credits,
+        MerchandisePrice,
         Active,
         AccountId,
         Fame,
@@ -62,6 +62,9 @@ namespace RotMG.Game
         VitalityBoost,
         WisdomBoost,
         DexterityBoost,
+        OwnerAccountId,
+        NameChangerStar, //Rank required to change name
+        NameChosen,
         CharFame,
         NextClassQuestFame,
         LegendaryRank,
@@ -82,27 +85,30 @@ namespace RotMG.Game
         Backpack7,
         HasBackpack,
         Texture,
-        ItemData0,
-        ItemData1,
-        ItemData2,
-        ItemData3,
-        ItemData4,
-        ItemData5,
-        ItemData6,
-        ItemData7,
-        ItemData8,
-        ItemData9,
-        ItemData10,
-        ItemData11,
-        ItemData12,
-        ItemData13,
-        ItemData14,
-        ItemData15,
-        ItemData16,
-        ItemData17,
-        ItemData18,
-        ItemData19,
-        OwnerAccountId
+        
+        //No item data yet
+        //ItemData0,
+        //ItemData1, 
+        //ItemData2,
+        //ItemData3,
+        //ItemData4,
+        //ItemData5,
+        //ItemData6,
+        //ItemData7,
+        //ItemData8,
+        //ItemData9,
+        //ItemData10,
+        //ItemData11,
+        //ItemData12,
+        //ItemData13,
+        //ItemData14,
+        //ItemData15,
+        //ItemData16,
+        //ItemData17,
+        //ItemData18,
+        //ItemData19,
+
+        None = 255,
     }
 
     public class Entity : IDisposable
@@ -114,6 +120,7 @@ namespace RotMG.Game
         public ushort Type;
         public ObjectDesc Desc;
         public Vector2 Position;
+        public Vector2 PreviousPosition;
         public Chunk CurrentChunk;
         public World Parent;
 
@@ -780,7 +787,7 @@ namespace RotMG.Game
         public override bool Equals(object obj)
         {
 #if DEBUG
-            if (obj == null || !(obj is Entity))
+            if (obj == null || obj is not Entity)
                 throw new Exception("Invalid object comparison.");
 #endif
             return Id == (obj as Entity).Id;

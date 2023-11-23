@@ -48,7 +48,7 @@ namespace RotMG.Game.Entities
             if (text.Length <= 0 || text.Length > 128)
             {
 #if DEBUG
-                SLog.Error( "Text too short or too long");
+                SLog.Error("Text too short or too long");
 #endif
                 Client.Disconnect();
                 return;

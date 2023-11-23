@@ -71,18 +71,18 @@ namespace RotMG.Common
 
         public void Write(PacketWriter wtr)
         {
-            wtr.Write(Id);
-            Position.Write(wtr);
-
-            wtr.Write((byte)Stats.Count);
-            foreach (var k in Stats)
-            {
-                wtr.Write((byte)k.Key);
-                if (IsStringStat(k.Key))
-                    wtr.Write((string)k.Value);
-                else 
-                    wtr.Write((int)k.Value);
-            }
+            //wtr.Write(Id);
+            //Position.Write(wtr);
+            //
+            //wtr.Write((byte)Stats.Length);
+            //foreach (var k in Stats)
+            //{
+            //    wtr.Write((byte)k.Key);
+            //    if (IsStringStat(k.Key))
+            //        wtr.Write((string)k.Value);
+            //    else 
+            //        wtr.Write((int)k.Value);
+            //}
         }
 
         public static bool IsStringStat(StatType stat)

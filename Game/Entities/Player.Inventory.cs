@@ -103,28 +103,30 @@ namespace RotMG.Game.Entities
             return count;
         }
 
-        public void DropItem(byte slot)
+        public void DropItem(int objId, byte slot)
         {
             UpdateInventorySlot(slot);
 
             if (!ValidSlot(slot))
             {
+                Client.SendInventoryResult(1);
 #if DEBUG
-                SLog.Error( "Invalid slot");
+                SLog.Error("Invalid slot");
 #endif
                 return;
             }
 
             int item = Inventory[slot];
             int data = ItemDatas[slot];
+
             if (item == -1)
             {
+                Client.SendInventoryResult(1);
 #if DEBUG
-                SLog.Error( "Nothing to drop");
+                SLog.Error("Nothing to drop");
 #endif
                 return;
             }
-
             Inventory[slot] = -1;
             ItemDatas[slot] = -1;
 
@@ -137,6 +139,7 @@ namespace RotMG.Game.Entities
 
             RecalculateEquipBonuses();
             Parent.AddEntity(container, Position + MathUtils.Position(.2f, .2f));
+            Client.SendInventoryResult(0);
         }
 
         public void SwapItem(SlotData slot1, SlotData slot2)
@@ -153,17 +156,17 @@ namespace RotMG.Game.Entities
 #if DEBUG
                 SLog.Error( "Undefined entities");
 #endif
-                Client.Send(InvalidInvSwap);
+                Client.SendInventoryResult(1);
                 return;
             }
             
             //Entities which are not containers???
-            if (!(en1 is IContainer) || !(en2 is IContainer))
+            if (en1 is not IContainer || en2 is not IContainer)
             {
 #if DEBUG
                 SLog.Error( "Not containers");
 #endif
-                Client.Send(InvalidInvSwap);
+                Client.SendInventoryResult(1);
                 return;
             }
 
@@ -172,7 +175,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
                 SLog.Error( "Tried adding to one way container");
 #endif
-                Client.Send(InvalidInvSwap);
+                Client.SendInventoryResult(1);
                 return;
             }
 
@@ -181,7 +184,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
                 SLog.Error( "Too far away from container");
 #endif
-                Client.Send(InvalidInvSwap);
+                Client.SendInventoryResult(1);
                 return;
             }
 
@@ -191,7 +194,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
                 SLog.Error( "Tried swapping items while trading");
 #endif
-                Client.Send(InvalidInvSwap);
+                Client.SendInventoryResult(1);
                 return;
             }
 
@@ -202,7 +205,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
                 SLog.Error( "Player manipulation attempt");
 #endif
-                Client.Send(InvalidInvSwap);
+                Client.SendInventoryResult(1);
                 return;
             }
 
@@ -217,7 +220,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
                 SLog.Error( "Container manipulation attempt");
 #endif
-                Client.Send(InvalidInvSwap);
+                Client.SendInventoryResult(1);
                 return;
             }
 
@@ -230,7 +233,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
                 SLog.Error( "Invalid inv swap");
 #endif
-                Client.Send(InvalidInvSwap);
+                Client.SendInventoryResult(1);
                 return;
             }
 
@@ -257,7 +260,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
                             SLog.Error( "Invalid slot type");
 #endif
-                            Client.Send(InvalidInvSwap);
+                            Client.SendInventoryResult(1);
                             return;
                         }
                     }
@@ -276,7 +279,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
                             SLog.Error( "Invalid slot type");
 #endif
-                            Client.Send(InvalidInvSwap);
+                            Client.SendInventoryResult(1);
                             return;
                         }
                     }
@@ -284,12 +287,9 @@ namespace RotMG.Game.Entities
             }
 
             // soulbound item into non soulbound bag
-            if (con1 is Player)
-            {
-                if (d1 != null && d1.Soulbound && en2 is Container con && con.OwnerId != AccountId)
-                {
-                    DropItem(slot1.SlotId);
-                    Client.Send(ValidInvSwap);
+            if (con1 is Player plr) {
+                if (d1 != null && d1.Soulbound && en2 is Container con && con.OwnerId != AccountId) {
+                    DropItem(Id, slot1.SlotId);
                     return;
                 }
             }
@@ -304,7 +304,7 @@ namespace RotMG.Game.Entities
             con1.UpdateInventorySlot(slot1.SlotId);
             con2.UpdateInventorySlot(slot2.SlotId);
             RecalculateEquipBonuses();
-            Client.Send(ValidInvSwap);
+            Client.SendInventoryResult(0);
         }
 
         public bool ValidSlot(int slot)
@@ -330,89 +330,13 @@ namespace RotMG.Game.Entities
             if (slot < 0 || slot >= MaxSlotsWithBackpack)
                 throw new Exception("Out of bounds slot update attempt.");
 #endif
-            switch (slot)
-            {
-                case 0: 
-                    SetSV(StatType.Inventory0, Inventory[0]);
-                    SetPrivateSV(StatType.ItemData0, ItemDatas[0]);
-                    break;
-                case 1: 
-                    SetSV(StatType.Inventory1, Inventory[1]);
-                    SetPrivateSV(StatType.ItemData1, ItemDatas[1]);
-                    break;
-                case 2: 
-                    SetSV(StatType.Inventory2, Inventory[2]);
-                    SetPrivateSV(StatType.ItemData2, ItemDatas[2]);
-                    break;
-                case 3: 
-                    SetSV(StatType.Inventory3, Inventory[3]);
-                    SetPrivateSV(StatType.ItemData3, ItemDatas[3]);
-                    break;
-                case 4: 
-                    SetPrivateSV(StatType.Inventory4, Inventory[4]);
-                    SetPrivateSV(StatType.ItemData4, ItemDatas[4]);
-                    break;
-                case 5: 
-                    SetPrivateSV(StatType.Inventory5, Inventory[5]);
-                    SetPrivateSV(StatType.ItemData5, ItemDatas[5]);
-                    break;
-                case 6: 
-                    SetPrivateSV(StatType.Inventory6, Inventory[6]);
-                    SetPrivateSV(StatType.ItemData6, ItemDatas[6]);
-                    break;
-                case 7: 
-                    SetPrivateSV(StatType.Inventory7, Inventory[7]);
-                    SetPrivateSV(StatType.ItemData7, ItemDatas[7]);
-                    break;
-                case 8: 
-                    SetPrivateSV(StatType.Inventory8, Inventory[8]);
-                    SetPrivateSV(StatType.ItemData8, ItemDatas[8]);
-                    break;
-                case 9: 
-                    SetPrivateSV(StatType.Inventory9, Inventory[9]);
-                    SetPrivateSV(StatType.ItemData9, ItemDatas[9]);
-                    break;
-                case 10: 
-                    SetPrivateSV(StatType.Inventory10, Inventory[10]);
-                    SetPrivateSV(StatType.ItemData10, ItemDatas[10]);
-                    break;
-                case 11: 
-                    SetPrivateSV(StatType.Inventory11, Inventory[11]);
-                    SetPrivateSV(StatType.ItemData11, ItemDatas[11]);
-                    break;
-                case 12: 
-                    SetPrivateSV(StatType.Backpack0, Inventory[12]);
-                    SetPrivateSV(StatType.ItemData12, ItemDatas[12]);
-                    break;
-                case 13: 
-                    SetPrivateSV(StatType.Backpack1, Inventory[13]);
-                    SetPrivateSV(StatType.ItemData13, ItemDatas[13]);
-                    break;
-                case 14: 
-                    SetPrivateSV(StatType.Backpack2, Inventory[14]);
-                    SetPrivateSV(StatType.ItemData14, ItemDatas[14]);
-                    break;
-                case 15: 
-                    SetPrivateSV(StatType.Backpack3, Inventory[15]);
-                    SetPrivateSV(StatType.ItemData15, ItemDatas[15]);
-                    break;
-                case 16: 
-                    SetPrivateSV(StatType.Backpack4, Inventory[16]);
-                    SetPrivateSV(StatType.ItemData16, ItemDatas[16]);
-                    break;
-                case 17: 
-                    SetPrivateSV(StatType.Backpack5, Inventory[17]);
-                    SetPrivateSV(StatType.ItemData17, ItemDatas[17]);
-                    break;
-                case 18: 
-                    SetPrivateSV(StatType.Backpack6, Inventory[18]);
-                    SetPrivateSV(StatType.ItemData18, ItemDatas[18]);
-                    break;
-                case 19: 
-                    SetPrivateSV(StatType.Backpack7, Inventory[19]);
-                    SetPrivateSV(StatType.ItemData19, ItemDatas[19]);
-                    break;
-            }
+
+            int itemType = Inventory[slot];
+
+            if (slot <= 11)
+                SetSV(StatType.Inventory0 + slot, itemType);
+            else
+                SetSV(StatType.Backpack0 + (slot - 12), itemType);
         }
     }
 }

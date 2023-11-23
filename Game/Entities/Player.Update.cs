@@ -3,33 +3,37 @@ using RotMG.Networking;
 using RotMG.Utils;
 using System;
 using System.Collections.Generic;
+using System.Data;
 
 namespace RotMG.Game.Entities
 {
     public partial class Player
     {
+        public int TickId { get; private set; }
+        public int TickTime { get; private set; }
+
         public const int SightRadius = 15;
         private const float StartAngle = 0;
         private const float EndAngle = (float)(2 * Math.PI);
         private const float RayStepSize = .05f;
         private const float AngleStepSize = 2.30f / (SightRadius * 2);
 
-        private static readonly IntPoint[] SurroundingPoints = new IntPoint[]
-        {
-            new IntPoint(1, 0),
-            new IntPoint(1, 1),
-            new IntPoint(0, 1),
-            new IntPoint(-1, 1),
-            new IntPoint(-1, 0),
-            new IntPoint(-1, -1),
-            new IntPoint(0, -1),
-            new IntPoint(1, -1)
-        };
+        private static readonly IntPoint[] SurroundingPoints =
+        [
+            new(1, 0),
+            new(1, 1),
+            new(0, 1),
+            new(-1, 1),
+            new(-1, 0),
+            new(-1, -1),
+            new(0, -1),
+            new(1, -1)
+        ];
 
         private static HashSet<IntPoint> SightCircle;
         public static void InitSightCircle()
         {
-            SightCircle = new HashSet<IntPoint>();
+            SightCircle = [];
             for (var x = -SightRadius; x <= SightRadius; x++)
                 for (var y = -SightRadius; y <= SightRadius; y++)
                     if (x * x + y * y <= SightRadius * SightRadius)
@@ -68,32 +72,71 @@ namespace RotMG.Game.Entities
         public HashSet<Entity> Entities;
         public HashSet<IntPoint> CalculatedSightCircle;
 
+        private readonly List<ObjectStatus> _statuses = new(128);
+
         public void SendNewTick()
         {
-            var statuses = new List<ObjectStatus>();
+            TickId++;
+            TickTime = Manager.TickDelta;
+
+            _statuses.Clear();
             foreach (var en in Entities)
                 if (EntityUpdates[en.Id] != en.UpdateCount)
                 {
-                    statuses.Add(en.GetObjectStatus(true));
+                    _statuses.Add(en.GetObjectStatus(true));
                     EntityUpdates[en.Id] = en.UpdateCount;
                 }
 
-            Client.Send(GameServer.NewTick(statuses, PrivateSVs));
             PrivateSVs.Clear();
-            AwaitingMoves++;
+
+            AwaitMove(TickId);
+            Client.SendNewTick(TickId,TickTime, _statuses);
         }
 
+        private readonly List<ObjectDrop> _drops = new(128);
+        private readonly List<ObjectDefinition> _adds = new(128);
+        private readonly List<TileData> _tiles = new(768);
+        private readonly HashSet<int> _droppedIds = new(128);
         public void SendUpdate()
         {
             var nUpdate = ShouldCalculateSightCircle();
-            var sight = Parent.BlockSight == 0 ? SightCircle :
+            HashSet<IntPoint> sight = GetSight(nUpdate);
+
+            //Reset lists
+            ResetUpdate();
+            //Add tiles
+            CheckTilesToAdd(nUpdate, sight);
+
+            //Add entities
+            CheckEntitiesToAdd(sight);
+
+            //Remove entities and statics (as they end up in the same Entities dictionary
+            CheckEntitiesToRemove(sight);
+
+            if (_tiles.Count == 0 && _adds.Count == 0 && _drops.Count == 0)
+                return;
+
+            AwaitUpdateAck(Manager.TickWatch.ElapsedMilliseconds);
+            Client.SendUpdate(_tiles, _adds, _drops);
+
+            FameStats.TilesUncovered += _tiles.Count;
+        }
+
+        private HashSet<IntPoint> GetSight(bool nUpdate) {
+            return Parent.BlockSight == 0 ? SightCircle :
                     nUpdate ? CalculateSightCircle() : CalculatedSightCircle;
+        }
 
-            var tiles = new List<TileData>();
-            var adds = new List<ObjectDefinition>();
-            var drops = new List<ObjectDrop>();
-            var droppedIds = new HashSet<int>();
+        private void ResetUpdate()
+        {
+            _tiles.Clear();
+            _adds.Clear();
+            _drops.Clear();
+            _droppedIds.Clear();
+        }
 
+        private void CheckTilesToAdd(bool nUpdate, HashSet<IntPoint> sight)
+        {
             if (nUpdate)
             {
                 //Get tiles
@@ -106,7 +149,7 @@ namespace RotMG.Game.Entities
                     if (tile == null || TileUpdates[x, y] == tile.UpdateCount)
                         continue;
 
-                    tiles.Add(new TileData
+                    _tiles.Add(new TileData
                     {
                         TileType = tile.Type,
                         X = (short)x,
@@ -130,18 +173,54 @@ namespace RotMG.Game.Entities
                     {
                         if (Entities.Add(tile.StaticObject))
                         {
-                            adds.Add(tile.StaticObject.GetObjectDefinition());
+                            _adds.Add(tile.StaticObject.GetObjectDefinition());
                             EntityUpdates.Add(tile.StaticObject.Id, tile.StaticObject.UpdateCount);
                         }
                     }
                 }
             }
+        }
 
+        private void CheckEntitiesToRemove(HashSet<IntPoint> sight)
+        {
+            foreach (var en in Entities)
+            {
+                var point = new IntPoint
+                {
+                    X = (int)en.Position.X - (int)Position.X,
+                    Y = (int)en.Position.Y - (int)Position.Y
+                };
+
+                if (en.Desc.Static)
+                {
+                    if (en.Parent == null || !SightCircle.Contains(point))
+                    {
+                        _drops.Add(en.GetObjectDrop());
+                        _droppedIds.Add(en.Id);
+                        EntityUpdates.Remove(en.Id);
+                    }
+                }
+                else
+                {
+                    if (en.Parent == null || !sight.Contains(point) && !en.Desc.Player && en != Quest)
+                    {
+                        _drops.Add(en.GetObjectDrop());
+                        _droppedIds.Add(en.Id);
+                        EntityUpdates.Remove(en.Id);
+                    }
+                }
+            }
+
+            Entities.RemoveWhere(k => _droppedIds.Contains(k.Id));
+        }
+
+        private void CheckEntitiesToAdd(HashSet<IntPoint> sight)
+        {
             foreach (var en in Parent.PlayerChunks.HitTest(Position, SightRadius))
             {
                 if (Entities.Add(en))
                 {
-                    adds.Add(en.GetObjectDefinition());
+                    _adds.Add(en.GetObjectDefinition());
                     EntityUpdates.Add(en.Id, en.UpdateCount);
                 }
             }
@@ -151,12 +230,11 @@ namespace RotMG.Game.Entities
             {
                 if (Entities.Add(player))
                 {
-                    adds.Add(player.GetObjectDefinition());
+                    _adds.Add(player.GetObjectDefinition());
                     EntityUpdates.Add(player.Id, player.UpdateCount);
                 }
             }
 
-            //Add entities
             foreach (var en in Parent.EntityChunks.HitTest(Position, SightRadius))
             {
                 var point = new IntPoint
@@ -171,53 +249,16 @@ namespace RotMG.Game.Entities
 
                 if (sight.Contains(point) && Entities.Add(en))
                 {
-                    adds.Add(en.GetObjectDefinition());
+                    _adds.Add(en.GetObjectDefinition());
                     EntityUpdates.Add(en.Id, en.UpdateCount);
                 }
             }
-            
+
             //Add quest
             if (Quest != null && Entities.Add(Quest))
             {
-                adds.Add(Quest.GetObjectDefinition());
+                _adds.Add(Quest.GetObjectDefinition());
                 EntityUpdates.Add(Quest.Id, Quest.UpdateCount);
-            }
-
-            //Remove entities and statics (as they end up in the same Entities dictionary
-            foreach (var en in Entities)
-            {
-                var point = new IntPoint
-                {
-                    X = (int)en.Position.X - (int)Position.X,
-                    Y = (int)en.Position.Y - (int)Position.Y
-                };
-
-                if (en.Desc.Static)
-                {
-                    if (en.Parent == null || !SightCircle.Contains(point))
-                    {
-                        drops.Add(en.GetObjectDrop());
-                        droppedIds.Add(en.Id);
-                        EntityUpdates.Remove(en.Id);
-                    }
-                }
-                else
-                {
-                    if (en.Parent == null || !sight.Contains(point) && !en.Desc.Player && en != Quest)
-                    {
-                        drops.Add(en.GetObjectDrop());
-                        droppedIds.Add(en.Id);
-                        EntityUpdates.Remove(en.Id);
-                    }
-                }
-            }
-
-            Entities.RemoveWhere(k => droppedIds.Contains(k.Id));
-
-            if (tiles.Count > 0 || adds.Count > 0 || drops.Count > 0)
-            {
-                Client.Send(GameServer.Update(tiles, adds, drops));
-                FameStats.TilesUncovered += tiles.Count;
             }
         }
 

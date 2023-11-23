@@ -100,41 +100,7 @@ namespace RotMG.Game.Entities
             if (slot < 0 || slot >= MaxSlots)
                 throw new Exception("Out of bounds slot update attempt.");
 #endif
-            switch (slot)
-            {
-                case 0: 
-                    SetSV(StatType.Inventory0, Inventory[0]);
-                    SetSV(StatType.ItemData0, ItemDatas[0]);
-                    break;
-                case 1: 
-                    SetSV(StatType.Inventory1, Inventory[1]);
-                    SetSV(StatType.ItemData1, ItemDatas[1]);
-                    break;
-                case 2: 
-                    SetSV(StatType.Inventory2, Inventory[2]);
-                    SetSV(StatType.ItemData2, ItemDatas[2]);
-                    break;
-                case 3: 
-                    SetSV(StatType.Inventory3, Inventory[3]);
-                    SetSV(StatType.ItemData3, ItemDatas[3]);
-                    break;
-                case 4: 
-                    SetSV(StatType.Inventory4, Inventory[4]);
-                    SetSV(StatType.ItemData4, ItemDatas[4]);
-                    break;
-                case 5: 
-                    SetSV(StatType.Inventory5, Inventory[5]);
-                    SetSV(StatType.ItemData5, ItemDatas[5]);
-                    break;
-                case 6: 
-                    SetSV(StatType.Inventory6, Inventory[6]);
-                    SetSV(StatType.ItemData6, ItemDatas[6]);
-                    break;
-                case 7:
-                    SetSV(StatType.Inventory7, Inventory[7]);
-                    SetSV(StatType.ItemData7, ItemDatas[7]);
-                    break;
-            }
+            SetSV(StatType.Inventory0 + slot, Inventory[slot]);
         }
     }
 }
