@@ -1,0 +1,119 @@
+﻿using System.Security.Cryptography;
+
+namespace Common.Utils;
+
+public static class MathUtils
+{
+    public const float ToRadians = MathF.PI / 180f;
+    public const float ToDegrees = 180f / MathF.PI;
+
+    private static Random _rnd = new Random();
+    private static RandomNumberGenerator _gen = RNGCryptoServiceProvider.Create();
+    public static string GenerateSalt()
+    {
+        var x = new byte[0x10];
+        _gen.GetNonZeroBytes(x);
+        return Convert.ToBase64String(x);
+    }
+
+    public static float BoundToPI(float x)
+    {
+        int v;
+        if (x < -MathF.PI)
+        {
+            v = ((int)(x / -MathF.PI) + 1) / 2;
+            x = x + v * 2 * MathF.PI;
+        }
+        else if (x > MathF.PI)
+        {
+            v = ((int)(x / MathF.PI) + 1) / 2;
+            x = x - v * 2 * MathF.PI;
+        }
+        return x;
+    }
+
+    public static int Next(int length)
+    {
+        return _rnd.Next(length);
+    }
+
+    public static int Next(int min, int max)
+    {
+        return _rnd.Next(min, max);
+    }
+
+    public static int NextInt(int min = 0, int max = 1)
+    {
+        return (int)NextFloat(min, max);
+    }
+
+    public static int NextIntSnap(int min = 0, int max = 1, int snap = 100)
+    {
+        var r = (int)NextFloat(min, max);
+        r -= r % snap;
+        return r;
+    }
+
+    public static float NextFloat(float min = 0, float max = 1)
+    {
+        return (float)(_rnd.NextDouble() * (max - min) + min);
+    }
+
+    public static bool NextBool()
+    {
+        return _rnd.Next(2) == 0;
+    }
+
+    public static float NextAngle()
+    {
+        return NextFloat(-MathF.PI, MathF.PI);
+    }
+
+    public static bool Chance(float chance)
+    {
+        return _rnd.NextDouble() < chance;
+    }
+
+    public static int GetRandomFromLength(int length)
+    {
+        return _rnd.Next(length);
+    }
+    public static Vector2 Position(float x, float y)
+    {
+        return new Vector2(NextFloat(-x, x), NextFloat(-y, y));
+    }
+
+    public static int PlusMinus()
+    {
+        return _rnd.Next(2) == 0 ? -1 : 1;
+    }
+
+    public static float Angle(this Vector2 from, Vector2 to)
+    {
+        return MathF.Atan2(to.Y - from.Y, to.X - from.X);
+    }
+
+    public static float Distance(this Vector2 from, Vector2 to)
+    {
+        float v1 = from.X - to.X, v2 = from.Y - to.Y;
+        return MathF.Sqrt(v1 * v1 + v2 * v2);
+    }
+
+    public static float DistanceSquared(this Vector2 from, Vector2 to)
+    {
+        float v1 = from.X - to.X, v2 = from.Y - to.Y;
+        return v1 * v1 + v2 * v2;
+    }
+
+    public static float Lerp(float value1, float value2, float amount)
+    {
+        return value1 + (value2 - value1) * amount;
+    }
+
+    public static int NextCooldown(this int cooldown, int variance)
+    {
+        if (variance == 0)
+            return cooldown;
+        return cooldown + NextIntSnap(-variance, variance, Settings.MillisecondsPerTick);
+    }
+}

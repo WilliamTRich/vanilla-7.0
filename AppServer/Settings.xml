@@ -1,0 +1,9 @@
+<Settings res="Resources" db="Database">
+  <Address>127.0.0.1</Address>
+  <Ports>8080:2050</Ports>
+  <AdminOnly>false</AdminOnly>
+  <ServerName>Localhost</ServerName>
+  <TicksPerSecond>10</TicksPerSecond>
+  <MaxClients>256</MaxClients>
+  <MaxRealms>1</MaxRealms>
+</Settings>

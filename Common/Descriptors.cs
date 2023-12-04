@@ -1,12 +1,7 @@
-﻿using RotMG.Game;
-using RotMG.Utils;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using Common.Utils;
 using System.Xml.Linq;
 
-namespace RotMG.Common
+namespace Common
 {
     public enum Currency
     {
@@ -14,7 +9,7 @@ namespace RotMG.Common
         Fame,
         GuildFame
     }
-    
+
     public enum ItemData : ulong
     {
         //Tiers
@@ -159,7 +154,7 @@ namespace RotMG.Common
         Flash = 15,
         ThrowProjectile = 16
     }
-    
+
     public enum ItemType : byte
     {
         All,
@@ -291,7 +286,7 @@ namespace RotMG.Common
             }*/
         }
     }
-    
+
     public class SpawnData
     {
         public readonly int Mean;
@@ -428,7 +423,7 @@ namespace RotMG.Common
         public readonly uint? Color;
         public readonly int MaxTargets;
         public readonly int Stat;
-        
+
         public ActivateEffectDesc(XElement e)
         {
             Index = (ActivateEffectIndex)Enum.Parse(typeof(ActivateEffectIndex), e.Value.Replace(" ", ""));
@@ -451,7 +446,7 @@ namespace RotMG.Common
                 Color = e.ParseUInt("@color");
         }
     }
-    
+
     public class ItemDesc
     {
         public const float RateOfFireMultiplier = 0.05f;
@@ -460,29 +455,29 @@ namespace RotMG.Common
 
         static ItemData[] GlobalModifiers =
         {
-            ItemData.MaxHP, 
-            ItemData.MaxMP, 
-            ItemData.Attack, 
-            ItemData.Defense, 
-            ItemData.Speed, 
-            ItemData.Dexterity, 
-            ItemData.Vitality, 
-            ItemData.Wisdom, 
+            ItemData.MaxHP,
+            ItemData.MaxMP,
+            ItemData.Attack,
+            ItemData.Defense,
+            ItemData.Speed,
+            ItemData.Dexterity,
+            ItemData.Vitality,
+            ItemData.Wisdom,
             ItemData.FameBonus,
         };
 
         static ItemData[] AbilityModifiers = GlobalModifiers.Concat(
-            new []
+            new[]
             {
-                ItemData.Cooldown, 
-                ItemData.Damage, 
+                ItemData.Cooldown,
+                ItemData.Damage,
             }).ToArray();
 
         static ItemData[] WeaponModifiers = GlobalModifiers.Concat(
-            new []
+            new[]
             {
-                ItemData.RateOfFire, 
-                ItemData.Damage, 
+                ItemData.RateOfFire,
+                ItemData.Damage,
             }).ToArray();
 
         public static ItemType[] WeaponTypes =
@@ -587,7 +582,7 @@ namespace RotMG.Common
                     rank++;
                 else break;
             }
-            if (rank == -1) 
+            if (rank == -1)
                 return Tuple.Create(false, data);
 
             data |= (ItemData)((ulong)1 << rank);
@@ -609,7 +604,7 @@ namespace RotMG.Common
                 var k = modifiers[MathUtils.Next(modifiers.Length)];
                 if (s.Contains(k))
                     continue;
-                if (k == ItemData.Damage 
+                if (k == ItemData.Damage
                     && Projectile == null)
                     continue;
                 s.Add(k);
@@ -806,47 +801,6 @@ namespace RotMG.Common
         {
             Level = level;
             Priority = priority;
-        }
-    }
-
-    public class WorldDesc
-    {
-        public readonly string Name;
-        public readonly string DisplayName;
-        public readonly string Music;
-        public readonly int Id;
-        public readonly int Background;
-        public readonly bool ShowDisplays;
-        public readonly bool AllowTeleport;
-        public readonly int BlockSight;
-        public readonly bool Persist;
-        public readonly bool IsTemplate;
-        public readonly ushort[] Portals;
-        public readonly Map[] Maps;
-
-        public WorldDesc(XElement e)
-        {
-            Name = e.ParseString("@name");
-            DisplayName = e.ParseString("@display", Name);
-            Music = e.ParseString("Music", "");
-            Id = e.ParseInt("@id");
-            Background = e.ParseInt("Background");
-            ShowDisplays = e.ParseBool("ShowDisplays");
-            AllowTeleport = e.ParseBool("AllowTeleport");
-            BlockSight = e.ParseInt("BlockSight");
-            Persist = e.ParseBool("Persist");
-            IsTemplate = e.ParseBool("IsTemplate");
-            Portals = e.ParseUshortArray("Portals", ";", new ushort[0]);
-
-            var maps = e.ParseStringArray("Maps", ";", new string[0]);
-            Maps = new Map[maps.Length];
-            for (var i = 0; i < maps.Length; i++)
-            {
-                if (maps[0].EndsWith("wmap"))
-                    Maps[i] = new WMap(File.ReadAllBytes(Resources.CombineResourcePath($"Worlds/{maps[i]}")));
-                else
-                    Maps[i] = new JSMap(File.ReadAllText(Resources.CombineResourcePath($"Worlds/{maps[i]}")));
-            }
         }
     }
 }
