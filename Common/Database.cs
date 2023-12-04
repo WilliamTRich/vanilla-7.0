@@ -127,8 +127,12 @@ public static class Database
         return $"{Settings.DatabaseDirectory}/{(global ? "@" : "")}{path}.file";
     }
 
-    public static bool CanRegisterAccount(string ip)
-    {
+    public static bool CanRegisterAccount(string ip) {
+        if (ip.Equals("Unknown", StringComparison.InvariantCulture)) {
+            SLog.Info("Allowing unknown IP to register");
+            return true;
+        }
+
         if (RegisteredAccounts.TryGetValue(ip, out var attempts) && attempts >= MaxRegisteredAccounts)
             return false;
         return true;
