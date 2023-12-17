@@ -76,7 +76,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
                     SLog.Error( "Aoe ack timed out");
 #endif
-                    Client.Disconnect();
+                    //Client.Disconnect();
                     return;
                 }
             }
@@ -90,7 +90,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
                         SLog.Error( "Proj ack timed out");
 #endif
-                        Client.Disconnect();
+                        //Client.Disconnect();
                         return;
                     }
                 }
@@ -120,7 +120,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
                 SLog.Error( "Invalid time for enemy hit");
 #endif
-                Client.Disconnect();
+                //Client.Disconnect();
                 return;
             }
 
@@ -132,7 +132,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
                     SLog.Error( "Invalid enemy target");
 #endif
-                    return;
+                    //return;
                 }
                 var elapsed = time - p.Time;
                 var steps = (int)Math.Ceiling(p.Desc.Speed / 100f * (elapsed * EnemyHitTrackPrecision / 1000f));
@@ -203,7 +203,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
                 SLog.Error( "Invalid time for player shoot");
 #endif
-                Client.Disconnect();
+                //Client.Disconnect();
                 return;
             }
 
@@ -218,7 +218,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
                 SLog.Error( "Invalid move for player shoot");
 #endif
-                Client.Disconnect();
+                //Client.Disconnect();
                 return;
             }
 
@@ -419,7 +419,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
                 SLog.Error( "HitSquare invalid time");
 #endif
-                Client.Disconnect();
+                //Client.Disconnect();
                 return;
             }
 
@@ -453,7 +453,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
                 SLog.Error( "AoeAck invalid time");
 #endif
-                Client.Disconnect();
+                //Client.Disconnect();
                 return;
             }
 
@@ -464,7 +464,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
                     SLog.Error( "INVALID MOVE FOR AOEACK!");
 #endif
-                    Client.Disconnect();
+                    //Client.Disconnect();
                     return;
                 }
 
@@ -478,7 +478,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
                 SLog.Error( "AoeAck desync");
 #endif
-                Client.Disconnect();
+                //Client.Disconnect();
             }
         }
 
@@ -489,7 +489,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
                 SLog.Error( "ShootAck invalid time");
 #endif
-                Client.Disconnect();
+               // Client.Disconnect();
                 return;
             }
 
@@ -520,7 +520,7 @@ namespace RotMG.Game.Entities
 #if DEBUG
                 SLog.Error( "ShootAck desync");
 #endif
-                Client.Disconnect();
+               // Client.Disconnect();
             }
         }
     }
